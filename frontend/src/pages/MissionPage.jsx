@@ -88,7 +88,6 @@ function MissionPage() {
   const [shakeCard, setShakeCard] = useState(false); // warrior shake
   const [showSplash, setShowSplash] = useState(false); // persona result splash
   const [splashCorrect, setSplashCorrect] = useState(false);
-  const timerRef = useRef(null);
   const [timerRemaining, setTimerRemaining] = useState(MISSION_TIMER_SECONDS);
   const [timerActive, setTimerActive] = useState(false);
   const questionStartRef = useRef(null);
