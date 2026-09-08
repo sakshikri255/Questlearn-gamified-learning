@@ -43,6 +43,23 @@
   flex-wrap: wrap;
 }
 
+.dc-back-btn {
+  flex: 0 0 auto;
+  background: rgba(15, 17, 23, 0.72);
+  border: 1px solid #374151;
+  border-radius: 8px;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.7rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.dc-back-btn:hover {
+  background: #111827;
+  border-color: #64748b;
+}
+
 .dc-title {
   font-size: 1.25rem;
   font-weight: 700;

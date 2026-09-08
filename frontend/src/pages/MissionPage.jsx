@@ -91,6 +91,7 @@ function MissionPage() {
   const [timerRemaining, setTimerRemaining] = useState(MISSION_TIMER_SECONDS);
   const [timerActive, setTimerActive] = useState(false);
   const questionStartRef = useRef(null);
+  const questionNumberRef = useRef(1);
 
   // Start/stop the countdown timer
   const startTimer = useCallback(() => {
@@ -117,20 +118,44 @@ function MissionPage() {
   // Sage simplicity score (live)
   const sageScore = persona.id === "sage" ? simplicityScore(explanation) : 0;
 
-  useEffect(() => {
-    fetch(`/api/question?stageId=${stageId}`)
-      .then((res) => res.json())
+  const loadQuestion = useCallback((questionNumber = questionNumberRef.current) => {
+    setStatus("loading");
+    setQuestion(null);
+    setSelected("");
+    setExplanation("");
+    setResult(null);
+    setError("");
+    return fetch("/api/question", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        stageId,
+        topic: theme.name,
+        persona: { id: persona.id, name: persona.name, tagline: persona.tagline },
+        questionIndex: questionNumber,
+        requestId: `${persona.id}-${stageId}-${Date.now()}`,
+      }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Could not load the question.");
+        return data;
+      })
       .then((data) => {
         setQuestion(data);
         questionStartRef.current = Date.now();
         setStatus("question");
         startTimer();
       })
-      .catch(() => {
-        setError("Could not load the question. Is the backend running?");
+      .catch((loadError) => {
+        setError(loadError.message || "Could not load the question. Is the backend running?");
         setStatus("question");
       });
-  }, [stageId]);
+  }, [persona.id, persona.name, persona.tagline, stageId, startTimer, theme.name]);
+
+  useEffect(() => {
+    loadQuestion();
+  }, [loadQuestion]);
 
   // Warrior countdown timer
   useEffect(() => {
@@ -262,6 +287,14 @@ function MissionPage() {
     setStatus("question");
   };
 
+  const nextQuestion = () => {
+    setChapterUnlocked(false);
+    setRewards(null);
+    setEliminated([]);
+    questionNumberRef.current += 1;
+    loadQuestion(questionNumberRef.current);
+  };
+
   const activeChapter = chapterUnlocked ? 1 : 0;
 
   const StoryHeader = () => (
@@ -345,11 +378,12 @@ function MissionPage() {
   // ── RESULT PAGE ───────────────────────────────────────────────────────────
   if (status === "result" && result) {
     return (
-      <>
-        <PartyPopper active={Boolean(result.correct)} />
-        <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
-          <div className={`card result-card persona-card-theme--${persona.id}`}>
-            <StoryHeader />
+      <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
+        <div className={`card result-card persona-card-theme--${persona.id}`}>
+          <button className="back-btn" onClick={() => navigate(stageId !== "beginner" ? "/stages" : "/")}>
+            {stageId !== "beginner" ? "← Back to Stage Map" : "← Back to Home"}
+          </button>
+          <StoryHeader />
           <div className="persona-badge" style={{ borderColor: persona.accent, color: persona.accent, background: persona.accentDim }}>
             {persona.emoji} {persona.name} Mode
           </div>
@@ -401,17 +435,17 @@ function MissionPage() {
               <button className="secondary comparisons-dashboard-btn" onClick={() => navigate("/dashboard")}>View Full Dashboard →</button>
             </div>
           )}
-          <div className="result-explanation"><h3>Explanation</h3><p>{result.explanation}</p></div>
-            <div className="result-actions">
-              {!result.correct && (
-                <button className="primary" onClick={resetQuestion}>🔄 Try Again</button>
-              )}
-              {!result.correct && (<button className="secondary" onClick={() => navigate("/museum")}>🏛️ Visit Museum</button>)}
-              <button className="secondary" onClick={() => navigate("/dashboard")}>📊 Dashboard</button>
-              {stageId !== "beginner"
-                ? <button className="secondary" onClick={() => navigate("/stages")}>🗺️ Stage Map</button>
-                : <button className="secondary" onClick={() => navigate("/")}>🏠 Home</button>}
-            </div>
+          <div className="result-explanation"><h3>Explanation</h3><p>{question?.explanation ?? result.explanation ?? "Explanation unavailable."}</p></div>
+          <div className="result-actions">
+            {!result.correct && (
+              <button className="primary" onClick={resetQuestion}>🔄 Try Again</button>
+            )}
+            <button className="primary" onClick={nextQuestion}>Next Question →</button>
+            {!result.correct && (<button className="secondary" onClick={() => navigate("/museum")}>🏛️ Visit Museum</button>)}
+            <button className="secondary" onClick={() => navigate("/dashboard")}>📊 Dashboard</button>
+            {stageId !== "beginner"
+              ? <button className="secondary" onClick={() => navigate("/stages")}>🗺️ Stage Map</button>
+              : <button className="secondary" onClick={() => navigate("/")}>🏠 Home</button>}
           </div>
         </PageTransition>
       </>
@@ -487,6 +521,13 @@ function MissionPage() {
 
         {/* Question block — styled differently per persona */}
         <p className={`question-text question-text--${persona.id}`}>{question?.question}</p>
+
+        {question?.hint && (
+          <div className={`persona-hint persona-hint--${persona.id}`}>
+            <strong>{persona.emoji} Hint</strong>
+            <span>{question.hint}</span>
+          </div>
+        )}
 
         {/* Options */}
         <div className="options-list">

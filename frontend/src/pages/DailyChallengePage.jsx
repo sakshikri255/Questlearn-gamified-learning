@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../components/NavBar.jsx";
 import {
   loadDailyChallenge,
   saveDailyChallenge,
@@ -180,7 +179,6 @@ function DailyChallengePage() {
   if (screen === "already-done") {
     return (
       <div className="dc-page">
-        <NavBar />
         <div className="dc-content">
           <div className="dc-card card">
             <div className="dc-done-banner">
@@ -207,7 +205,6 @@ function DailyChallengePage() {
   if (screen === "finished" && reward) {
     return (
       <div className="dc-page">
-        <NavBar />
         <div className="dc-content">
           <div className="dc-card card">
             <div className="dc-result-header">
@@ -253,7 +250,6 @@ function DailyChallengePage() {
   if (loading) {
     return (
       <div className="dc-page">
-        <NavBar />
         <div className="dc-content">
           <p className="dc-loading">Loading today's challenge…</p>
         </div>
@@ -264,7 +260,6 @@ function DailyChallengePage() {
   if (fetchError) {
     return (
       <div className="dc-page">
-        <NavBar />
         <div className="dc-content">
           <div className="dc-card card">
             <p className="dc-error">{fetchError}</p>
@@ -282,12 +277,12 @@ function DailyChallengePage() {
 
   return (
     <div className="dc-page">
-      <NavBar />
       <div className="dc-content">
         <div className="dc-card card">
 
           {/* Header */}
           <div className="dc-header">
+            <button className="dc-back-btn" onClick={() => navigate(-1)}>← Back</button>
             <div className="dc-header-left">
               <h2 className="dc-title">🌟 Daily Challenge</h2>
               <p className="dc-date">{challengeDate}</p>

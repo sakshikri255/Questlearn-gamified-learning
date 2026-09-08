@@ -42,6 +42,8 @@
 .tqp-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 0.75rem;
   margin-bottom: 1rem;
   flex-wrap: wrap;
@@ -50,9 +52,21 @@
 .tqp-breadcrumb {
   display: flex;
   align-items: center;
+  flex: 1 1 220px;
+  min-width: 0;
   gap: 0.4rem;
   font-size: 0.85rem;
   color: #94a3b8;
+  flex-wrap: wrap;
+}
+
+.tqp-header-meta {
+  flex: 0 1 auto;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  text-align: right;
+  white-space: normal;
 }
 
 .tqp-topic {
@@ -76,6 +90,13 @@
   font-size: 0.8rem;
   color: #94a3b8;
   margin-bottom: 0.35rem;
+}
+
+@media (max-width: 640px) {
+  .tqp-header-meta {
+    flex-basis: 100%;
+    text-align: left;
+  }
 }
 
 .tqp-progress-track {
