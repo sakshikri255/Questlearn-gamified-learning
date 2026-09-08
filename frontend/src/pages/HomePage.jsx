@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import THEMES from "../data/themes.js";
 import STAGES from "../data/stages.js";
@@ -8,266 +8,692 @@ import {
   loadProfile,
   loadStreak,
   computeStreakState,
+  todayStr,
 } from "../data/progress.js";
+import {
+  loadDailyChallenge,
+  hasDoneToday,
+} from "../data/dailyChallenge.js";
+import { loadLeague } from "../data/progress.js";
+import INITIAL_LEAGUE_DATA from "../data/leagueData.js";
 import PageTransition from "../components/PageTransition.jsx";
 import "./HomePage.css";
 
-const FEATURES = [
-  {
-    emoji: "📖",
-    title: "Story Missions",
-    description:
-      "Answer code questions wrapped in narrative adventures. Every correct answer pushes your story forward.",
-    color: "#6366f1",
-  },
-  {
-    emoji: "🔐",
-    title: "Explain to Unlock",
-    description:
-      "Unlock the next chapter by typing a natural-language explanation of your answer. Solidify your understanding.",
-    color: "#22d3ee",
-  },
-  {
-    emoji: "🏛️",
-    title: "Mistake Museum",
-    description:
-      "Every wrong answer is archived for review. Revisit your mistakes and turn them into strengths.",
-    color: "#a78bfa",
-  },
-  {
-    emoji: "🏆",
-    title: "League Battles",
-    description:
-      "Compete across 30-player leagues. Earn coins, climb ranks, and defend your position.",
-    color: "#facc15",
-  },
-  {
-    emoji: "🔥",
-    title: "Daily Streaks",
-    description:
-      "Log in every day to maintain your streak. Miss a day? Use a Rescue Quiz to save it.",
-    color: "#fb923c",
-  },
+// ─── Compute player rank from league data ────────────────────────────────────
+function computePlayerRank(attempts) {
+  const league = loadLeague(INITIAL_LEAGUE_DATA);
+  const correct = attempts.filter((a) => a.correct).length;
+  const accuracy = attempts.length ? Math.round((correct / attempts.length) * 100) : 0;
+  const playerScore = Math.min(100, accuracy);
+  const withScores = league.map((u) => {
+    if (u.isPlayer) return { ...u, score: playerScore };
+    const npcAcc = Math.min(100, 40 + Math.round((u.coins / 5000) * 60));
+    return { ...u, score: npcAcc };
+  });
+  const sorted = [...withScores].sort((a, b) => b.score - a.score || b.coins - a.coins);
+  const idx = sorted.findIndex((u) => u.isPlayer);
+  return idx >= 0 ? idx + 1 : 30;
+}
+
+// ─── Count attempts completed today ──────────────────────────────────────────
+function countTodayAttempts(attempts) {
+  const today = todayStr();
+  return attempts.filter((a) => a.savedAt && a.savedAt.startsWith(today)).length;
+}
+
+// ─── Stage detail data for quest map tooltips ────────────────────────────────
+const STAGE_META = [
+  { xp: 30,  difficulty: "Beginner",   questions: 4, minutes: 5,  desc: "Core JS fundamentals — variables, types, and basic syntax." },
+  { xp: 60,  difficulty: "Explorer",   questions: 3, minutes: 4,  desc: "Control flow, loops, and function basics." },
+  { xp: 120, difficulty: "Challenger", questions: 3, minutes: 5,  desc: "Scope, closures, and higher-order functions." },
+  { xp: 200, difficulty: "Expert",     questions: 3, minutes: 6,  desc: "Async patterns, promises, and ES6+ features." },
+  { xp: 300, difficulty: "Boss",       questions: 2, minutes: 8,  desc: "Full concept synthesis. Boss-level bonus rewards." },
 ];
 
-function HomePage() {
-  const navigate = useNavigate();
-  const [selectedTheme, setSelectedTheme] = useState(THEMES[0].id);
-  const [selectedPersona, setSelectedPersona] = useState(PERSONAS[0].id);
-  const [mistakeCount, setMistakeCount] = useState(0);
-  const [attemptCount, setAttemptCount] = useState(0);
-  const [profile, setProfile] = useState(null);
-  const [streak, setStreak] = useState(null);
+// ─── Story theme extended metadata ───────────────────────────────────────────
+const THEME_META = {
+  cyber:     { tag: "Sci-Fi Thriller", quote: '"The city runs on code — and so do you."', bonus: "2×", difficulty: "Intermediate" },
+  space:     { tag: "Space Adventure", quote: '"Every orbit decays without the right logic."', bonus: "1.5×", difficulty: "Beginner" },
+  detective: { tag: "Mystery Noir",    quote: '"The algorithm was stolen. Only you can crack the case."', bonus: "2.5×", difficulty: "Advanced" },
+};
 
+// ─── Persona extended metadata ───────────────────────────────────────────────
+const PERSONA_META = {
+  scientist: { archetype: "Evidence-based Thinker", perk: "Unlock bonus XP when your explanation includes data and causes.", quote: '"Hypothesize. Test. Conclude."' },
+  detective: { archetype: "Deductive Reasoner",     perk: "Chapter unlock requires elimination-style deduction keywords.",  quote: '"Every clue leads somewhere."' },
+  wizard:    { archetype: "Analogical Thinker",      perk: "Metaphors and analogies satisfy explanation checks creatively.", quote: '"Ancient wisdom speaks through you."' },
+  warrior:   { archetype: "Speed Champion",          perk: "Answers under 30s earn style points with direct language.",     quote: '"No hesitation. Strike fast."' },
+  sage:      { archetype: "Patient Teacher",         perk: "Simple beginner-friendly language earns full explanation XP.",  quote: '"True wisdom is teaching others."' },
+};
+
+// ─── Logout confirmation modal ────────────────────────────────────────────────
+function LogoutModal({ onConfirm, onCancel }) {
+  const confirmRef = useRef(null);
+  useEffect(() => { confirmRef.current?.focus(); }, []);
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("ql_mistakes") ?? "[]");
-    setMistakeCount(saved.length);
-    setAttemptCount(loadAttempts().length);
-    setProfile(loadProfile());
-    setStreak(loadStreak());
-  }, []);
+    const handler = (e) => { if (e.key === "Escape") onCancel(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onCancel]);
+  return (
+    <div className="ql-modal-backdrop" role="dialog" aria-modal="true" aria-label="Confirm logout" onClick={onCancel}>
+      <div className="ql-modal-box" onClick={(e) => e.stopPropagation()}>
+        <h3 className="ql-modal-title">Sign Out?</h3>
+        <p className="ql-modal-body">Your progress is saved locally. You can return any time.</p>
+        <div className="ql-modal-actions">
+          <button className="ql-modal-confirm" ref={confirmRef} onClick={onConfirm}>Yes, Sign Out</button>
+          <button className="ql-modal-cancel" onClick={onCancel}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  const handleStart = () => {
-    navigate(`/mission?theme=${selectedTheme}&persona=${selectedPersona}`);
-  };
-
-  // Derive live XP bar values from profile
-  const maxXp = 450; // roughly 1.5× the highest stage xpRequired (300)
-  const totalXp = profile?.totalXp ?? 0;
-  const xpPct = Math.min(Math.round((totalXp / maxXp) * 100), 100);
-
-  // Derive current stage label
-  const currentStage =
-    STAGES.find((s) => s.id === (profile?.currentStageId ?? "beginner")) ?? STAGES[0];
-
-  // Streak state derived from loaded streak
-  const streakState = streak ? computeStreakState(streak) : null;
-  const currentStreakCount = streak?.currentStreak ?? 0;
-  const isAtRisk = streakState?.state === "at-risk";
+// ─── Stage detail modal ───────────────────────────────────────────────────────
+function StageModal({ stage, meta, stageIndex, isUnlocked, isCompleted, selectedPersona, onClose, onStart }) {
+  const persona = PERSONAS.find((p) => p.id === selectedPersona) ?? PERSONAS[0];
+  const closeRef = useRef(null);
+  useEffect(() => { closeRef.current?.focus(); }, []);
+  useEffect(() => {
+    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
 
   return (
-    <PageTransition className="ql-home">
-
-      {/* ═══════════════════════════════ HERO SECTION ══════════════════════════ */}
-      <section className="hero">
-        {/* CSS-only animated background */}
-        <div className="hero-bg" aria-hidden="true">
-          <div className="orb orb-1" />
-          <div className="orb orb-2" />
-          <div className="orb orb-3" />
-          <div className="hero-grid" />
-        </div>
-
-        <div className="hero-content">
-          {/* ── Left column ──────────────────────────────── */}
-          <div className="hero-left">
-            <div className="hero-eyebrow">⚔️ Cyber Quest</div>
-
-            <h1 className="hero-title">
-              Turn Every Lesson Into Your<br />
-              <span className="hero-title-accent">Next Quest</span>
-            </h1>
-
-            <p className="hero-sub">
-              Complete missions, earn coins and XP, protect your daily streak,
-              and learn from every mistake — one quest at a time.
-            </p>
-
-            {/* Streak at-risk banner */}
-            {isAtRisk && (
-              <div className="hero-risk-banner">
-                ⚠️ Your streak is at risk —{" "}
-                <button onClick={() => navigate("/streak")}>Save it now</button>
-              </div>
-            )}
-
-            {/* Theme selector */}
-            <div className="hero-theme-row">
-              <span className="hero-theme-label">Choose theme:</span>
-              <div className="hero-theme-chips">
-                {THEMES.map((theme) => (
-                  <button
-                    key={theme.id}
-                    className={`theme-chip ${selectedTheme === theme.id ? "theme-chip--active" : ""}`}
-                    style={
-                      selectedTheme === theme.id
-                        ? { borderColor: theme.accent, color: theme.accent }
-                        : {}
-                    }
-                    onClick={() => setSelectedTheme(theme.id)}
-                  >
-                    {theme.emoji} {theme.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Persona selector */}
-            <div className="hero-theme-row">
-              <span className="hero-theme-label">Choose your persona:</span>
-              <div className="hero-persona-grid">
-                {PERSONAS.map((persona) => {
-                  const active = selectedPersona === persona.id;
-                  return (
-                    <button
-                      key={persona.id}
-                      className={`persona-card ${active ? "persona-card--active" : ""}`}
-                      style={active ? { borderColor: persona.accent, boxShadow: `0 0 14px ${persona.accentDim}` } : {}}
-                      onClick={() => setSelectedPersona(persona.id)}
-                    >
-                      <span className="persona-card-emoji">{persona.emoji}</span>
-                      <span className="persona-card-name" style={active ? { color: persona.accent } : {}}>{persona.name}</span>
-                      <span className="persona-card-tag">{persona.tagline}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Primary CTAs */}
-            <div className="hero-cta-row">
-              <button className="btn-hero-primary" onClick={handleStart}>
-                ⚡ Start Your Quest
-              </button>
-              <a className="btn-hero-secondary" href="#features">
-                Explore Features
-              </a>
-            </div>
-
-            {/* Three stat chips */}
-            <div className="hero-stat-chips">
-              <div className="hero-stat-chip">
-                <span className="hero-stat-num">5</span>
-                <span>Learning Stages</span>
-              </div>
-              <div className="hero-stat-chip">
-                <span className="hero-stat-num">30</span>
-                <span>Player Leagues</span>
-              </div>
-              <div className="hero-stat-chip">
-                <span className="hero-stat-num">🔥</span>
-                <span>Daily Streaks</span>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Right column: mock game panel ──────────── */}
-          <div className="hero-right">
-            <div className="mock-panel">
-              <div className="mock-panel-header">
-                <div className="mock-avatar">🧑‍💻</div>
-                <div>
-                  <p className="mock-name">Explorer</p>
-                  <p className="mock-stage">
-                    {currentStage.emoji} {currentStage.name}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mock-xp-row">
-                <span>XP</span>
-                <div className="mock-xp-bar">
-                  <div className="mock-xp-fill" style={{ width: `${xpPct}%` }} />
-                </div>
-                <span>
-                  {totalXp}/{maxXp}
-                </span>
-              </div>
-
-              <div className="mock-chips">
-                <div className="mock-chip mock-chip--gold">
-                  🪙 {profile?.totalCoins ?? 0} coins
-                </div>
-                <div className="mock-chip mock-chip--orange">
-                  🔥 {currentStreakCount} day streak
-                </div>
-              </div>
-
-              <div className="mock-next-mission">
-                <p className="mock-next-label">Next Mission</p>
-                <p className="mock-next-title">
-                  {currentStage.emoji} {currentStage.name}
-                </p>
-                <button className="mock-next-btn" onClick={handleStart}>
-                  {PERSONAS.find((p) => p.id === selectedPersona)?.emoji} Continue as {PERSONAS.find((p) => p.id === selectedPersona)?.name}
-                </button>
-              </div>
-            </div>
+    <div className="ql-modal-backdrop" role="dialog" aria-modal="true" aria-label={`${stage.name} stage detail`} onClick={onClose}>
+      <div className="ql-modal-box ql-modal-box--stage" onClick={(e) => e.stopPropagation()}>
+        <button className="ql-modal-close" ref={closeRef} onClick={onClose} aria-label="Close">✕</button>
+        <div className="ql-stage-modal-header" style={{ borderColor: stage.color }}>
+          <span className="ql-stage-modal-emoji" style={{ color: stage.color }}>
+            {isCompleted ? "✅" : isUnlocked ? stage.emoji : "🔒"}
+          </span>
+          <div>
+            <h3 className="ql-stage-modal-title" style={{ color: stage.color }}>
+              Stage {stageIndex + 1} — {stage.name}
+            </h3>
+            <span className="ql-stage-modal-diff">{meta.difficulty}</span>
           </div>
         </div>
-      </section>
+        <p className="ql-stage-modal-desc">{meta.desc}</p>
+        <div className="ql-stage-modal-stats">
+          <div className="ql-stage-modal-stat">
+            <span className="ql-stage-modal-stat-val">{meta.xp}</span>
+            <span className="ql-stage-modal-stat-lbl">XP Reward</span>
+          </div>
+          <div className="ql-stage-modal-stat">
+            <span className="ql-stage-modal-stat-val">{meta.questions}</span>
+            <span className="ql-stage-modal-stat-lbl">Questions</span>
+          </div>
+          <div className="ql-stage-modal-stat">
+            <span className="ql-stage-modal-stat-val">~{meta.minutes}m</span>
+            <span className="ql-stage-modal-stat-lbl">Est. Time</span>
+          </div>
+        </div>
+        <div className="ql-stage-modal-persona">
+          <span>{persona.emoji} Playing as <strong>{persona.name}</strong></span>
+          <span className="ql-stage-modal-perk">{PERSONA_META[persona.id]?.perk}</span>
+        </div>
+        {isUnlocked && !isCompleted && (
+          <button className="ql-stage-modal-start primary" onClick={onStart}>
+            ▶ Start Stage Quiz
+          </button>
+        )}
+        {isCompleted && (
+          <button className="ql-stage-modal-start secondary" onClick={onStart}>
+            🔁 Replay Stage
+          </button>
+        )}
+        {!isUnlocked && (
+          <p className="ql-stage-modal-locked">🔒 Complete the previous stage to unlock.</p>
+        )}
+      </div>
+    </div>
+  );
+}
 
-      {/* ═══════════════════════════════ FEATURE SECTION ═══════════════════════ */}
-      <section className="features" id="features">
-        <h2 className="features-title">Everything You Need to Master Code</h2>
-        <div className="features-grid">
-          {FEATURES.map((f) => (
-            <div className="feature-card" key={f.title}>
+// ═════════════════════════════════════════════════════════════════════════════
+// HomePage Component
+// ═════════════════════════════════════════════════════════════════════════════
+function HomePage() {
+  const navigate = useNavigate();
+
+  // ── Data state ─────────────────────────────────────────────────────────────
+  const [profile, setProfile] = useState(null);
+  const [streak, setStreak] = useState(null);
+  const [attempts, setAttempts] = useState([]);
+  const [dc, setDc] = useState(null);
+
+  // ── UI state ───────────────────────────────────────────────────────────────
+  const [selectedTheme, setSelectedTheme] = useState(() => {
+    return localStorage.getItem("ql_selected_theme") ?? THEMES[0].id;
+  });
+  const [selectedPersona, setSelectedPersona] = useState(() => {
+    return localStorage.getItem("ql_selected_persona") ?? PERSONAS[0].id;
+  });
+  const [mode, setMode] = useState("story"); // "story" | "persona"
+  const [soundOn, setSoundOn] = useState(() => {
+    return localStorage.getItem("ql_sound") !== "off";
+  });
+  const [showLogout, setShowLogout] = useState(false);
+  const [activeStageModal, setActiveStageModal] = useState(null); // stage index or null
+
+  // ── Load data on mount ─────────────────────────────────────────────────────
+  useEffect(() => {
+    setProfile(loadProfile());
+    setStreak(loadStreak());
+    setAttempts(loadAttempts());
+    setDc(loadDailyChallenge());
+  }, []);
+
+  // ── Persist theme/persona selections ──────────────────────────────────────
+  const handleThemeSelect = (id) => {
+    setSelectedTheme(id);
+    localStorage.setItem("ql_selected_theme", id);
+  };
+  const handlePersonaSelect = (id) => {
+    setSelectedPersona(id);
+    localStorage.setItem("ql_selected_persona", id);
+  };
+  const handleSoundToggle = () => {
+    const next = !soundOn;
+    setSoundOn(next);
+    localStorage.setItem("ql_sound", next ? "on" : "off");
+  };
+
+  // ── Derived values ─────────────────────────────────────────────────────────
+  const totalXp = profile?.totalXp ?? 0;
+  const maxXp = 450;
+  const xpPct = Math.min(Math.round((totalXp / maxXp) * 100), 100);
+  const currentStreakCount = streak?.currentStreak ?? 0;
+  const streakState = streak ? computeStreakState(streak) : null;
+  const isAtRisk = streakState?.state === "at-risk";
+  const mistakeCount = JSON.parse(localStorage.getItem("ql_mistakes") ?? "[]").length;
+  const dcDoneToday = dc ? hasDoneToday(dc) : false;
+  const playerRank = attempts.length ? computePlayerRank(attempts) : null;
+  const todayCount = countTodayAttempts(attempts);
+  const dailyGoal = 5;
+  const dailyPct = Math.min(Math.round((todayCount / dailyGoal) * 100), 100);
+
+  const currentStageId = profile?.currentStageId ?? "beginner";
+  const completedIds = profile?.completedStageIds ?? [];
+  const currentStageIndex = STAGES.findIndex((s) => s.id === currentStageId);
+
+  const activeTheme = THEMES.find((t) => t.id === selectedTheme) ?? THEMES[0];
+  const activePersona = PERSONAS.find((p) => p.id === selectedPersona) ?? PERSONAS[0];
+
+  function isStageUnlocked(stage) {
+    if (stage.unlockAfter === null) return true;
+    return completedIds.includes(stage.unlockAfter);
+  }
+  function isStageCompleted(stage) {
+    return completedIds.includes(stage.id);
+  }
+
+  const handleStartQuest = () => {
+    // Pass stageId so /api/question?stageId= uses the correct question pool
+    navigate(`/mission?theme=${selectedTheme}&persona=${selectedPersona}&stageId=${currentStageId}`);
+  };
+
+  const handleStageClick = (idx) => {
+    setActiveStageModal(idx);
+  };
+
+  const handleStartStage = (stage) => {
+    // Pass all three params: stageId for question pool, persona for explanation style, theme for narrative
+    navigate(`/mission?stageId=${stage.id}&persona=${selectedPersona}&theme=${selectedTheme}`);
+    setActiveStageModal(null);
+  };
+
+  const handleLogoutConfirm = () => {
+    setShowLogout(false);
+    navigate("/");
+  };
+
+  // ── Daily target motivational message ─────────────────────────────────────
+  const dailyMotivation =
+    todayCount === 0 ? "Start your first quest today!" :
+    todayCount < 2   ? "Good start — keep going!" :
+    todayCount < dailyGoal ? "More than halfway there! 🔥" :
+    "Daily goal reached! 🏆 Outstanding!";
+
+  // ─────────────────────────────────────────────────────────────────────────
+  return (
+    <PageTransition className="ql-dashboard">
+
+      {/* ══════════════════════════════ LEFT COLUMN ═══════════════════════════ */}
+      <main className="ql-arena" aria-label="Main game arena">
+
+        {/* ── Hero Header — brand row + hero text ──────────────────────────── */}
+        <div className="ql-hero-header">
+          {/* Brand + stats row */}
+          <div className="ql-hero-brand-row">
+            <div className="ql-hero-brand">
+              <span className="ql-hero-brand-icon" aria-hidden="true">⚔️</span>
+              <span className="ql-hero-brand-name">QuestLearn</span>
+            </div>
+            <div className="ql-hero-stat-pills">
+              {/* Streak */}
               <div
-                className="feature-card-icon"
-                style={{ background: `${f.color}22`, border: `1px solid ${f.color}44` }}
+                className="ql-hero-stat-pill ql-hero-stat-pill--fire"
+                title={isAtRisk ? "⚠️ Streak at risk! Complete a quest today to save it." : `${currentStreakCount}-day streak active.`}
               >
-                <span style={{ fontSize: "1.6rem" }}>{f.emoji}</span>
+                <span aria-hidden="true">🔥</span>
+                <span className="ql-hero-stat-val">{currentStreakCount}</span>
+                <span className="ql-hero-stat-lbl">streak</span>
               </div>
-              <h3 className="feature-card-title">{f.title}</h3>
-              <p className="feature-card-desc">{f.description}</p>
+              {/* XP */}
+              <div
+                className="ql-hero-stat-pill ql-hero-stat-pill--xp"
+                title={`${totalXp} XP earned. Next milestone: ${maxXp} XP.`}
+              >
+                <span aria-hidden="true">⚡</span>
+                <span className="ql-hero-stat-val">{totalXp.toLocaleString()}</span>
+                <span className="ql-hero-stat-lbl">XP</span>
+              </div>
+              {/* Sound toggle — local UI preference only */}
+              <button
+                className={`ql-sound-btn ${soundOn ? "" : "ql-sound-btn--off"}`}
+                onClick={handleSoundToggle}
+                aria-label={soundOn ? "Mute sound" : "Unmute sound"}
+                title="Sound — local UI preference only"
+              >
+                {soundOn ? "🔊" : "🔇"}
+              </button>
             </div>
-          ))}
+          </div>
+
+          {/* Hero heading + description */}
+          <h1 className="ql-hero-heading">
+            Turn Every Lesson Into Your{" "}
+            <span className="ql-hero-accent">Next Quest</span>
+          </h1>
+          <p className="ql-hero-desc">
+            Complete missions, earn XP, protect your daily streak, and learn from every mistake — one quest at a time.
+          </p>
         </div>
-      </section>
 
-      {/* ═══════════════════════════════ CTA SECTION ═══════════════════════════ */}
-      <section className="home-cta">
-        <h2 className="home-cta-title">Ready to level up your learning?</h2>
-        <button className="btn-hero-primary" onClick={handleStart}>
-          ⚡ Start Your Quest
-        </button>
-      </section>
+        {/* ── Active Track bar ─────────────────────────────────────────────── */}
+        <div className="ql-track-bar">
+          <div className="ql-track-info">
+            <span className="ql-track-icon" aria-hidden="true">📘</span>
+            <div className="ql-track-text">
+              <span className="ql-track-label">Active Track</span>
+              <span className="ql-track-name">JavaScript Fundamentals</span>
+            </div>
+            <span className="ql-track-progress-text">
+              {completedIds.length}/{STAGES.length} stages
+            </span>
+          </div>
+          <div className="ql-track-bar-wrap" role="progressbar" aria-valuenow={completedIds.length} aria-valuemax={STAGES.length} aria-label="Track progress">
+            <div className="ql-track-bar-fill" style={{ width: `${Math.round((completedIds.length / STAGES.length) * 100)}%` }} />
+          </div>
+          <button className="ql-track-switch secondary" onClick={() => navigate("/topics")} aria-label="Switch topic or explore curriculum">
+            Switch Topic ▾
+          </button>
+        </div>
 
-      {/* ═══════════════════════════════ FOOTER ════════════════════════════════ */}
-      <footer className="home-footer">
-        <p className="footer-copy">QuestLearn — Learn. Play. Level Up. © 2025</p>
-      </footer>
+        {/* ── Mode Switcher ─────────────────────────────────────────────────── */}
+        <div className="ql-mode-switcher" role="tablist" aria-label="Homepage display mode">
+          <button
+            className={`ql-mode-tab ${mode === "story" ? "ql-mode-tab--active" : ""}`}
+            role="tab"
+            aria-selected={mode === "story"}
+            onClick={() => setMode("story")}
+          >
+            📖 Story Mission
+          </button>
+          <button
+            className={`ql-mode-tab ${mode === "persona" ? "ql-mode-tab--active" : ""}`}
+            role="tab"
+            aria-selected={mode === "persona"}
+            onClick={() => setMode("persona")}
+          >
+            🎭 Choose Persona
+          </button>
+        </div>
+
+        {/* Active selection summary pills */}
+        <div className="ql-selection-pills">
+          <span className="ql-sel-pill ql-sel-pill--theme">
+            {activeTheme.emoji} {activeTheme.name}
+          </span>
+          <span className="ql-sel-pill ql-sel-pill--persona">
+            {activePersona.emoji} {activePersona.name}
+          </span>
+          <button className="ql-sel-start primary" onClick={handleStartQuest}>
+            ⚡ Start Quest
+          </button>
+        </div>
+
+        {/* ══ Story Mission Mode ══════════════════════════════════════════════ */}
+        {mode === "story" && (
+          <div className="ql-story-grid" role="tabpanel" aria-label="Story mission selection">
+            {THEMES.map((theme) => {
+              const meta = THEME_META[theme.id];
+              const isActive = selectedTheme === theme.id;
+              return (
+                <button
+                  key={theme.id}
+                  className={`ql-story-card ${isActive ? "ql-story-card--active" : ""}`}
+                  style={isActive ? { borderColor: theme.accent, boxShadow: `0 0 20px ${theme.accentDim}` } : {}}
+                  onClick={() => handleThemeSelect(theme.id)}
+                  aria-pressed={isActive}
+                  aria-label={`${theme.name} story theme`}
+                >
+                  {isActive && <span className="ql-story-card-active-badge" aria-label="Currently selected">✓ Selected</span>}
+                  <div className="ql-story-card-top">
+                    <span className="ql-story-card-icon" style={{ color: theme.accent }} aria-hidden="true">{theme.emoji}</span>
+                    <span className="ql-story-card-tag">{meta.tag}</span>
+                  </div>
+                  <h3 className="ql-story-card-title" style={{ color: isActive ? theme.accent : undefined }}>{theme.name}</h3>
+                  <p className="ql-story-card-quote">{meta.quote}</p>
+                  <p className="ql-story-card-desc">{theme.story.slice(0, 90)}…</p>
+                  <div className="ql-story-card-footer">
+                    <span className="ql-story-card-diff">{meta.difficulty}</span>
+                    <span className="ql-story-card-bonus" style={{ color: theme.accent }}>{meta.bonus} XP Bonus</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ══ Persona Mode ════════════════════════════════════════════════════ */}
+        {mode === "persona" && (
+          <div className="ql-persona-grid" role="tabpanel" aria-label="Persona selection">
+            {PERSONAS.map((persona) => {
+              const meta = PERSONA_META[persona.id];
+              const isActive = selectedPersona === persona.id;
+              return (
+                <button
+                  key={persona.id}
+                  className={`ql-persona-card ${isActive ? "ql-persona-card--active" : ""}`}
+                  style={isActive ? { borderColor: persona.accent, boxShadow: `0 0 18px ${persona.accentDim}` } : {}}
+                  onClick={() => handlePersonaSelect(persona.id)}
+                  aria-pressed={isActive}
+                  aria-label={`${persona.name} persona`}
+                >
+                  {isActive && <span className="ql-persona-card-active-badge" aria-label="Currently selected">✓</span>}
+                  <div className="ql-persona-card-avatar" style={{ background: `${persona.accentDim}`, borderColor: isActive ? persona.accent : "transparent" }} aria-hidden="true">
+                    {persona.emoji}
+                  </div>
+                  <span className="ql-persona-card-trait" style={{ color: persona.accent }}>{persona.tagline.split(".")[0]}</span>
+                  <h3 className="ql-persona-card-name" style={{ color: isActive ? persona.accent : undefined }}>{persona.name}</h3>
+                  <span className="ql-persona-card-archetype">{meta.archetype}</span>
+                  <p className="ql-persona-card-quote"><em>{meta.quote}</em></p>
+                  <div className="ql-persona-card-perk">
+                    <span className="ql-persona-card-perk-label">Style Perk</span>
+                    <p className="ql-persona-card-perk-text">{meta.perk}</p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ── Quest Map ─────────────────────────────────────────────────────── */}
+        <div className="ql-quest-map" aria-label="Quest milestones">
+          <div className="ql-quest-map-header">
+            <h2 className="ql-quest-map-title">🗺️ Quest Milestones</h2>
+            <div className="ql-quest-map-legend" aria-label="Legend">
+              <span className="ql-legend-item ql-legend-item--done">✓ Cleared</span>
+              <span className="ql-legend-item ql-legend-item--current">▶ Current</span>
+              <span className="ql-legend-item ql-legend-item--locked">🔒 Locked</span>
+            </div>
+          </div>
+
+          <div className="ql-quest-path">
+            {STAGES.map((stage, idx) => {
+              const unlocked = isStageUnlocked(stage);
+              const completed = isStageCompleted(stage);
+              const isCurrent = stage.id === currentStageId && !completed;
+              const meta = STAGE_META[idx];
+
+              let stateClass = "";
+              if (completed) stateClass = "ql-stage-node--completed";
+              else if (isCurrent) stateClass = "ql-stage-node--current";
+              else if (!unlocked) stateClass = "ql-stage-node--locked";
+
+              return (
+                <div key={stage.id} className="ql-stage-row">
+                  {/* Connector line */}
+                  {idx > 0 && (
+                    <div
+                      className={`ql-stage-connector ${completed || (idx <= (currentStageIndex >= 0 ? currentStageIndex : 0)) ? "ql-stage-connector--active" : ""}`}
+                      aria-hidden="true"
+                    />
+                  )}
+
+                  <button
+                    className={`ql-stage-node ${stateClass}`}
+                    style={
+                      completed ? { borderColor: stage.color, background: `${stage.color}22` } :
+                      isCurrent ? { borderColor: stage.color, background: `${stage.dimColor}` } :
+                      {}
+                    }
+                    onClick={() => handleStageClick(idx)}
+                    aria-label={`Stage ${idx + 1}: ${stage.name}. ${completed ? "Completed." : isCurrent ? "Current stage." : unlocked ? "Unlocked." : "Locked."}`}
+                  >
+                    <div className="ql-stage-node-left">
+                      <div className="ql-stage-node-dot" style={completed || isCurrent ? { background: stage.color } : {}}>
+                        {completed ? "✓" : isCurrent ? <span className="ql-stage-play-badge">▶</span> : unlocked ? stage.emoji : "🔒"}
+                      </div>
+                      <div className="ql-stage-node-info">
+                        <span className="ql-stage-node-num">Stage {idx + 1}</span>
+                        <span className="ql-stage-node-name" style={unlocked ? { color: stage.color } : {}}>
+                          {stage.name}
+                          {stage.bossBonus && <span className="ql-stage-boss-badge" aria-label="Boss level">💀 BOSS</span>}
+                        </span>
+                        <span className="ql-stage-node-desc">{meta.desc.slice(0, 55)}…</span>
+                      </div>
+                    </div>
+                    <div className="ql-stage-node-right">
+                      <span className="ql-stage-xp-pill" style={{ color: stage.color, borderColor: `${stage.color}55` }}>
+                        +{meta.xp} XP
+                      </span>
+                      <span className={`ql-stage-action ${completed ? "ql-stage-action--done" : isCurrent ? "ql-stage-action--play" : !unlocked ? "ql-stage-action--locked" : ""}`}>
+                        {completed ? "✓ Review" : isCurrent ? "▶ Play" : !unlocked ? "🔒 Locked" : "▶ Start"}
+                      </span>
+                    </div>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="ql-quest-map-footer">
+            <button className="secondary ql-quest-full-map" onClick={() => navigate("/stages")}>
+              🗺️ Open Full Stage Map →
+            </button>
+          </div>
+        </div>
+      </main>
+
+      {/* ══════════════════════════════ RIGHT COLUMN — SIDEBAR ════════════════ */}
+      <aside className="ql-sidebar" aria-label="Profile and navigation">
+
+        {/* ── User Profile Card ─────────────────────────────────────────────── */}
+        <div className="ql-profile-card">
+          <div className="ql-profile-top">
+            <div className="ql-profile-avatar-wrap">
+              {/* No auth system — polished fallback avatar. Placeholder. */}
+              <div className="ql-profile-avatar" aria-label="User avatar">🧑‍💻</div>
+              <span className="ql-online-dot" title="Online" aria-label="Online" />
+            </div>
+            <div className="ql-profile-info">
+              <p className="ql-profile-name">Explorer {/* Placeholder: no auth user name */}</p>
+              <p className="ql-profile-username">@player {/* Placeholder: no auth username */}</p>
+            </div>
+          </div>
+          <div className="ql-profile-rank-row">
+            <span className="ql-profile-stage-badge">
+              {STAGES.find((s) => s.id === currentStageId)?.emoji ?? "🌱"}{" "}
+              {STAGES.find((s) => s.id === currentStageId)?.name ?? "Beginner"}
+            </span>
+            <span className="ql-profile-league-badge">Quest League A</span>
+          </div>
+          {/* XP bar */}
+          <div className="ql-profile-xp-row">
+            <span className="ql-profile-xp-label">XP</span>
+            <div className="ql-profile-xp-bar" role="progressbar" aria-valuenow={xpPct} aria-valuemax={100} aria-label={`${totalXp} of ${maxXp} XP`}>
+              <div className="ql-profile-xp-fill" style={{ width: `${xpPct}%` }} />
+            </div>
+            <span className="ql-profile-xp-val">{totalXp}/{maxXp}</span>
+          </div>
+          <div className="ql-profile-coins">
+            🪙 {(profile?.totalCoins ?? 0).toLocaleString()} coins
+          </div>
+        </div>
+
+        {/* ── Vertical Navigation ───────────────────────────────────────────── */}
+        <nav className="ql-sidenav" aria-label="Quick navigation">
+          <button
+            className="ql-sidenav-item ql-sidenav-item--active"
+            onClick={() => navigate("/")}
+            aria-current="page"
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">🏠</span>
+            <span className="ql-sidenav-label">Dashboard</span>
+          </button>
+
+          <button
+            className="ql-sidenav-item"
+            onClick={() => navigate("/leaderboard")}
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">🏆</span>
+            <span className="ql-sidenav-label">Leaderboard</span>
+            {playerRank && (
+              <span className="ql-sidenav-badge" aria-label={`Your rank: #${playerRank}`}>
+                #{playerRank}
+              </span>
+            )}
+          </button>
+
+          <button
+            className="ql-sidenav-item"
+            onClick={() => navigate("/museum")}
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">🏛️</span>
+            <span className="ql-sidenav-label">Mistake Museum</span>
+            {mistakeCount > 0 && (
+              <span className="ql-sidenav-badge ql-sidenav-badge--warn" aria-label={`${mistakeCount} mistakes to review`}>
+                {mistakeCount}
+              </span>
+            )}
+          </button>
+
+          <button
+            className="ql-sidenav-item"
+            onClick={() => navigate("/daily-challenge")}
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">🌟</span>
+            <span className="ql-sidenav-label">Daily Challenge</span>
+            <span className={`ql-sidenav-badge ${dcDoneToday ? "ql-sidenav-badge--done" : "ql-sidenav-badge--live"}`} aria-label={dcDoneToday ? "Completed today" : "Available now"}>
+              {dcDoneToday ? "✓ Done" : "Live"}
+            </span>
+          </button>
+
+          <button
+            className="ql-sidenav-item"
+            onClick={() => navigate("/topics")}
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">📚</span>
+            <span className="ql-sidenav-label">Topics</span>
+          </button>
+
+          <button
+            className="ql-sidenav-item"
+            onClick={() => navigate("/stages")}
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">🗺️</span>
+            <span className="ql-sidenav-label">Stage Map</span>
+          </button>
+
+          <button
+            className="ql-sidenav-item"
+            onClick={() => navigate("/streak")}
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">🔥</span>
+            <span className="ql-sidenav-label">Streak Calendar</span>
+            {isAtRisk && (
+              <span className="ql-sidenav-badge ql-sidenav-badge--risk" aria-label="Streak at risk">⚠️</span>
+            )}
+          </button>
+
+          <button
+            className="ql-sidenav-item"
+            onClick={() => navigate("/dashboard")}
+          >
+            <span className="ql-sidenav-icon" aria-hidden="true">📊</span>
+            <span className="ql-sidenav-label">Progress</span>
+          </button>
+        </nav>
+
+        {/* ── Daily Target Widget ───────────────────────────────────────────── */}
+        <div className="ql-daily-target">
+          <div className="ql-daily-target-header">
+            <span className="ql-daily-target-title">🎯 Daily Target</span>
+            <span className="ql-daily-target-count">{todayCount}/{dailyGoal} Quests</span>
+          </div>
+          <div
+            className="ql-daily-target-bar"
+            role="progressbar"
+            aria-valuenow={todayCount}
+            aria-valuemax={dailyGoal}
+            aria-label={`${todayCount} of ${dailyGoal} quests completed today`}
+          >
+            <div
+              className={`ql-daily-target-fill ${dailyPct >= 100 ? "ql-daily-target-fill--done" : ""}`}
+              style={{ width: `${dailyPct}%` }}
+            />
+          </div>
+          <p className="ql-daily-motivation">{dailyMotivation}</p>
+        </div>
+
+        {/* ── Streak at-risk banner ─────────────────────────────────────────── */}
+        {isAtRisk && (
+          <div className="ql-streak-risk-banner" role="alert">
+            <span>⚠️ Streak at risk!</span>
+            <button className="primary" onClick={() => navigate("/streak")}>
+              🛡️ Save It
+            </button>
+          </div>
+        )}
+
+        {/* ── Logout — anchored at bottom (no auth system: navigates to /) ─── */}
+        <div className="ql-sidebar-footer">
+          <button
+            className="ql-logout-btn"
+            onClick={() => setShowLogout(true)}
+            aria-label="Sign out (navigates to home — no backend auth)"
+          >
+            <span aria-hidden="true">🚪</span> Sign Out
+          </button>
+        </div>
+      </aside>
+
+      {/* ══ Stage detail modal ═════════════════════════════════════════════════ */}
+      {activeStageModal !== null && (
+        <StageModal
+          stage={STAGES[activeStageModal]}
+          meta={STAGE_META[activeStageModal]}
+          stageIndex={activeStageModal}
+          isUnlocked={isStageUnlocked(STAGES[activeStageModal])}
+          isCompleted={isStageCompleted(STAGES[activeStageModal])}
+          selectedPersona={selectedPersona}
+          onClose={() => setActiveStageModal(null)}
+          onStart={() => handleStartStage(STAGES[activeStageModal])}
+        />
+      )}
+
+      {/* ══ Logout confirmation modal ══════════════════════════════════════════ */}
+      {showLogout && (
+        <LogoutModal
+          onConfirm={handleLogoutConfirm}
+          onCancel={() => setShowLogout(false)}
+        />
+      )}
     </PageTransition>
   );
 }

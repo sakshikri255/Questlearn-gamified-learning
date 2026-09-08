@@ -671,6 +671,40 @@
   font-size: 1rem;
 }
 
+/* ── Party popper ────────────────────────────────────────── */
+.party-popper {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.party-piece {
+  position: absolute;
+  top: -12%;
+  width: 12px;
+  height: 18px;
+  border-radius: 4px;
+  opacity: 0;
+  animation: confetti-pop 1.8s ease-out forwards;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.18);
+}
+
+@keyframes confetti-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.7);
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--x), var(--y), 0) rotate(var(--r)) scale(1);
+  }
+}
+
 /* ── Result card ──────────────────────────────────────────── */
 .result-card {
   text-align: center;
