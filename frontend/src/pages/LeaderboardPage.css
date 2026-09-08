@@ -1,0 +1,223 @@
+/* ═══════════════════════════════════════════════════════════════
+   LeaderboardPage — Cyber Quest theme
+   ═══════════════════════════════════════════════════════════════ */
+
+.lb-wrapper {
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.lb-inner {
+  width: 100%;
+  max-width: 760px;
+}
+
+/* ── Page header ──────────────────────────────────────────── */
+.lb-header {
+  margin-bottom: 1.5rem;
+}
+
+.lb-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--gold);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.lb-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* ── Zone legend chips ────────────────────────────────────── */
+.lb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Zone pill ────────────────────────────────────────────── */
+.zone-pill {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.22rem 0.7rem;
+  letter-spacing: 0.03em;
+}
+
+.zone-pill--promoted {
+  background: rgba(20, 83, 45, 0.7);
+  color: #86efac;
+  border: 1px solid rgba(22, 101, 52, 0.8);
+}
+
+.zone-pill--neutral {
+  background: rgba(30, 41, 59, 0.7);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-solid);
+}
+
+.zone-pill--relegated {
+  background: rgba(69, 10, 10, 0.7);
+  color: #fca5a5;
+  border: 1px solid rgba(127, 29, 29, 0.8);
+}
+
+/* ── Table container ──────────────────────────────────────── */
+.lb-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: rgba(8, 17, 32, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin-bottom: 1.75rem;
+}
+
+.lb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.lb-table thead tr {
+  background: rgba(30, 41, 59, 0.8);
+  border-bottom: 1px solid var(--border);
+}
+
+.lb-table th {
+  padding: 0.7rem 0.9rem;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.lb-table td {
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.lb-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.lb-table tbody tr {
+  background: rgba(8, 17, 32, 0.3);
+  transition: background-color var(--transition);
+}
+
+.lb-table tbody tr:hover {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+/* ── Row zone variants ────────────────────────────────────── */
+.lb-row--promoted td {
+  border-left: 3px solid #22c55e;
+  background: rgba(11, 31, 18, 0.6) !important;
+}
+
+.lb-row--relegated td {
+  border-left: 3px solid #ef4444;
+  background: rgba(31, 11, 11, 0.6) !important;
+}
+
+/* Player row always stands out */
+.lb-row--player td {
+  border-left: 3px solid var(--cyan) !important;
+  background: rgba(8, 42, 60, 0.6) !important;
+}
+
+/* ── Column-specific styles ───────────────────────────────── */
+.lb-rank {
+  font-weight: 700;
+  font-size: 0.95rem;
+  width: 3rem;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.lb-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lb-you-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  background: var(--cyan);
+  color: #081120;
+  font-size: 0.62rem;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+}
+
+.lb-level {
+  color: var(--purple);
+  font-size: 0.82rem;
+}
+
+.lb-coins {
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+/* ── Simulate end-of-round row ────────────────────────────── */
+.lb-sim-row {
+  text-align: center;
+  padding-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Reuse global button.primary for the simulate button */
+.lb-sim-btn {
+  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+.lb-sim-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: var(--glow-indigo);
+  transform: translateY(-1px);
+}
+
+.lb-sim-btn:active {
+  transform: translateY(0);
+}
+
+.lb-sim-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.lb-sim-msg {
+  font-size: 0.9rem;
+  color: var(--green);
+  font-weight: 600;
+}

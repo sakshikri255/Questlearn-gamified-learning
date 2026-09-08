@@ -1,0 +1,444 @@
+/* ═══════════════════════════════════════════════════════════════
+   MissionPage — Cyber Quest theme
+   ═══════════════════════════════════════════════════════════════ */
+
+.mission-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 3rem 1rem;
+}
+
+/* ── Mission heading ─────────────────────────────────────── */
+.mission-heading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--purple);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+/* ── Question text (code block) ──────────────────────────── */
+.question-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: rgba(8, 17, 32, 0.85);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--cyan);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  white-space: pre-line;
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* ── Option buttons ──────────────────────────────────────── */
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-bottom: 1.75rem;
+}
+
+/* Base option style (global .option-btn in index.css) */
+/* This local rule overrides only what needs to differ on MissionPage */
+.options-list .option-btn {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+}
+
+.options-list .option-btn:hover:not(:disabled) {
+  border-color: var(--indigo);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.options-list .option-btn.selected {
+  border-color: var(--cyan);
+  background: rgba(34, 211, 238, 0.1);
+  color: #cffafe;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+}
+
+.options-list .option-btn.selected .option-id {
+  color: var(--cyan);
+}
+
+.option-id {
+  font-weight: 700;
+  min-width: 1.4rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ── Explanation textarea ─────────────────────────────────── */
+.explanation-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.01em;
+}
+
+.explanation-input {
+  width: 100%;
+  background: rgba(8, 17, 32, 0.85);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-family: inherit;
+  padding: 0.75rem 1rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.explanation-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+}
+
+.explanation-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ── Submit button ────────────────────────────────────────── */
+.submit-btn {
+  width: 100%;
+}
+
+/* ── Loading state ────────────────────────────────────────── */
+.loading-text {
+  text-align: center;
+  margin-top: 4rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+/* ── Result card ──────────────────────────────────────────── */
+.result-card {
+  text-align: center;
+}
+
+.result-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--purple);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.result-feedback {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.result-feedback.correct {
+  color: var(--green);
+}
+
+.result-feedback.incorrect {
+  color: var(--red);
+}
+
+.result-explanation {
+  background: rgba(8, 17, 32, 0.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.25rem;
+  text-align: left;
+  margin-bottom: 1.75rem;
+}
+
+.result-explanation h3 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.result-explanation p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-size: 0.93rem;
+}
+
+.result-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Story banner ─────────────────────────────────────────── */
+.story-header {
+  border: 1px solid;          /* colour set inline via theme.accent */
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.story-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.story-theme-label {
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-bottom: 0.5rem;
+}
+
+.story-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+
+/* ── Chapter progress bar ─────────────────────────────────── */
+.chapter-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.chapter-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.chapter-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--border-solid);
+  flex-shrink: 0;
+  z-index: 1;
+  transition: background-color var(--transition);
+}
+
+.chapter-line {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: var(--border-solid);
+}
+
+.chapter-label {
+  margin-top: 6px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.chapter-step--active .chapter-label {
+  font-weight: 600;
+}
+
+/* ── Hint box ────────────────────────────────────────────── */
+.hint-box {
+  background: rgba(20, 38, 26, 0.9);
+  border: 1px solid var(--green);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.hint-label {
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--green);
+  margin-bottom: 0.4rem;
+}
+
+.hint-text {
+  font-size: 0.9rem;
+  color: #bbf7d0;
+  line-height: 1.6;
+  margin-bottom: 0.9rem;
+}
+
+.hint-retry-btn {
+  width: 100%;
+  font-size: 0.92rem;
+  padding: 0.65rem 1.25rem;
+}
+
+/* ── Progress comparisons box ────────────────────────────── */
+.comparisons-box {
+  background: rgba(15, 35, 54, 0.9);
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.comparisons-label {
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--cyan);
+  margin-bottom: 0.6rem;
+}
+
+.comparisons-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.comparisons-item {
+  font-size: 0.9rem;
+  color: #bfdbfe;
+  line-height: 1.55;
+}
+
+.comparisons-dashboard-btn {
+  font-size: 0.88rem;
+  padding: 0.5rem 1.1rem;
+  width: 100%;
+}
+
+/* ── Reward breakdown panel ──────────────────────────────── */
+.reward-panel {
+  background: rgba(26, 31, 14, 0.9);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.reward-panel--zero {
+  background: rgba(31, 16, 16, 0.9);
+  border-color: var(--red);
+}
+
+.reward-panel-label {
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+}
+
+.reward-panel--zero .reward-panel-label {
+  color: var(--red);
+}
+
+.reward-breakdown-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.reward-breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+}
+
+.reward-breakdown-desc {
+  flex: 1;
+  color: var(--text-primary);
+}
+
+.reward-breakdown-coins {
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.reward-breakdown-xp {
+  font-weight: 700;
+  color: var(--purple);
+  white-space: nowrap;
+}
+
+.reward-totals {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(250, 204, 21, 0.2);
+}
+
+.reward-panel--zero .reward-totals {
+  border-top-color: rgba(248, 113, 113, 0.2);
+}
+
+.reward-total-coins {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.reward-total-xp {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--purple);
+}
+
+.reward-zero-msg {
+  font-size: 0.88rem;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .result-actions {
+    flex-direction: column;
+  }
+
+  .result-actions button {
+    width: 100%;
+  }
+}

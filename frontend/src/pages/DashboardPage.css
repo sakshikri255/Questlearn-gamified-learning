@@ -1,0 +1,626 @@
+/* ═══════════════════════════════════════════════════════════════
+   DashboardPage.css — Cyber Quest command-center layout
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Page wrapper ─────────────────────────────────────────────── */
+.dash-page {
+  min-height: 100vh;
+}
+
+/* ── Content area (accounts for NavBar height ~60px) ─────────── */
+.dash-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+/* ── Welcome Banner ──────────────────────────────────────────── */
+.dash-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(34,211,238,0.08) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.75rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dash-welcome-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.dash-welcome-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  letter-spacing: -0.02em;
+}
+
+.dash-welcome-name {
+  color: #22d3ee;
+}
+
+.dash-welcome-stage {
+  font-size: 0.88rem;
+  color: #94a3b8;
+}
+
+.dash-welcome-stats {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.dash-welcome-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.dash-welcome-stat--gold {
+  background: rgba(250, 204, 21, 0.1);
+  border-color: rgba(250, 204, 21, 0.3);
+  color: #fbbf24;
+}
+
+.dash-welcome-stat--cyan {
+  background: rgba(34, 211, 238, 0.1);
+  border-color: rgba(34, 211, 238, 0.3);
+  color: #22d3ee;
+}
+
+.dash-welcome-stat--orange {
+  background: rgba(251, 146, 60, 0.1);
+  border-color: rgba(251, 146, 60, 0.3);
+  color: #fb923c;
+}
+
+/* ── Primary row — 2-col grid ─────────────────────────────────── */
+.dash-primary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.dash-mission-card,
+.dash-league-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dash-card-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.dash-mission-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  letter-spacing: -0.01em;
+}
+
+.dash-mission-sub {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+.dash-league-rank {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #e2e8f0;
+}
+
+.dash-league-sub {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 0.25rem;
+}
+
+/* ── Secondary row — 2-col grid ───────────────────────────────── */
+.dash-secondary-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.dash-streak-card,
+.dash-museum-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dash-streak-card--risk {
+  border-color: rgba(217, 119, 6, 0.5) !important;
+  background: rgba(30, 16, 0, 0.7) !important;
+}
+
+.dash-streak-count {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #fb923c;
+  line-height: 1;
+}
+
+.dash-streak-risk-msg {
+  font-size: 0.85rem;
+  color: #fcd34d;
+  font-weight: 600;
+}
+
+.dash-museum-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #a78bfa;
+  margin-bottom: 0.25rem;
+}
+
+/* ── Stage Journey ────────────────────────────────────────────── */
+.dash-stage-journey {
+  margin-bottom: 2rem;
+}
+
+.dash-stages-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.85rem;
+}
+
+.dash-stage-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 60px;
+}
+
+.dash-stage-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: #e2e8f0;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.dash-stage-node.done .dash-stage-dot {
+  color: #081120;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.dash-stage-node.current .dash-stage-dot {
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.4);
+}
+
+.dash-stage-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dash-stage-node.done .dash-stage-name {
+  color: #94a3b8;
+}
+
+.dash-stage-node.current .dash-stage-name {
+  color: #22d3ee;
+}
+
+/* ── Page header (legacy, kept for existing content below) ──── */
+.dash-header {
+  margin-bottom: 2rem;
+}
+
+.dash-title {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #60a5fa;
+  margin-bottom: 0.35rem;
+}
+
+.dash-subtitle {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.dash-empty-card {
+  text-align: center;
+  max-width: 480px;
+  margin: 2rem auto 0;
+}
+
+.dash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.dash-empty-icon {
+  font-size: 3.5rem;
+  line-height: 1;
+}
+
+.dash-empty-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.dash-empty-sub {
+  font-size: 0.92rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Summary stat cards ──────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.1rem 0.75rem;
+  text-align: center;
+}
+
+/* Accent variant — accuracy card */
+.stat-card--accent {
+  border-color: #3b82f6;
+  background: rgba(15, 35, 54, 0.8);
+}
+
+/* Streak variant — only activated when streak ≥ 2 */
+.stat-card--streak {
+  border-color: #f97316;
+  background: rgba(26, 18, 8, 0.8);
+}
+
+.stat-value {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  margin-bottom: 0.25rem;
+  line-height: 1.1;
+}
+
+.stat-card--accent .stat-value {
+  color: #60a5fa;
+}
+
+.stat-card--streak .stat-value {
+  color: #fb923c;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #64748b;
+}
+
+/* Coins variant — gold */
+.stat-card--coins {
+  border-color: #ca8a04;
+  background: rgba(26, 18, 0, 0.8);
+}
+
+.stat-card--coins .stat-value {
+  color: #facc15;
+}
+
+/* XP variant — purple */
+.stat-card--xp {
+  border-color: #7c3aed;
+  background: rgba(19, 13, 43, 0.8);
+}
+
+.stat-card--xp .stat-value {
+  color: #a78bfa;
+}
+
+/* Daily Streak variant — green */
+.stat-card--streak-daily {
+  border-color: #16a34a;
+  background: rgba(11, 30, 18, 0.8);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.stat-card--streak-daily .stat-value {
+  color: #4ade80;
+}
+
+/* At-risk override — amber */
+.stat-card--streak-risk {
+  border-color: #d97706 !important;
+  background: rgba(26, 16, 0, 0.8) !important;
+}
+
+.stat-card--streak-risk .stat-value {
+  color: #fcd34d !important;
+}
+
+/* ── Streak calendar link ────────────────────────────────────── */
+.streak-dash-link-row {
+  margin-bottom: 1.75rem;
+}
+
+.streak-dash-link {
+  width: 100%;
+  background: none;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #fb923c;
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  text-align: left;
+}
+
+.streak-dash-link:hover {
+  border-color: #f97316;
+  color: #fdba74;
+}
+
+/* Responsive: 2 cols on narrow screens */
+@media (max-width: 520px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Accuracy bar ─────────────────────────────────────────────── */
+.accuracy-section {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.accuracy-bar-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.accuracy-bar-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #64748b;
+}
+
+.accuracy-bar-pct {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.accuracy-track {
+  background-color: #334155;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.accuracy-fill {
+  background: linear-gradient(90deg, #3b82f6, #818cf8);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.accuracy-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+/* ── Latest comparison panel ─────────────────────────────────── */
+.comparisons-panel {
+  background: rgba(15, 35, 54, 0.8);
+  border: 2px solid #3b82f6;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.75rem;
+}
+
+.comparisons-panel-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #60a5fa;
+  margin-bottom: 0.6rem;
+}
+
+.comparisons-panel-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.comparisons-panel-item {
+  font-size: 0.93rem;
+  color: #bfdbfe;
+  line-height: 1.5;
+}
+
+/* ── Attempt history ──────────────────────────────────────────── */
+.history-section {
+  margin-bottom: 1.75rem;
+}
+
+.history-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #a5b4fc;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Horizontal scroll container for the table */
+.history-table-wrap {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #334155;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.history-table thead tr {
+  background: rgba(30, 41, 59, 0.9);
+  border-bottom: 1px solid #334155;
+}
+
+.history-table th {
+  padding: 0.65rem 0.9rem;
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.history-table td {
+  padding: 0.7rem 0.9rem;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tbody tr {
+  background: rgba(20, 31, 48, 0.8);
+  transition: background-color 0.12s;
+}
+
+.history-table tbody tr:hover {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+/* Highlight the newest row */
+.history-row--latest td {
+  background: rgba(15, 35, 54, 0.9) !important;
+}
+
+/* Number column */
+.history-num {
+  color: #475569;
+  font-size: 0.78rem;
+  text-align: right;
+  width: 2rem;
+}
+
+/* ── Clear history row ───────────────────────────────────────── */
+.dash-clear-row {
+  text-align: center;
+  padding-bottom: 2rem;
+}
+
+.clear-all-btn {
+  background: none;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #64748b;
+  font-size: 0.85rem;
+  font-family: inherit;
+  padding: 0.55rem 1.2rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.clear-all-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.25rem 1.25rem;
+  }
+
+  .dash-welcome-title {
+    font-size: 1.3rem;
+  }
+
+  .dash-primary-row,
+  .dash-secondary-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-stages-row {
+    gap: 1rem;
+  }
+
+  .dash-stage-dot {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dash-content {
+    padding: 1.25rem 1rem 3rem;
+  }
+}

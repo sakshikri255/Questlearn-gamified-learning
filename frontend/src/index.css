@@ -1,0 +1,294 @@
+/* ═══════════════════════════════════════════════════════════════
+   QuestLearn — Global Styles (Cyber Quest theme)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── CSS Custom Properties ────────────────────────────────────── */
+:root {
+  /* Background palette */
+  --bg-deep:        #081120;
+  --bg-mid:         #24134D;
+  --bg-dark:        #1A0E36;
+
+  /* Surface / card */
+  --surface:        rgba(15, 23, 42, 0.65);
+  --surface-solid:  #1e293b;
+  --surface-hover:  #243044;
+
+  /* Borders */
+  --border:         rgba(148, 163, 184, 0.12);
+  --border-solid:   #334155;
+
+  /* Text */
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted:     #64748b;
+
+  /* Accent colours */
+  --cyan:     #22d3ee;
+  --indigo:   #6366f1;
+  --purple:   #a78bfa;
+  --pink:     #f472b6;
+  --orange:   #fb923c;
+  --gold:     #facc15;
+  --green:    #4ade80;
+  --red:      #f87171;
+
+  /* Glow */
+  --glow-cyan:   0 0 24px rgba(34, 211, 238, 0.35);
+  --glow-indigo: 0 0 24px rgba(99, 102, 241, 0.4);
+  --glow-purple: 0 0 20px rgba(167, 139, 250, 0.3);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  24px;
+
+  /* Transitions */
+  --transition: 0.2s ease;
+}
+
+/* ── Reset ────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Body ─────────────────────────────────────────────────────── */
+body {
+  font-family: 'Inter', "Segoe UI", system-ui, sans-serif;
+  background: linear-gradient(135deg, #081120 0%, #24134D 55%, #1A0E36 100%) fixed;
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Glassmorphism card ───────────────────────────────────────── */
+.card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 680px;
+  width: 90%;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Alias — same glass look, no max-width restriction */
+.card-glass {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+button.primary {
+  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: filter var(--transition), box-shadow var(--transition), transform var(--transition);
+}
+
+button.primary:hover:not(:disabled) {
+  filter: brightness(1.1);
+  box-shadow: var(--glow-indigo);
+  transform: translateY(-1px);
+}
+
+button.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  padding: 0.75rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition), box-shadow var(--transition);
+}
+
+button.secondary:hover:not(:disabled) {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.15);
+}
+
+button.secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Back button — kept as-is for all existing pages */
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--indigo);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  margin-bottom: 1rem;
+  transition: color var(--transition);
+  font-family: inherit;
+}
+
+.back-btn:hover {
+  color: var(--purple);
+}
+
+/* ── Utility: badge ───────────────────────────────────────────── */
+.badge {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  color: var(--purple);
+  border-radius: 999px;
+  padding: 0.25rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* ── Utility: error / loading ─────────────────────────────────── */
+.error-msg {
+  color: var(--red);
+  font-size: 0.9rem;
+}
+
+.loading-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* ── Option buttons (MissionPage) ─────────────────────────────── */
+.option-btn {
+  width: 100%;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--border-solid);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.option-btn:hover:not(:disabled) {
+  border-color: var(--indigo);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.option-id {
+  font-weight: 700;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.option-text {
+  flex: 1;
+}
+
+/* ── Result pills ─────────────────────────────────────────────── */
+.result-pill {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+}
+
+.result-pill--correct {
+  background-color: #14532d;
+  color: #86efac;
+}
+
+.result-pill--wrong {
+  background-color: #450a0a;
+  color: #fca5a5;
+}
+
+/* ── Chapter / theme pills ────────────────────────────────────── */
+.chapter-pill {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.chapter-pill--unlocked {
+  color: var(--purple);
+  font-weight: 600;
+}
+
+.theme-pill {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* ── Keyframe animations ──────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes floatOrb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(30px, -20px) scale(1.04); }
+    66%       { transform: translate(-20px, 15px) scale(0.97); }
+  }
+
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 12px rgba(34, 211, 238, 0.3); }
+    50%       { box-shadow: 0 0 28px rgba(34, 211, 238, 0.65); }
+  }
+
+  @keyframes shimmer {
+    from { background-position: -200% center; }
+    to   { background-position:  200% center; }
+  }
+}
+
+/* ── History table column helpers (used by DashboardPage) ──────── */
+.history-time {
+  font-variant-numeric: tabular-nums;
+  color: #94a3b8;
+}
+
+.history-date {
+  font-size: 0.78rem;
+  color: #475569;
+}

@@ -1,0 +1,257 @@
+[
+  {
+    "id": 1,
+    "stageId": "beginner",
+    "question": "What does the following JavaScript code print?\n\nconsole.log(typeof null);",
+    "options": [
+      { "id": "A", "text": "\"null\"" },
+      { "id": "B", "text": "\"object\"" },
+      { "id": "C", "text": "\"undefined\"" },
+      { "id": "D", "text": "\"string\"" }
+    ],
+    "correctOption": "B",
+    "explanation": "In JavaScript, typeof null returns \"object\". This is a well-known quirk — null is not an object, but the language has kept this behaviour for historical compatibility reasons.",
+    "concept": "typeof null returns \"object\"",
+    "keywords": ["typeof", "null", "object", "quirk", "bug", "historical", "compatibility", "legacy"],
+    "minExplanationLength": 20,
+    "hint": "Good start! Try to mention *why* typeof null returns \"object\" — think about JavaScript history or the word 'quirk'."
+  },
+  {
+    "id": 2,
+    "stageId": "beginner",
+    "question": "Which of the following correctly declares a constant in JavaScript?",
+    "options": [
+      { "id": "A", "text": "var PI = 3.14;" },
+      { "id": "B", "text": "let PI = 3.14;" },
+      { "id": "C", "text": "const PI = 3.14;" },
+      { "id": "D", "text": "constant PI = 3.14;" }
+    ],
+    "correctOption": "C",
+    "explanation": "The `const` keyword declares a block-scoped variable whose binding cannot be reassigned. `var` and `let` allow reassignment, and `constant` is not a valid JavaScript keyword.",
+    "concept": "const declares a block-scoped constant",
+    "keywords": ["const", "constant", "block-scoped", "reassign", "let", "var"],
+    "minExplanationLength": 20,
+    "hint": "Think about which keyword prevents reassignment and is block-scoped — mention both properties in your explanation."
+  },
+  {
+    "id": 3,
+    "stageId": "beginner",
+    "question": "What will the following code output?\n\nconsole.log(0.1 + 0.2 === 0.3);",
+    "options": [
+      { "id": "A", "text": "true" },
+      { "id": "B", "text": "false" },
+      { "id": "C", "text": "NaN" },
+      { "id": "D", "text": "undefined" }
+    ],
+    "correctOption": "B",
+    "explanation": "Due to floating-point precision issues, 0.1 + 0.2 evaluates to 0.30000000000000004 in JavaScript (and most languages using IEEE 754 double-precision). The strict equality check therefore returns false.",
+    "concept": "Floating-point precision in IEEE 754",
+    "keywords": ["floating-point", "precision", "ieee", "754", "binary", "0.30000000000000004"],
+    "minExplanationLength": 20,
+    "hint": "Consider how computers store decimal numbers — they use binary floating-point, which can introduce tiny rounding errors."
+  },
+  {
+    "id": 4,
+    "stageId": "beginner",
+    "question": "What is the output of the following code?\n\nlet x = 5;\nconsole.log(x++);",
+    "options": [
+      { "id": "A", "text": "6" },
+      { "id": "B", "text": "5" },
+      { "id": "C", "text": "undefined" },
+      { "id": "D", "text": "NaN" }
+    ],
+    "correctOption": "B",
+    "explanation": "The post-increment operator (x++) returns the original value before incrementing. So console.log receives 5, and x becomes 6 afterwards. If it were ++x (pre-increment), the result would be 6.",
+    "concept": "Post-increment operator returns the original value",
+    "keywords": ["post-increment", "pre-increment", "operator", "original", "before", "after"],
+    "minExplanationLength": 20,
+    "hint": "There are two forms of the increment operator — think about whether the value is returned before or after the increment happens."
+  },
+  {
+    "id": 5,
+    "stageId": "explorer",
+    "question": "What does the following arrow function return?\n\nconst double = x => x * 2;\nconsole.log(double(7));",
+    "options": [
+      { "id": "A", "text": "7" },
+      { "id": "B", "text": "14" },
+      { "id": "C", "text": "NaN" },
+      { "id": "D", "text": "undefined" }
+    ],
+    "correctOption": "B",
+    "explanation": "Arrow functions with a single expression body use implicit return — no `return` keyword or braces needed. `x => x * 2` is equivalent to `function(x){ return x * 2; }`. Calling it with 7 gives 14.",
+    "concept": "Arrow function implicit return",
+    "keywords": ["arrow", "implicit", "return", "concise", "body", "expression"],
+    "minExplanationLength": 20,
+    "hint": "Arrow functions without curly braces implicitly return the expression — explain what implicit return means."
+  },
+  {
+    "id": 6,
+    "stageId": "explorer",
+    "question": "What will the following code log?\n\nconst arr = [1, 2, 3];\nconsole.log(arr.map(n => n * n));",
+    "options": [
+      { "id": "A", "text": "[1, 4, 9]" },
+      { "id": "B", "text": "[2, 4, 6]" },
+      { "id": "C", "text": "[1, 2, 3]" },
+      { "id": "D", "text": "undefined" }
+    ],
+    "correctOption": "A",
+    "explanation": "Array.prototype.map creates a new array by applying the callback to each element. Squaring each of [1, 2, 3] produces [1, 4, 9]. The original array is not mutated.",
+    "concept": "Array.map transforms each element into a new array",
+    "keywords": ["map", "transform", "callback", "new array", "square", "immutable"],
+    "minExplanationLength": 20,
+    "hint": "Describe what map does — it creates a new array by applying a function to every element, without changing the original."
+  },
+  {
+    "id": 7,
+    "stageId": "explorer",
+    "question": "What is the value of `result` after this code runs?\n\nconst result = [1, 2, 3, 4].filter(n => n % 2 === 0);",
+    "options": [
+      { "id": "A", "text": "[1, 3]" },
+      { "id": "B", "text": "[2, 4]" },
+      { "id": "C", "text": "[1, 2, 3, 4]" },
+      { "id": "D", "text": "[]" }
+    ],
+    "correctOption": "B",
+    "explanation": "Array.prototype.filter returns a new array containing only the elements for which the callback returns true. The condition `n % 2 === 0` is true for even numbers — 2 and 4.",
+    "concept": "Array.filter keeps elements where the predicate returns true",
+    "keywords": ["filter", "predicate", "even", "modulo", "callback", "new array"],
+    "minExplanationLength": 20,
+    "hint": "Explain what filter does and how the modulo condition selects only even numbers."
+  },
+  {
+    "id": 8,
+    "stageId": "challenger",
+    "question": "What is the output?\n\nconst obj = { a: 1 };\nconst copy = Object.assign({}, obj);\ncopy.a = 99;\nconsole.log(obj.a);",
+    "options": [
+      { "id": "A", "text": "99" },
+      { "id": "B", "text": "1" },
+      { "id": "C", "text": "undefined" },
+      { "id": "D", "text": "An error is thrown" }
+    ],
+    "correctOption": "B",
+    "explanation": "Object.assign performs a shallow copy, creating a new object. Modifying `copy.a` does not affect `obj.a` because primitive values (numbers) are copied by value, not by reference. The original object still holds 1.",
+    "concept": "Object.assign creates a shallow copy — primitives are copied by value",
+    "keywords": ["shallow", "copy", "object.assign", "reference", "primitive", "by value"],
+    "minExplanationLength": 25,
+    "hint": "The key is whether Object.assign makes a deep or shallow copy — and what 'shallow' means for primitive vs reference values."
+  },
+  {
+    "id": 9,
+    "stageId": "challenger",
+    "question": "What does the following code output?\n\nfunction* gen() {\n  yield 1;\n  yield 2;\n  yield 3;\n}\nconst g = gen();\nconsole.log(g.next().value);",
+    "options": [
+      { "id": "A", "text": "undefined" },
+      { "id": "B", "text": "3" },
+      { "id": "C", "text": "1" },
+      { "id": "D", "text": "[1, 2, 3]" }
+    ],
+    "correctOption": "C",
+    "explanation": "Generator functions use `function*` syntax and the `yield` keyword to pause execution and produce values one at a time. Each call to `.next()` resumes execution until the next `yield`. The first `.next()` returns `{ value: 1, done: false }`.",
+    "concept": "Generator functions yield values lazily one at a time",
+    "keywords": ["generator", "yield", "next", "lazy", "iterable", "function*"],
+    "minExplanationLength": 25,
+    "hint": "Explain what a generator function is and how `yield` pauses execution and returns a value."
+  },
+  {
+    "id": 10,
+    "stageId": "challenger",
+    "question": "What is the time complexity of binary search on a sorted array of n elements?",
+    "options": [
+      { "id": "A", "text": "O(n)" },
+      { "id": "B", "text": "O(n²)" },
+      { "id": "C", "text": "O(log n)" },
+      { "id": "D", "text": "O(1)" }
+    ],
+    "correctOption": "C",
+    "explanation": "Binary search halves the search space with each comparison. Starting with n elements, after k steps there are n/2^k elements remaining. When n/2^k = 1, k = log₂(n). Therefore, the time complexity is O(log n).",
+    "concept": "Binary search runs in O(log n) by halving the search space",
+    "keywords": ["binary search", "log n", "divide", "half", "sorted", "logarithmic"],
+    "minExplanationLength": 25,
+    "hint": "Describe how binary search divides the problem in half each step, and how that leads to a logarithmic number of steps."
+  },
+  {
+    "id": 11,
+    "stageId": "expert",
+    "question": "What will this code output?\n\nPromise.resolve(1)\n  .then(v => v + 1)\n  .then(v => { throw new Error('oops'); })\n  .then(v => console.log('then:', v))\n  .catch(e => console.log('catch:', e.message));",
+    "options": [
+      { "id": "A", "text": "then: 2" },
+      { "id": "B", "text": "catch: oops" },
+      { "id": "C", "text": "then: undefined" },
+      { "id": "D", "text": "Nothing — the error is swallowed" }
+    ],
+    "correctOption": "B",
+    "explanation": "When a `.then` handler throws an error, the promise chain skips subsequent `.then` handlers and jumps to the nearest `.catch`. The third `.then` throws, so `catch: oops` is logged. This is the promise error propagation mechanism.",
+    "concept": "Promise chain error propagation skips .then and goes to .catch",
+    "keywords": ["promise", "catch", "throw", "chain", "propagation", "reject", "error"],
+    "minExplanationLength": 30,
+    "hint": "Explain how promise chains handle errors — what happens to subsequent .then handlers when one throws?"
+  },
+  {
+    "id": 12,
+    "stageId": "expert",
+    "question": "What is the output of the following closure example?\n\nfunction makeCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst c1 = makeCounter();\nconst c2 = makeCounter();\nc1(); c1();\nconsole.log(c2());",
+    "options": [
+      { "id": "A", "text": "3" },
+      { "id": "B", "text": "2" },
+      { "id": "C", "text": "1" },
+      { "id": "D", "text": "0" }
+    ],
+    "correctOption": "C",
+    "explanation": "Each call to makeCounter creates a new closure with its own independent `count` variable. c1 and c2 do not share state. c1() is called twice (count becomes 2 for c1), but c2's closure has a separate count starting at 0. The first call to c2() returns 1.",
+    "concept": "Each closure captures its own independent lexical environment",
+    "keywords": ["closure", "lexical", "scope", "independent", "environment", "encapsulate"],
+    "minExplanationLength": 30,
+    "hint": "Focus on how closures capture their own copy of variables — do c1 and c2 share the same count?"
+  },
+  {
+    "id": 13,
+    "stageId": "expert",
+    "question": "Which data structure gives O(1) average time complexity for both insertion and lookup by key?",
+    "options": [
+      { "id": "A", "text": "Binary search tree" },
+      { "id": "B", "text": "Sorted array" },
+      { "id": "C", "text": "Linked list" },
+      { "id": "D", "text": "Hash table (hash map)" }
+    ],
+    "correctOption": "D",
+    "explanation": "A hash table uses a hash function to map keys to bucket indices, giving O(1) average-case insertion and lookup. Collisions can degrade performance to O(n) in the worst case, but with a good hash function and load factor management, O(1) amortised is achieved.",
+    "concept": "Hash tables provide O(1) average insertion and lookup via hashing",
+    "keywords": ["hash", "hash table", "hash map", "o(1)", "bucket", "collision", "amortised"],
+    "minExplanationLength": 30,
+    "hint": "Explain how a hash function maps keys to positions and why that leads to constant-time operations on average."
+  },
+  {
+    "id": 14,
+    "stageId": "boss",
+    "question": "Consider this JavaScript code:\n\nconst a = [1, 2, 3];\nconst b = a;\nb.push(4);\nconsole.log(a.length);",
+    "options": [
+      { "id": "A", "text": "3" },
+      { "id": "B", "text": "4" },
+      { "id": "C", "text": "undefined" },
+      { "id": "D", "text": "An error is thrown" }
+    ],
+    "correctOption": "B",
+    "explanation": "Arrays in JavaScript are objects and are passed by reference. When `b = a`, both variables point to the same array in memory. Pushing to `b` mutates the shared array, so `a.length` reflects the mutation and equals 4. To avoid this, use spread (`[...a]`) or `slice()` to make a copy.",
+    "concept": "Objects and arrays are assigned by reference, not by value",
+    "keywords": ["reference", "by reference", "mutation", "shared", "object", "copy", "spread"],
+    "minExplanationLength": 35,
+    "hint": "Explain what 'by reference' means for objects in JavaScript and how b = a differs from creating a true copy."
+  },
+  {
+    "id": 15,
+    "stageId": "boss",
+    "question": "What is the output of this advanced async code?\n\nasync function foo() {\n  return 42;\n}\nasync function bar() {\n  const result = await foo();\n  console.log(result);\n}\nbar();",
+    "options": [
+      { "id": "A", "text": "Promise { 42 }" },
+      { "id": "B", "text": "undefined" },
+      { "id": "C", "text": "42" },
+      { "id": "D", "text": "An error is thrown" }
+    ],
+    "correctOption": "C",
+    "explanation": "An async function always returns a Promise. `await foo()` unwraps (resolves) that Promise, giving the value 42 to `result`. So `console.log(result)` prints 42. The `await` keyword pauses bar's execution until foo's promise resolves, then resumes with the resolved value.",
+    "concept": "await unwraps a Promise, resolving it to its fulfilled value",
+    "keywords": ["async", "await", "promise", "resolve", "unwrap", "fulfilled", "asynchronous"],
+    "minExplanationLength": 35,
+    "hint": "Explain the relationship between async/await and Promises — what does `await` do to the Promise returned by an async function?"
+  }
+]
