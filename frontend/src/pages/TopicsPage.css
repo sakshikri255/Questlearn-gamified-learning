@@ -1,0 +1,167 @@
+/* TopicsPage.css */
+
+.topics-page {
+  min-height: 100vh;
+  background: var(--bg, #0f1117);
+  color: var(--text, #e2e8f0);
+}
+
+.topics-loading {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #94a3b8;
+}
+
+.topics-error {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  color: #f87171;
+  text-align: center;
+}
+
+.topics-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+/* ── Header ────────────────────────────────── */
+.topics-header {
+  margin-bottom: 1.75rem;
+}
+
+.topics-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0.5rem 0 0.3rem;
+}
+
+.topics-subtitle {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Grid ──────────────────────────────────── */
+.topics-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Topic card ────────────────────────────── */
+.topic-card {
+  background: rgba(30, 36, 51, 0.9);
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.topic-card--open {
+  border-color: #6366f1;
+}
+
+.topic-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  color: #e2e8f0;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.topic-card-header:hover {
+  background: rgba(99, 102, 241, 0.06);
+}
+
+.topic-card-emoji {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.topic-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  flex: 1;
+}
+
+.topic-card-count {
+  font-size: 0.78rem;
+  color: #64748b;
+  background: rgba(100, 116, 139, 0.12);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+}
+
+.topic-card-chevron {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-left: 0.25rem;
+}
+
+/* ── Subtopics list ────────────────────────── */
+.subtopics-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #2d3748;
+}
+
+.subtopic-item {
+  border-bottom: 1px solid rgba(45, 55, 72, 0.5);
+}
+
+.subtopic-item:last-child {
+  border-bottom: none;
+}
+
+.subtopic-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  cursor: pointer;
+  color: #cbd5e1;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.subtopic-btn:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: #e2e8f0;
+}
+
+.subtopic-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.subtopic-meta {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.subtopic-arrow {
+  font-size: 0.78rem;
+  color: #6366f1;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.subtopic-btn:hover .subtopic-arrow {
+  opacity: 1;
+}

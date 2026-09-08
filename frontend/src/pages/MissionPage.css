@@ -442,3 +442,49 @@
     width: 100%;
   }
 }
+
+/* ── Mission timer bar ──────────────────────────────────────── */
+.mission-timer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.mission-timer-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(45, 55, 72, 0.6);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mission-timer-fill {
+  height: 100%;
+  background: #38bdf8;
+  border-radius: 4px;
+}
+
+.mission-timer-track--warn .mission-timer-fill,
+.mission-timer-fill--warn {
+  background: #ef4444;
+}
+
+.mission-timer-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #94a3b8;
+  min-width: 42px;
+  text-align: right;
+}
+
+.mission-timer-label--warn {
+  color: #ef4444;
+}
+
+.mission-timer-expired {
+  font-size: 0.82rem;
+  color: #ef4444;
+  font-weight: 600;
+  margin: -0.5rem 0 0.75rem;
+}

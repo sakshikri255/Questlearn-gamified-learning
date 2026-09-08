@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getTheme } from "../data/themes.js";
 import {
@@ -17,6 +17,8 @@ import { getStage } from "../data/stages.js";
 import INITIAL_LEAGUE_DATA from "../data/leagueData.js";
 import "./MissionPage.css";
 
+const MISSION_TIMER_SECONDS = 90;
+
 function MissionPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -33,7 +35,32 @@ function MissionPage() {
   const [chapterUnlocked, setChapterUnlocked] = useState(false);
   const [comparisons, setComparisons] = useState([]);
   const [rewards, setRewards] = useState(null);
+  const [timerRemaining, setTimerRemaining] = useState(MISSION_TIMER_SECONDS);
+  const [timerActive, setTimerActive] = useState(false);
   const questionStartRef = useRef(null);
+  const timerRef = useRef(null);
+
+  // Start/stop the countdown timer
+  const startTimer = useCallback(() => {
+    setTimerRemaining(MISSION_TIMER_SECONDS);
+    setTimerActive(true);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    setTimerActive(false);
+    clearInterval(timerRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!timerActive) { clearInterval(timerRef.current); return; }
+    timerRef.current = setInterval(() => {
+      setTimerRemaining((r) => {
+        if (r <= 1) { clearInterval(timerRef.current); return 0; }
+        return r - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [timerActive]);
 
   useEffect(() => {
     fetch(`/api/question?stageId=${stageId}`)
@@ -42,6 +69,7 @@ function MissionPage() {
         setQuestion(data);
         questionStartRef.current = Date.now();
         setStatus("question");
+        startTimer();
       })
       .catch(() => {
         setError("Could not load the question. Is the backend running?");
@@ -53,6 +81,7 @@ function MissionPage() {
     if (!selected) { setError("Please choose an answer before submitting."); return; }
     if (explanation.trim() === "") { setError("Please explain your reasoning before submitting."); return; }
     setError("");
+    stopTimer();
     try {
       const res = await fetch("/api/submit", {
         method: "POST",
@@ -122,6 +151,7 @@ function MissionPage() {
         xpEarned: earned.xp,
       });
       setComparisons(buildComparisons(updatedAttempts));
+      setTimerActive(false);
       setStatus("result");
 
       // ── Persist mistake ──────────────────────────────────────────────────
@@ -252,6 +282,9 @@ function MissionPage() {
     );
   }
 
+  const timerPct  = (timerRemaining / MISSION_TIMER_SECONDS) * 100;
+  const timerWarn = timerRemaining <= 20;
+
   return (
     <div className="mission-wrapper">
       <div className="card mission-card">
@@ -260,6 +293,24 @@ function MissionPage() {
         </button>
         <StoryHeader />
         <h2 className="mission-heading">Mission — {stage.name}</h2>
+
+        {/* ── Timer bar ─────────────────────────────────────────── */}
+        <div className="mission-timer-row">
+          <div className={`mission-timer-track ${timerWarn ? "mission-timer-track--warn" : ""}`}>
+            <div
+              className={`mission-timer-fill ${timerWarn ? "mission-timer-fill--warn" : ""}`}
+              style={{ width: `${timerPct}%`, transition: "width 1s linear" }}
+            />
+          </div>
+          <span className={`mission-timer-label ${timerWarn ? "mission-timer-label--warn" : ""}`}>
+            ⏱ {timerRemaining}s
+          </span>
+        </div>
+
+        {timerRemaining === 0 && (
+          <p className="mission-timer-expired">⏰ Time expired — you can still submit!</p>
+        )}
+
         <p className="question-text">{question?.question}</p>
         <div className="options-list">
           {question?.options.map((opt) => (

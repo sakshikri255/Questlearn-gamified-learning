@@ -1,0 +1,158 @@
+/* TopicQuizPage.css */
+
+.tqp-wrapper {
+  min-height: 100vh;
+  background: var(--bg, #0f1117);
+  color: var(--text, #e2e8f0);
+}
+
+.tqp-loading {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #94a3b8;
+}
+
+.tqp-error-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.tqp-error {
+  color: #f87171;
+  margin-bottom: 1rem;
+}
+
+/* ── Content wrapper ───────────────────────── */
+.tqp-content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.tqp-card {
+  background: #1e2433;
+  border: 1px solid #2d3748;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* ── Header / breadcrumb ───────────────────── */
+.tqp-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tqp-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.tqp-topic {
+  color: #a5b4fc;
+  font-weight: 600;
+}
+
+.tqp-sep {
+  color: #475569;
+}
+
+.tqp-subtopic {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+/* ── Progress ──────────────────────────────── */
+.tqp-progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 0.35rem;
+}
+
+.tqp-progress-track {
+  height: 6px;
+  background: #2d3748;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.tqp-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #818cf8);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* ── Timer ─────────────────────────────────── */
+.tqp-timer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.tqp-timer-wrap {
+  flex: 1;
+  height: 8px;
+  background: #2d3748;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.tqp-timer-fill {
+  height: 100%;
+  background: #38bdf8;
+  border-radius: 4px;
+  transition: width 1s linear;
+}
+
+.tqp-timer-wrap--warn .tqp-timer-fill,
+.tqp-timer-fill--warn {
+  background: #ef4444;
+}
+
+.tqp-timer-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #94a3b8;
+  min-width: 42px;
+  text-align: right;
+}
+
+.tqp-timer-label--warn {
+  color: #ef4444;
+}
+
+/* ── Question ──────────────────────────────── */
+.tqp-question-area {
+  margin-top: 0.25rem;
+}
+
+.tqp-question-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  white-space: pre-wrap;
+  margin-bottom: 1rem;
+}
+
+.tqp-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tqp-confirm-btn {
+  width: 100%;
+}
