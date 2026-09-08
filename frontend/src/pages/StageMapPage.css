@@ -8,12 +8,12 @@
   justify-content: center;
   min-height: 100vh;
   background: transparent;
-  padding: 3rem 1rem;
+  padding: 3rem 1rem 10rem 1rem;
 }
 
 .stagemap-card {
   width: 100%;
-  max-width: 560px;
+  max-width: 1200px;
 }
 
 .stagemap-title {

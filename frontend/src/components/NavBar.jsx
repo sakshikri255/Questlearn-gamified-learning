@@ -9,7 +9,6 @@ const NAV_LINKS = [
   { label: "Leaderboard", path: "/leaderboard",  emoji: "🏆" },
   { label: "Streaks",     path: "/streak",       emoji: "🔥" },
   { label: "Museum",      path: "/museum",       emoji: "🏛️" },
-  { label: "Team",        path: "/team",         emoji: "👥" },
 ];
 
 function NavBar() {

@@ -5,14 +5,14 @@
 .museum-wrapper {
   min-height: 100vh;
   background: transparent;
-  padding: 3rem 1rem;
+  padding: 3rem 1rem 10rem 1rem;
   display: flex;
   justify-content: center;
 }
 
 .museum-inner {
   width: 100%;
-  max-width: 720px;
+  max-width: 1200px;
 }
 
 /* ── Header ───────────────────────────────────────────────── */

@@ -17,6 +17,7 @@ import {
 } from "../data/progress.js";
 import { getStage } from "../data/stages.js";
 import INITIAL_LEAGUE_DATA from "../data/leagueData.js";
+import PageTransition from "../components/PageTransition.jsx";
 import "./MissionPage.css";
 
 // ── Sage: count "simple" words in explanation ────────────────────────────────
@@ -226,9 +227,9 @@ function MissionPage() {
 
   if (status === "loading") {
     return (
-      <div className={`mission-wrapper persona-bg--${persona.id}`}>
+      <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
         <p className="loading-text">Loading your mission…</p>
-      </div>
+      </PageTransition>
     );
   }
 
@@ -285,7 +286,7 @@ function MissionPage() {
   // ── RESULT PAGE ───────────────────────────────────────────────────────────
   if (status === "result" && result) {
     return (
-      <div className={`mission-wrapper persona-bg--${persona.id}`}>
+      <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
         <div className={`card result-card persona-card-theme--${persona.id}`}>
           <StoryHeader />
           <div className="persona-badge" style={{ borderColor: persona.accent, color: persona.accent, background: persona.accentDim }}>
@@ -351,13 +352,13 @@ function MissionPage() {
               : <button className="secondary" onClick={() => navigate("/")}>🏠 Home</button>}
           </div>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
   // ── QUESTION PAGE ─────────────────────────────────────────────────────────
   return (
-    <div className={`mission-wrapper persona-bg--${persona.id}`}>
+    <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
       <div className={`card mission-card persona-card-theme--${persona.id} ${shakeCard ? "shake-anim" : ""}`}>
         <button className="back-btn" onClick={() => navigate(stageId !== "beginner" ? "/stages" : "/")}>
           {stageId !== "beginner" ? "← Back to Stage Map" : "← Back to Home"}
@@ -474,7 +475,7 @@ function MissionPage() {
           {persona.id === "sage"      && "🌿 Share Wisdom"}
         </button>
       </div>
-    </div>
+    </PageTransition>
   );
 }
 

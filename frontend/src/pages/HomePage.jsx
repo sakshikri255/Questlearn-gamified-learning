@@ -9,6 +9,7 @@ import {
   loadStreak,
   computeStreakState,
 } from "../data/progress.js";
+import PageTransition from "../components/PageTransition.jsx";
 import "./HomePage.css";
 
 const FEATURES = [
@@ -85,7 +86,7 @@ function HomePage() {
   const isAtRisk = streakState?.state === "at-risk";
 
   return (
-    <div className="ql-home">
+    <PageTransition className="ql-home">
 
       {/* ═══════════════════════════════ HERO SECTION ══════════════════════════ */}
       <section className="hero">
@@ -267,7 +268,7 @@ function HomePage() {
       <footer className="home-footer">
         <p className="footer-copy">QuestLearn — Learn. Play. Level Up. © 2025</p>
       </footer>
-    </div>
+    </PageTransition>
   );
 }
 
