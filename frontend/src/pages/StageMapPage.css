@@ -7,6 +7,7 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
+  background: transparent;
   padding: 3rem 1rem;
 }
 
@@ -18,7 +19,7 @@
 .stagemap-title {
   font-size: 1.8rem;
   font-weight: 800;
-  color: var(--cyan);
+  color: #f59e0b;
   margin-bottom: 0.35rem;
   letter-spacing: -0.02em;
 }
@@ -60,7 +61,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(12, 12, 12, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border);
@@ -88,7 +89,7 @@
 }
 
 .stagemap-node--unlocked:not(.stagemap-node--completed):hover {
-  border-color: var(--cyan);
+  border-color: #f59e0b;
   box-shadow: var(--glow-cyan);
 }
 
@@ -152,7 +153,7 @@
 }
 
 .stagemap-node--unlocked .stagemap-node-arrow {
-  color: var(--cyan);
+  color: #f59e0b;
 }
 
 .stagemap-node--completed .stagemap-node-arrow {
@@ -175,9 +176,53 @@
 }
 
 .stagemap-footer-xp strong {
-  color: var(--purple);
+  color: #f8fafc;
 }
 
 .stagemap-footer-coins strong {
   color: var(--gold);
+}
+
+/* ── Persona selector row ────────────────────────────────────── */
+.stagemap-persona-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.stagemap-persona-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+.stagemap-persona-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.stagemap-persona-chip {
+  background: rgba(22, 22, 22, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.stagemap-persona-chip:hover {
+  border-color: rgba(148, 163, 184, 0.45);
+  color: var(--text-secondary);
+}
+
+.stagemap-persona-chip--active {
+  font-weight: 700;
 }

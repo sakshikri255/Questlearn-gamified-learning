@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import THEMES from "../data/themes.js";
 import STAGES from "../data/stages.js";
+import PERSONAS from "../data/personas.js";
 import {
   loadAttempts,
   loadProfile,
@@ -51,6 +52,7 @@ const FEATURES = [
 function HomePage() {
   const navigate = useNavigate();
   const [selectedTheme, setSelectedTheme] = useState(THEMES[0].id);
+  const [selectedPersona, setSelectedPersona] = useState(PERSONAS[0].id);
   const [mistakeCount, setMistakeCount] = useState(0);
   const [attemptCount, setAttemptCount] = useState(0);
   const [profile, setProfile] = useState(null);
@@ -65,7 +67,7 @@ function HomePage() {
   }, []);
 
   const handleStart = () => {
-    navigate(`/mission?theme=${selectedTheme}`);
+    navigate(`/mission?theme=${selectedTheme}&persona=${selectedPersona}`);
   };
 
   // Derive live XP bar values from profile
@@ -139,6 +141,28 @@ function HomePage() {
               </div>
             </div>
 
+            {/* Persona selector */}
+            <div className="hero-theme-row">
+              <span className="hero-theme-label">Choose your persona:</span>
+              <div className="hero-persona-grid">
+                {PERSONAS.map((persona) => {
+                  const active = selectedPersona === persona.id;
+                  return (
+                    <button
+                      key={persona.id}
+                      className={`persona-card ${active ? "persona-card--active" : ""}`}
+                      style={active ? { borderColor: persona.accent, boxShadow: `0 0 14px ${persona.accentDim}` } : {}}
+                      onClick={() => setSelectedPersona(persona.id)}
+                    >
+                      <span className="persona-card-emoji">{persona.emoji}</span>
+                      <span className="persona-card-name" style={active ? { color: persona.accent } : {}}>{persona.name}</span>
+                      <span className="persona-card-tag">{persona.tagline}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Primary CTAs */}
             <div className="hero-cta-row">
               <button className="btn-hero-primary" onClick={handleStart}>
@@ -204,7 +228,7 @@ function HomePage() {
                   {currentStage.emoji} {currentStage.name}
                 </p>
                 <button className="mock-next-btn" onClick={handleStart}>
-                  ▶ Continue
+                  {PERSONAS.find((p) => p.id === selectedPersona)?.emoji} Continue as {PERSONAS.find((p) => p.id === selectedPersona)?.name}
                 </button>
               </div>
             </div>
@@ -241,21 +265,6 @@ function HomePage() {
 
       {/* ═══════════════════════════════ FOOTER ════════════════════════════════ */}
       <footer className="home-footer">
-        <div className="footer-links">
-          <button onClick={() => navigate("/stages")}>🗺️ Stage Map</button>
-          <button onClick={() => navigate("/leaderboard")}>🏆 Leaderboard</button>
-          <button onClick={() => navigate("/streak")}>🔥 Streaks</button>
-          {mistakeCount > 0 && (
-            <button onClick={() => navigate("/museum")}>
-              🏛️ Museum ({mistakeCount})
-            </button>
-          )}
-          {attemptCount > 0 && (
-            <button onClick={() => navigate("/dashboard")}>
-              📊 Dashboard
-            </button>
-          )}
-        </div>
         <p className="footer-copy">QuestLearn — Learn. Play. Level Up. © 2025</p>
       </footer>
     </div>

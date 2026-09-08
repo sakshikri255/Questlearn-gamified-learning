@@ -7,6 +7,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  background: transparent;
   padding: 2rem 1rem;
 }
 
@@ -20,7 +21,7 @@
 .team-title {
   font-size: 2rem;
   font-weight: 800;
-  color: var(--purple);
+  color: #f8fafc;
   margin-bottom: 0.4rem;
   letter-spacing: -0.02em;
 }
@@ -42,7 +43,7 @@
 
 /* Individual member card */
 .member-card {
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(12, 12, 12, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border);

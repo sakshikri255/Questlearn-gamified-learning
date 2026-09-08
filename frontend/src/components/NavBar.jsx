@@ -5,10 +5,11 @@ import "./NavBar.css";
 const NAV_LINKS = [
   { label: "Home",        path: "/",            emoji: "🏠" },
   { label: "Stage Map",   path: "/stages",       emoji: "🗺️" },
+  { label: "Dashboard",   path: "/dashboard",    emoji: "📊" },
   { label: "Leaderboard", path: "/leaderboard",  emoji: "🏆" },
   { label: "Streaks",     path: "/streak",       emoji: "🔥" },
   { label: "Museum",      path: "/museum",       emoji: "🏛️" },
-  { label: "Dashboard",   path: "/dashboard",    emoji: "📊" },
+  { label: "Team",        path: "/team",         emoji: "👥" },
 ];
 
 function NavBar() {

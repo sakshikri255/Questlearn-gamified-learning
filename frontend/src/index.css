@@ -1,42 +1,49 @@
 /* ═══════════════════════════════════════════════════════════════
-   QuestLearn — Global Styles (Cyber Quest theme)
+   QuestLearn — Global Styles (Minimal Dark theme)
    ═══════════════════════════════════════════════════════════════ */
 
 /* ── CSS Custom Properties ────────────────────────────────────── */
 :root {
   /* Background palette */
-  --bg-deep:        #081120;
-  --bg-mid:         #24134D;
-  --bg-dark:        #1A0E36;
+  --bg-deep:        #0a0a0a;
+  --bg-mid:         #111111;
+  --bg-dark:        #0d0d0d;
 
   /* Surface / card */
-  --surface:        rgba(15, 23, 42, 0.65);
-  --surface-solid:  #1e293b;
-  --surface-hover:  #243044;
+  --surface:        rgba(17, 17, 17, 0.85);
+  --surface-solid:  #161616;
+  --surface-hover:  #1c1c1c;
 
   /* Borders */
-  --border:         rgba(148, 163, 184, 0.12);
-  --border-solid:   #334155;
+  --border:         rgba(255, 255, 255, 0.07);
+  --border-solid:   #2a2a2a;
 
   /* Text */
-  --text-primary:   #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted:     #64748b;
+  --text-primary:   #f8fafc;
+  --text-secondary: #9ca3af;
+  --text-muted:     #6b7280;
 
-  /* Accent colours */
-  --cyan:     #22d3ee;
-  --indigo:   #6366f1;
-  --purple:   #a78bfa;
-  --pink:     #f472b6;
-  --orange:   #fb923c;
-  --gold:     #facc15;
-  --green:    #4ade80;
-  --red:      #f87171;
+  /* Accent colours — amber-gold primary, no blue/purple */
+  --gold:     #f59e0b;
+  --amber:    #f59e0b;
+  --amber-lt: #fbbf24;
+  --green:    #10b981;
+  --red:      #f43f5e;
+  --orange:   #f97316;
+  --white:    #f8fafc;
+
+  /* Legacy aliases (kept so existing JSX inline styles still resolve) */
+  --cyan:     #f59e0b;
+  --indigo:   #f59e0b;
+  --purple:   #f8fafc;
+  --pink:     #f43f5e;
 
   /* Glow */
-  --glow-cyan:   0 0 24px rgba(34, 211, 238, 0.35);
-  --glow-indigo: 0 0 24px rgba(99, 102, 241, 0.4);
-  --glow-purple: 0 0 20px rgba(167, 139, 250, 0.3);
+  --glow-amber:  0 0 24px rgba(245, 158, 11, 0.35);
+  --glow-white:  0 0 20px rgba(248, 250, 252, 0.15);
+  --glow-indigo: 0 0 24px rgba(245, 158, 11, 0.35);
+  --glow-cyan:   0 0 24px rgba(245, 158, 11, 0.35);
+  --glow-purple: 0 0 20px rgba(248, 250, 252, 0.12);
 
   /* Radius */
   --radius-sm:  8px;
@@ -58,47 +65,71 @@
 /* ── Body ─────────────────────────────────────────────────────── */
 body {
   font-family: 'Inter', "Segoe UI", system-ui, sans-serif;
-  background: linear-gradient(135deg, #081120 0%, #24134D 55%, #1A0E36 100%) fixed;
-  background-attachment: fixed;
+  background: #0a0a0a;
   color: var(--text-primary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Glassmorphism card ───────────────────────────────────────── */
+/* ── Global ambient background — matches home page feel ──────── */
+/* Subtle amber glow top-left, muted gold bottom-right, grid overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 70% 50% at 0% 0%,   rgba(245,158,11,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(217,119,6,0.05)  0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 60%,  rgba(255,255,255,0.02) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Subtle dot-grid overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+/* ── Card ─────────────────────────────────────────────────────── */
 .card {
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(17, 17, 17, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-lg);
   padding: 2rem;
   max-width: 680px;
   width: 90%;
   margin: 0 auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-/* Alias — same glass look, no max-width restriction */
 .card-glass {
-  background: rgba(15, 23, 42, 0.65);
+  background: rgba(17, 17, 17, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 /* ── Buttons ──────────────────────────────────────────────────── */
 button.primary {
-  background: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
-  color: #fff;
+  background: #f59e0b;
+  color: #0a0a0a;
   border: none;
   border-radius: var(--radius-md);
   padding: 0.75rem 1.75rem;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   transition: filter var(--transition), box-shadow var(--transition), transform var(--transition);
@@ -106,7 +137,7 @@ button.primary {
 
 button.primary:hover:not(:disabled) {
   filter: brightness(1.1);
-  box-shadow: var(--glow-indigo);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
   transform: translateY(-1px);
 }
 
@@ -115,13 +146,13 @@ button.primary:active:not(:disabled) {
 }
 
 button.primary:disabled {
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
 button.secondary {
   background: transparent;
-  border: 1px solid rgba(148, 163, 184, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   padding: 0.75rem 1.75rem;
@@ -133,21 +164,21 @@ button.secondary {
 }
 
 button.secondary:hover:not(:disabled) {
-  border-color: var(--cyan);
-  color: var(--cyan);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.15);
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.15);
 }
 
 button.secondary:disabled {
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
-/* Back button — kept as-is for all existing pages */
+/* Back button */
 .back-btn {
   background: none;
   border: none;
-  color: var(--indigo);
+  color: var(--text-muted);
   font-size: 0.9rem;
   cursor: pointer;
   padding: 0.3rem 0;
@@ -157,15 +188,15 @@ button.secondary:disabled {
 }
 
 .back-btn:hover {
-  color: var(--purple);
+  color: #f59e0b;
 }
 
 /* ── Utility: badge ───────────────────────────────────────────── */
 .badge {
   display: inline-block;
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.4);
-  color: var(--purple);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #f59e0b;
   border-radius: 999px;
   padding: 0.25rem 0.85rem;
   font-size: 0.78rem;
@@ -184,10 +215,10 @@ button.secondary:disabled {
   font-size: 0.9rem;
 }
 
-/* ── Option buttons (MissionPage) ─────────────────────────────── */
+/* ── Option buttons ───────────────────────────────────────────── */
 .option-btn {
   width: 100%;
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(22, 22, 22, 0.9);
   border: 1px solid var(--border-solid);
   border-radius: var(--radius-md);
   color: var(--text-primary);
@@ -203,8 +234,8 @@ button.secondary:disabled {
 }
 
 .option-btn:hover:not(:disabled) {
-  border-color: var(--indigo);
-  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.06);
 }
 
 .option-id {
@@ -227,13 +258,13 @@ button.secondary:disabled {
 }
 
 .result-pill--correct {
-  background-color: #14532d;
-  color: #86efac;
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
 }
 
 .result-pill--wrong {
-  background-color: #450a0a;
-  color: #fca5a5;
+  background-color: rgba(244, 63, 94, 0.12);
+  color: #fda4af;
 }
 
 /* ── Chapter / theme pills ────────────────────────────────────── */
@@ -243,7 +274,7 @@ button.secondary:disabled {
 }
 
 .chapter-pill--unlocked {
-  color: var(--purple);
+  color: #f59e0b;
   font-weight: 600;
 }
 
@@ -255,14 +286,8 @@ button.secondary:disabled {
 /* ── Keyframe animations ──────────────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
   @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes floatOrb {
@@ -272,8 +297,8 @@ button.secondary:disabled {
   }
 
   @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 12px rgba(34, 211, 238, 0.3); }
-    50%       { box-shadow: 0 0 28px rgba(34, 211, 238, 0.65); }
+    0%, 100% { box-shadow: 0 0 12px rgba(245, 158, 11, 0.3); }
+    50%       { box-shadow: 0 0 28px rgba(245, 158, 11, 0.6); }
   }
 
   @keyframes shimmer {
@@ -282,13 +307,13 @@ button.secondary:disabled {
   }
 }
 
-/* ── History table column helpers (used by DashboardPage) ──────── */
+/* ── History table helpers ────────────────────────────────────── */
 .history-time {
   font-variant-numeric: tabular-nums;
-  color: #94a3b8;
+  color: #9ca3af;
 }
 
 .history-date {
   font-size: 0.78rem;
-  color: #475569;
+  color: #6b7280;
 }

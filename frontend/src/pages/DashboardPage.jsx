@@ -12,7 +12,6 @@ import {
 } from "../data/progress.js";
 import { getTheme } from "../data/themes.js";
 import STAGES, { getStage } from "../data/stages.js";
-import NavBar from "../components/NavBar.jsx";
 import "./DashboardPage.css";
 
 // DashboardPage — shows a learner's full attempt history and aggregate stats.
@@ -78,7 +77,6 @@ function DashboardPage() {
   if (attempts.length === 0) {
     return (
       <div className="dash-page">
-        <NavBar />
         <div className="dash-content">
           <div className="card dash-empty-card">
             <button className="back-btn" onClick={() => navigate("/")}>
@@ -103,7 +101,6 @@ function DashboardPage() {
   // ── Main dashboard ───────────────────────────────────────────────────────
   return (
     <div className="dash-page">
-      <NavBar />
       <div className="dash-content">
 
         {/* ── Welcome Banner ─────────────────────────────────── */}

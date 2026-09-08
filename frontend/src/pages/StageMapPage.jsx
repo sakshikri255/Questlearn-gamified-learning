@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import STAGES from "../data/stages.js";
+import PERSONAS from "../data/personas.js";
 import { loadProfile } from "../data/progress.js";
 import "./StageMapPage.css";
 
 function StageMapPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [profile, setProfile] = useState(null);
+  const [selectedPersona, setSelectedPersona] = useState(
+    searchParams.get("persona") ?? PERSONAS[0].id
+  );
 
   useEffect(() => {
     setProfile(loadProfile());
@@ -33,7 +38,7 @@ function StageMapPage() {
   }
 
   function handleLaunch(stage) {
-    navigate(`/mission?stageId=${stage.id}`);
+    navigate(`/mission?stageId=${stage.id}&persona=${selectedPersona}`);
   }
 
   return (
@@ -42,6 +47,26 @@ function StageMapPage() {
         <button className="back-btn" onClick={() => navigate("/")}>← Back to Home</button>
         <h1 className="stagemap-title">🗺️ Stage Map</h1>
         <p className="stagemap-subtitle">Complete stages to unlock new challenges.</p>
+
+        {/* Persona selector on stage map */}
+        <div className="stagemap-persona-row">
+          <span className="stagemap-persona-label">Playing as:</span>
+          <div className="stagemap-persona-chips">
+            {PERSONAS.map((p) => {
+              const active = selectedPersona === p.id;
+              return (
+                <button
+                  key={p.id}
+                  className={`stagemap-persona-chip ${active ? "stagemap-persona-chip--active" : ""}`}
+                  style={active ? { borderColor: p.accent, color: p.accent } : {}}
+                  onClick={() => setSelectedPersona(p.id)}
+                >
+                  {p.emoji} {p.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="stagemap-path">
           {STAGES.map((stage, idx) => {
