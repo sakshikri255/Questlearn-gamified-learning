@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../components/NavBar.jsx";
 import "./TopicsPage.css";
 
 // TopicsPage — displays all topics fetched from /api/topics.
@@ -24,7 +23,6 @@ function TopicsPage() {
   if (loading) {
     return (
       <div className="topics-page">
-        <NavBar />
         <p className="topics-loading">Loading topics…</p>
       </div>
     );
@@ -33,7 +31,6 @@ function TopicsPage() {
   if (error) {
     return (
       <div className="topics-page">
-        <NavBar />
         <div className="topics-error card">{error}</div>
       </div>
     );
@@ -41,7 +38,6 @@ function TopicsPage() {
 
   return (
     <div className="topics-page">
-      <NavBar />
       <div className="topics-content">
         <div className="topics-header">
           <button className="back-btn" onClick={() => navigate("/")}>← Back to Home</button>
@@ -90,9 +86,6 @@ function TopicsPage() {
                           })}
                         >
                           <span className="subtopic-name">{sub.name}</span>
-                          <span className="subtopic-meta">
-                            {sub.questionCount} question{sub.questionCount !== 1 ? "s" : ""}
-                          </span>
                           <span className="subtopic-arrow">▶ Start Quiz</span>
                         </button>
                       </li>

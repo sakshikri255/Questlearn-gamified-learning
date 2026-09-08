@@ -1,6 +1,9 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const { getQuestionBatch, getPersonaQuestion, findQuestion, rememberQuestion } = require("./adaptiveQuizService");
 
 const app = express();
 const PORT = 3001;
@@ -41,7 +44,30 @@ app.get("/api/question", (req, res) => {
   if (!question) {
     return res.status(404).json({ error: "No question found." });
   }
-  res.json(question);
+  res.json(rememberQuestion(question));
+});
+
+// POST /api/question generates one persona-aware quest question.
+app.post("/api/question", async (req, res) => {
+  const { persona, topic, stageId = "beginner", difficulty = "Beginner", questionIndex, requestId } = req.body || {};
+  const question = await getPersonaQuestion({ questions, stageId, topic, persona, difficulty, questionIndex, requestId });
+  if (!question) return res.status(404).json({ error: "No question found." });
+  res.json(rememberQuestion(question));
+});
+
+// -------------------------------------------------------
+// GET /api/quiz/batch
+// Returns five Gemini-generated questions, or questions.json fallback data.
+// -------------------------------------------------------
+app.get("/api/quiz/batch", async (req, res) => {
+  const { subtopicId, subtopicName, difficulty = "Beginner" } = req.query;
+  const result = await getQuestionBatch({
+    questions,
+    subtopicId,
+    subtopicName,
+    difficulty,
+  });
+  res.json(result);
 });
 
 // -------------------------------------------------------
@@ -140,7 +166,7 @@ app.post("/api/submit", (req, res) => {
     return res.status(400).json({ error: "Please fill in all fields before submitting." });
   }
 
-  const question = questions.find((q) => q.id === Number(questionId));
+  const question = findQuestion(questionId, questions);
   if (!question) {
     return res.status(404).json({ error: "Question not found." });
   }
