@@ -20,6 +20,8 @@ import INITIAL_LEAGUE_DATA from "../data/leagueData.js";
 import PageTransition from "../components/PageTransition.jsx";
 import "./MissionPage.css";
 
+const MISSION_TIMER_SECONDS = 90;
+
 // ── Sage: count "simple" words in explanation ────────────────────────────────
 const SIMPLE_WORDS = ["simply", "basically", "means", "like", "so", "example",
   "think of", "in other words", "just", "easy", "clear", "because", "when", "if"];
@@ -56,7 +58,32 @@ function MissionPage() {
   const [showSplash, setShowSplash] = useState(false); // persona result splash
   const [splashCorrect, setSplashCorrect] = useState(false);
   const timerRef = useRef(null);
+  const [timerRemaining, setTimerRemaining] = useState(MISSION_TIMER_SECONDS);
+  const [timerActive, setTimerActive] = useState(false);
   const questionStartRef = useRef(null);
+  const timerRef = useRef(null);
+
+  // Start/stop the countdown timer
+  const startTimer = useCallback(() => {
+    setTimerRemaining(MISSION_TIMER_SECONDS);
+    setTimerActive(true);
+  }, []);
+
+  const stopTimer = useCallback(() => {
+    setTimerActive(false);
+    clearInterval(timerRef.current);
+  }, []);
+
+  useEffect(() => {
+    if (!timerActive) { clearInterval(timerRef.current); return; }
+    timerRef.current = setInterval(() => {
+      setTimerRemaining((r) => {
+        if (r <= 1) { clearInterval(timerRef.current); return 0; }
+        return r - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [timerActive]);
 
   // Sage simplicity score (live)
   const sageScore = persona.id === "sage" ? simplicityScore(explanation) : 0;
@@ -68,6 +95,7 @@ function MissionPage() {
         setQuestion(data);
         questionStartRef.current = Date.now();
         setStatus("question");
+        startTimer();
       })
       .catch(() => {
         setError("Could not load the question. Is the backend running?");
@@ -93,6 +121,7 @@ function MissionPage() {
     if (explanation.trim() === "") { setError("Please explain your reasoning before submitting."); return; }
     clearInterval(timerRef.current);
     setError("");
+    stopTimer();
     try {
       const res = await fetch("/api/submit", {
         method: "POST",
@@ -158,6 +187,7 @@ function MissionPage() {
         coinsEarned: earned.coins, xpEarned: earned.xp,
       });
       setComparisons(buildComparisons(updatedAttempts));
+      setTimerActive(false);
       // status is set to "result" after splash finishes via handleSplashDone
 
       if (!isCorrect && question) {
@@ -356,6 +386,9 @@ function MissionPage() {
     );
   }
 
+  const timerPct  = (timerRemaining / MISSION_TIMER_SECONDS) * 100;
+  const timerWarn = timerRemaining <= 20;
+
   // ── QUESTION PAGE ─────────────────────────────────────────────────────────
   return (
     <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
@@ -402,6 +435,23 @@ function MissionPage() {
 
         <StoryHeader />
         <h2 className="mission-heading" style={{ color: persona.accent }}>Mission — {stage.name}</h2>
+
+        {/* ── Timer bar ─────────────────────────────────────────── */}
+        <div className="mission-timer-row">
+          <div className={`mission-timer-track ${timerWarn ? "mission-timer-track--warn" : ""}`}>
+            <div
+              className={`mission-timer-fill ${timerWarn ? "mission-timer-fill--warn" : ""}`}
+              style={{ width: `${timerPct}%`, transition: "width 1s linear" }}
+            />
+          </div>
+          <span className={`mission-timer-label ${timerWarn ? "mission-timer-label--warn" : ""}`}>
+            ⏱ {timerRemaining}s
+          </span>
+        </div>
+
+        {timerRemaining === 0 && (
+          <p className="mission-timer-expired">⏰ Time expired — you can still submit!</p>
+        )}
 
         {/* Question block — styled differently per persona */}
         <p className={`question-text question-text--${persona.id}`}>{question?.question}</p>

@@ -7,6 +7,8 @@ import {
   simulateEndOfRound,
   loadProfile,
   saveProfile,
+  loadAttempts,
+  computeStats,
 } from "../data/progress.js";
 import { motion } from "framer-motion";
 import PageTransition from "../components/PageTransition.jsx";
@@ -31,14 +33,36 @@ function getZoneLabel(rank) {
   return { label: "Relegated", className: "zone-pill zone-pill--relegated" };
 }
 
+/** Computes a composite score: accuracy (0-100) weighted 70% + speed (0-100) weighted 30%.
+ *  Speed score is derived from average answer time: ≤15s = 100, ≥120s = 0. */
+function computeCompositeScore(accuracy, avgMs) {
+  const speedScore = avgMs <= 0 ? 0 : Math.max(0, Math.min(100, Math.round(((120000 - avgMs) / 105000) * 100)));
+  return Math.round(accuracy * 0.7 + speedScore * 0.3);
+}
+
 function LeaderboardPage() {
   const navigate = useNavigate();
   const [league, setLeague] = useState(() => loadLeague(INITIAL_LEAGUE_DATA));
   const [profile, setProfile] = useState(() => loadProfile());
   const [simMessage, setSimMessage] = useState("");
 
-  // Sort by coins descending
-  const sorted = [...league].sort((a, b) => b.coins - a.coins);
+  // Compute the player's composite score from attempt history
+  const playerAttempts = loadAttempts();
+  const playerStats    = computeStats(playerAttempts);
+  const playerScore    = computeCompositeScore(playerStats.accuracy, playerStats.avgMs);
+
+  // Assign a composite score to each league entry.
+  // NPCs get a deterministic score based on their coin total (for display).
+  const leagueWithScores = league.map((u) => {
+    if (u.isPlayer) return { ...u, score: playerScore };
+    // NPC score: derived from coins so ranking feels consistent
+    const npcAccuracy = Math.min(100, 40 + Math.round((u.coins / 5000) * 60));
+    const npcAvgMs    = Math.max(8000, 120000 - u.coins * 20);
+    return { ...u, score: computeCompositeScore(npcAccuracy, npcAvgMs) };
+  });
+
+  // Sort by score descending, then coins as tiebreaker
+  const sorted = [...leagueWithScores].sort((a, b) => b.score - a.score || b.coins - a.coins);
 
   function handleSimulate() {
     const updated = simulateEndOfRound(league);
@@ -77,6 +101,7 @@ function LeaderboardPage() {
               <tr>
                 <th>Rank</th>
                 <th>Name</th>
+                <th>Score</th>
                 <th>League Level</th>
                 <th>Coins</th>
                 <th>Zone</th>
@@ -100,6 +125,12 @@ function LeaderboardPage() {
                     <td className="lb-name">
                       {user.name}
                       {user.isPlayer && <span className="lb-you-badge">YOU</span>}
+                    </td>
+                    <td className="lb-score">
+                      <span className="lb-score-bar-wrap">
+                        <span className="lb-score-bar" style={{ width: `${user.score ?? 0}%` }} />
+                      </span>
+                      <span className="lb-score-val">{user.score ?? 0}</span>
                     </td>
                     <td className="lb-level">{user.leagueLevel ?? "Beginner"}</td>
                     <td className="lb-coins">{user.coins.toLocaleString()} 🪙</td>

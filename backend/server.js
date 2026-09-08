@@ -23,9 +23,7 @@ const PERSONA_MESSAGES = {
 };
 
 // --- Middleware ---
-// Allow the Vite dev server (port 5173) to call this API
 app.use(cors({ origin: "http://localhost:5173" }));
-// Parse incoming JSON request bodies
 app.use(express.json());
 
 // --- Load question data from the JSON file ---
@@ -33,7 +31,7 @@ const questions = require("./data/questions.json");
 
 // -------------------------------------------------------
 // GET /api/question
-// Returns the first question (id: 1) for the mission page.
+// Returns a random question from the given stageId pool.
 // -------------------------------------------------------
 app.get("/api/question", (req, res) => {
   const { stageId } = req.query;
@@ -46,6 +44,9 @@ app.get("/api/question", (req, res) => {
   res.json(question);
 });
 
+// -------------------------------------------------------
+// GET /api/questions/stage/:stageId
+// -------------------------------------------------------
 app.get("/api/questions/stage/:stageId", (req, res) => {
   const { stageId } = req.params;
   const result = questions
@@ -58,32 +59,87 @@ app.get("/api/questions/stage/:stageId", (req, res) => {
 });
 
 // -------------------------------------------------------
+// GET /api/topics
+// Returns all topics with their subtopics (no questions).
+// -------------------------------------------------------
+app.get("/api/topics", (req, res) => {
+  const topicMap = {};
+  for (const q of questions) {
+    if (!q.topicId) continue;
+    if (!topicMap[q.topicId]) {
+      topicMap[q.topicId] = {
+        id: q.topicId,
+        name: q.topicName ?? q.topicId,
+        emoji: q.topicEmoji ?? "📚",
+        subtopics: {},
+      };
+    }
+    if (!q.subtopicId) continue;
+    if (!topicMap[q.topicId].subtopics[q.subtopicId]) {
+      topicMap[q.topicId].subtopics[q.subtopicId] = {
+        id: q.subtopicId,
+        name: q.subtopicName ?? q.subtopicId,
+        questionCount: 0,
+      };
+    }
+    topicMap[q.topicId].subtopics[q.subtopicId].questionCount++;
+  }
+  // Convert subtopics object to array
+  const result = Object.values(topicMap).map((t) => ({
+    ...t,
+    subtopics: Object.values(t.subtopics),
+  }));
+  res.json(result);
+});
+
+// -------------------------------------------------------
+// GET /api/quiz/:subtopicId
+// Returns all questions for a given subtopic (full data).
+// -------------------------------------------------------
+app.get("/api/quiz/:subtopicId", (req, res) => {
+  const { subtopicId } = req.params;
+  const pool = questions.filter((q) => q.subtopicId === subtopicId);
+  if (!pool.length) {
+    return res.status(404).json({ error: "No questions found for that subtopic." });
+  }
+  res.json(pool);
+});
+
+// -------------------------------------------------------
+// GET /api/daily-challenge
+// Returns up to 5 questions for today's daily challenge.
+// The selection is deterministic for the calendar day so
+// the same questions are shown until midnight.
+// -------------------------------------------------------
+app.get("/api/daily-challenge", (req, res) => {
+  const today = new Date();
+  const seed =
+    today.getFullYear() * 10000 +
+    (today.getMonth() + 1) * 100 +
+    today.getDate();
+
+  // Simple deterministic shuffle using seed
+  const shuffled = [...questions].sort((a, b) => {
+    const ha = ((a.id * 2654435761 + seed) >>> 0) % 100000;
+    const hb = ((b.id * 2654435761 + seed) >>> 0) % 100000;
+    return ha - hb;
+  });
+
+  const daily = shuffled.slice(0, 5);
+  res.json({ date: today.toISOString().slice(0, 10), questions: daily });
+});
+
+// -------------------------------------------------------
 // POST /api/submit
 // Body: { questionId, selectedOption, explanation }
-//
-// Returns:
-//   {
-//     correct:          boolean  — did the user pick the right option?
-//     chapterUnlocked:  boolean  — true only when correct AND explanation passes quality checks
-//     feedback:         string   — primary result message shown to the user
-//     hint:             string   — non-empty only when correct but chapter not unlocked
-//     explanation:      string   — the canonical explanation from the question bank
-//   }
-//
-// Explanation quality rules (all stored per-question in questions.json):
-//   1. Length must be >= minExplanationLength characters.
-//   2. At least one keyword from the `keywords` array must appear in the text
-//      (case-insensitive).
 // -------------------------------------------------------
 app.post("/api/submit", (req, res) => {
   const { questionId, selectedOption, explanation, personaId } = req.body;
 
-  // Basic validation
   if (!questionId || !selectedOption || !explanation || explanation.trim() === "") {
     return res.status(400).json({ error: "Please fill in all fields before submitting." });
   }
 
-  // Find the question by id
   const question = questions.find((q) => q.id === Number(questionId));
   if (!question) {
     return res.status(404).json({ error: "Question not found." });
@@ -100,14 +156,12 @@ app.post("/api/submit", (req, res) => {
   const personaKeywords  = personaData ? personaData.keywords : [];
   // Must satisfy BOTH: at least one question keyword AND at least one persona keyword (if persona is set)
   const allKeywords = [...new Set([...questionKeywords, ...personaKeywords])];
-
   let chapterUnlocked = false;
   let hint = "";
 
   if (isCorrect) {
     const trimmed = explanation.trim();
     const lower = trimmed.toLowerCase();
-
     const longEnough = trimmed.length >= (question.minExplanationLength ?? 20);
     const hasQuestionKeyword = questionKeywords.length === 0 || questionKeywords.some((kw) => lower.includes(kw.toLowerCase()));
     const hasPersonaKeyword  = personaKeywords.length === 0  || personaKeywords.some((kw) => lower.includes(kw.toLowerCase()));
@@ -142,7 +196,46 @@ app.post("/api/submit", (req, res) => {
     personaSuccessMsg: personaMsgs?.success ?? null,
     personaChapterMsg: personaMsgs?.chapter ?? null,
     personaFailMsg:    personaMsgs?.fail    ?? null,
+    correctOption: question.correctOption,
   });
+});
+
+// -------------------------------------------------------
+// POST /api/quiz/submit-batch
+// Body: { answers: [{ questionId, selectedOption }] }
+// Returns per-question results + aggregate score.
+// Used by the timed topic quiz flow.
+// -------------------------------------------------------
+app.post("/api/quiz/submit-batch", (req, res) => {
+  const { answers } = req.body;
+  if (!Array.isArray(answers) || answers.length === 0) {
+    return res.status(400).json({ error: "answers array required." });
+  }
+
+  const results = answers.map(({ questionId, selectedOption }) => {
+    const q = questions.find((qq) => qq.id === Number(questionId));
+    if (!q) return { questionId, error: "not found" };
+    const correct = selectedOption === q.correctOption;
+    return {
+      questionId: q.id,
+      question: q.question,
+      options: q.options,
+      selectedOption,
+      correctOption: q.correctOption,
+      correct,
+      explanation: q.explanation,
+      concept: q.concept,
+      topicId: q.topicId ?? null,
+      subtopicId: q.subtopicId ?? null,
+      subtopicName: q.subtopicName ?? null,
+    };
+  });
+
+  const correct = results.filter((r) => r.correct).length;
+  const total = results.length;
+  const score = Math.round((correct / total) * 100);
+
+  res.json({ results, correct, total, score });
 });
 
 // --- Start the server ---

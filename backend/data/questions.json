@@ -2,6 +2,11 @@
   {
     "id": 1,
     "stageId": "beginner",
+    "topicId": "js-types",
+    "topicName": "JavaScript Types & Variables",
+    "topicEmoji": "🔤",
+    "subtopicId": "type-quirks",
+    "subtopicName": "Type Quirks",
     "question": "What does the following JavaScript code print?\n\nconsole.log(typeof null);",
     "options": [
       { "id": "A", "text": "\"null\"" },
@@ -19,6 +24,11 @@
   {
     "id": 2,
     "stageId": "beginner",
+    "topicId": "js-types",
+    "topicName": "JavaScript Types & Variables",
+    "topicEmoji": "🔤",
+    "subtopicId": "variables",
+    "subtopicName": "Variable Declarations",
     "question": "Which of the following correctly declares a constant in JavaScript?",
     "options": [
       { "id": "A", "text": "var PI = 3.14;" },
@@ -36,6 +46,11 @@
   {
     "id": 3,
     "stageId": "beginner",
+    "topicId": "js-types",
+    "topicName": "JavaScript Types & Variables",
+    "topicEmoji": "🔤",
+    "subtopicId": "type-quirks",
+    "subtopicName": "Type Quirks",
     "question": "What will the following code output?\n\nconsole.log(0.1 + 0.2 === 0.3);",
     "options": [
       { "id": "A", "text": "true" },
@@ -53,6 +68,11 @@
   {
     "id": 4,
     "stageId": "beginner",
+    "topicId": "js-types",
+    "topicName": "JavaScript Types & Variables",
+    "topicEmoji": "🔤",
+    "subtopicId": "operators",
+    "subtopicName": "Operators",
     "question": "What is the output of the following code?\n\nlet x = 5;\nconsole.log(x++);",
     "options": [
       { "id": "A", "text": "6" },
@@ -70,6 +90,11 @@
   {
     "id": 5,
     "stageId": "explorer",
+    "topicId": "js-functions",
+    "topicName": "JavaScript Functions",
+    "topicEmoji": "⚡",
+    "subtopicId": "arrow-functions",
+    "subtopicName": "Arrow Functions",
     "question": "What does the following arrow function return?\n\nconst double = x => x * 2;\nconsole.log(double(7));",
     "options": [
       { "id": "A", "text": "7" },
@@ -87,6 +112,11 @@
   {
     "id": 6,
     "stageId": "explorer",
+    "topicId": "js-arrays",
+    "topicName": "JavaScript Arrays",
+    "topicEmoji": "📋",
+    "subtopicId": "array-methods",
+    "subtopicName": "Array Methods",
     "question": "What will the following code log?\n\nconst arr = [1, 2, 3];\nconsole.log(arr.map(n => n * n));",
     "options": [
       { "id": "A", "text": "[1, 4, 9]" },
@@ -104,6 +134,11 @@
   {
     "id": 7,
     "stageId": "explorer",
+    "topicId": "js-arrays",
+    "topicName": "JavaScript Arrays",
+    "topicEmoji": "📋",
+    "subtopicId": "array-methods",
+    "subtopicName": "Array Methods",
     "question": "What is the value of `result` after this code runs?\n\nconst result = [1, 2, 3, 4].filter(n => n % 2 === 0);",
     "options": [
       { "id": "A", "text": "[1, 3]" },
@@ -121,6 +156,11 @@
   {
     "id": 8,
     "stageId": "challenger",
+    "topicId": "js-objects",
+    "topicName": "JavaScript Objects",
+    "topicEmoji": "📦",
+    "subtopicId": "object-copy",
+    "subtopicName": "Object Copy & Reference",
     "question": "What is the output?\n\nconst obj = { a: 1 };\nconst copy = Object.assign({}, obj);\ncopy.a = 99;\nconsole.log(obj.a);",
     "options": [
       { "id": "A", "text": "99" },
@@ -138,6 +178,11 @@
   {
     "id": 9,
     "stageId": "challenger",
+    "topicId": "js-advanced",
+    "topicName": "Advanced JavaScript",
+    "topicEmoji": "🚀",
+    "subtopicId": "generators",
+    "subtopicName": "Generators",
     "question": "What does the following code output?\n\nfunction* gen() {\n  yield 1;\n  yield 2;\n  yield 3;\n}\nconst g = gen();\nconsole.log(g.next().value);",
     "options": [
       { "id": "A", "text": "undefined" },
@@ -155,6 +200,11 @@
   {
     "id": 10,
     "stageId": "challenger",
+    "topicId": "algorithms",
+    "topicName": "Algorithms & Complexity",
+    "topicEmoji": "🧮",
+    "subtopicId": "searching",
+    "subtopicName": "Searching Algorithms",
     "question": "What is the time complexity of binary search on a sorted array of n elements?",
     "options": [
       { "id": "A", "text": "O(n)" },
@@ -172,6 +222,11 @@
   {
     "id": 11,
     "stageId": "expert",
+    "topicId": "js-async",
+    "topicName": "Async JavaScript",
+    "topicEmoji": "⏳",
+    "subtopicId": "promises",
+    "subtopicName": "Promises",
     "question": "What will this code output?\n\nPromise.resolve(1)\n  .then(v => v + 1)\n  .then(v => { throw new Error('oops'); })\n  .then(v => console.log('then:', v))\n  .catch(e => console.log('catch:', e.message));",
     "options": [
       { "id": "A", "text": "then: 2" },
@@ -189,6 +244,11 @@
   {
     "id": 12,
     "stageId": "expert",
+    "topicId": "js-functions",
+    "topicName": "JavaScript Functions",
+    "topicEmoji": "⚡",
+    "subtopicId": "closures",
+    "subtopicName": "Closures",
     "question": "What is the output of the following closure example?\n\nfunction makeCounter() {\n  let count = 0;\n  return () => ++count;\n}\nconst c1 = makeCounter();\nconst c2 = makeCounter();\nc1(); c1();\nconsole.log(c2());",
     "options": [
       { "id": "A", "text": "3" },
@@ -206,6 +266,11 @@
   {
     "id": 13,
     "stageId": "expert",
+    "topicId": "algorithms",
+    "topicName": "Algorithms & Complexity",
+    "topicEmoji": "🧮",
+    "subtopicId": "data-structures",
+    "subtopicName": "Data Structures",
     "question": "Which data structure gives O(1) average time complexity for both insertion and lookup by key?",
     "options": [
       { "id": "A", "text": "Binary search tree" },
@@ -223,6 +288,11 @@
   {
     "id": 14,
     "stageId": "boss",
+    "topicId": "js-objects",
+    "topicName": "JavaScript Objects",
+    "topicEmoji": "📦",
+    "subtopicId": "object-copy",
+    "subtopicName": "Object Copy & Reference",
     "question": "Consider this JavaScript code:\n\nconst a = [1, 2, 3];\nconst b = a;\nb.push(4);\nconsole.log(a.length);",
     "options": [
       { "id": "A", "text": "3" },
@@ -240,6 +310,11 @@
   {
     "id": 15,
     "stageId": "boss",
+    "topicId": "js-async",
+    "topicName": "Async JavaScript",
+    "topicEmoji": "⏳",
+    "subtopicId": "async-await",
+    "subtopicName": "Async / Await",
     "question": "What is the output of this advanced async code?\n\nasync function foo() {\n  return 42;\n}\nasync function bar() {\n  const result = await foo();\n  console.log(result);\n}\nbar();",
     "options": [
       { "id": "A", "text": "Promise { 42 }" },
@@ -253,5 +328,225 @@
     "keywords": ["async", "await", "promise", "resolve", "unwrap", "fulfilled", "asynchronous"],
     "minExplanationLength": 35,
     "hint": "Explain the relationship between async/await and Promises — what does `await` do to the Promise returned by an async function?"
+  },
+  {
+    "id": 16,
+    "stageId": "beginner",
+    "topicId": "js-types",
+    "topicName": "JavaScript Types & Variables",
+    "topicEmoji": "🔤",
+    "subtopicId": "type-quirks",
+    "subtopicName": "Type Quirks",
+    "question": "What is the result of `'5' - 3` in JavaScript?",
+    "options": [
+      { "id": "A", "text": "\"53\"" },
+      { "id": "B", "text": "2" },
+      { "id": "C", "text": "NaN" },
+      { "id": "D", "text": "\"5-3\"" }
+    ],
+    "correctOption": "B",
+    "explanation": "In JavaScript the `-` operator has no string overload, so JS coerces the string '5' to the number 5 before subtracting 3, giving 2. The `+` operator would concatenate instead.",
+    "concept": "Arithmetic operators (except +) coerce strings to numbers",
+    "keywords": ["coerce", "type coercion", "subtract", "string", "number"],
+    "minExplanationLength": 20,
+    "hint": "Think about how JavaScript handles type coercion when using arithmetic operators other than +."
+  },
+  {
+    "id": 17,
+    "stageId": "beginner",
+    "topicId": "js-types",
+    "topicName": "JavaScript Types & Variables",
+    "topicEmoji": "🔤",
+    "subtopicId": "variables",
+    "subtopicName": "Variable Declarations",
+    "question": "Which keyword creates a variable whose scope is limited to the current block `{}`?",
+    "options": [
+      { "id": "A", "text": "var" },
+      { "id": "B", "text": "let" },
+      { "id": "C", "text": "global" },
+      { "id": "D", "text": "define" }
+    ],
+    "correctOption": "B",
+    "explanation": "`let` declares a block-scoped variable. Unlike `var` (which is function-scoped), a `let` binding is only visible inside the `{ }` block where it's declared. `global` and `define` are not standard JS variable keywords.",
+    "concept": "let is block-scoped, var is function-scoped",
+    "keywords": ["let", "block", "scope", "block-scoped", "var", "function-scoped"],
+    "minExplanationLength": 20,
+    "hint": "Contrast `let` and `var` — in which block does each one live?"
+  },
+  {
+    "id": 18,
+    "stageId": "explorer",
+    "topicId": "js-functions",
+    "topicName": "JavaScript Functions",
+    "topicEmoji": "⚡",
+    "subtopicId": "closures",
+    "subtopicName": "Closures",
+    "question": "What does the following code log?\n\nfunction outer() {\n  let x = 10;\n  function inner() { console.log(x); }\n  x = 20;\n  inner();\n}\nouter();",
+    "options": [
+      { "id": "A", "text": "10" },
+      { "id": "B", "text": "20" },
+      { "id": "C", "text": "undefined" },
+      { "id": "D", "text": "ReferenceError" }
+    ],
+    "correctOption": "B",
+    "explanation": "Closures capture a *reference* to the surrounding variable, not a snapshot of its value at creation time. By the time `inner()` is called, `x` has been updated to 20, so that's what the closure sees.",
+    "concept": "Closures capture a live reference, not a value snapshot",
+    "keywords": ["closure", "reference", "live", "variable", "lexical", "scope"],
+    "minExplanationLength": 20,
+    "hint": "Closures hold a reference to the variable in the outer scope, not the value at the time the closure was created."
+  },
+  {
+    "id": 19,
+    "stageId": "explorer",
+    "topicId": "js-arrays",
+    "topicName": "JavaScript Arrays",
+    "topicEmoji": "📋",
+    "subtopicId": "array-methods",
+    "subtopicName": "Array Methods",
+    "question": "What does `Array.prototype.reduce` return when called on `[1, 2, 3, 4]` with a callback `(acc, n) => acc + n` and initial value `0`?",
+    "options": [
+      { "id": "A", "text": "[1, 2, 3, 4]" },
+      { "id": "B", "text": "10" },
+      { "id": "C", "text": "4" },
+      { "id": "D", "text": "0" }
+    ],
+    "correctOption": "B",
+    "explanation": "`reduce` accumulates a single result by repeatedly applying the callback. Starting with 0, it computes 0+1=1, 1+2=3, 3+3=6, 6+4=10. The final accumulated value is 10.",
+    "concept": "Array.reduce folds all elements into a single accumulated value",
+    "keywords": ["reduce", "accumulate", "sum", "fold", "initial value", "callback"],
+    "minExplanationLength": 20,
+    "hint": "Walk through how `reduce` applies the callback step by step, accumulating a running total."
+  },
+  {
+    "id": 20,
+    "stageId": "challenger",
+    "topicId": "js-async",
+    "topicName": "Async JavaScript",
+    "topicEmoji": "⏳",
+    "subtopicId": "promises",
+    "subtopicName": "Promises",
+    "question": "Which method runs multiple promises in parallel and resolves when ALL of them have fulfilled?",
+    "options": [
+      { "id": "A", "text": "Promise.race()" },
+      { "id": "B", "text": "Promise.any()" },
+      { "id": "C", "text": "Promise.all()" },
+      { "id": "D", "text": "Promise.first()" }
+    ],
+    "correctOption": "C",
+    "explanation": "`Promise.all()` takes an array of promises and returns a new promise that resolves with an array of all fulfilled values once every promise has resolved. If any promise rejects, `Promise.all()` immediately rejects with that reason.",
+    "concept": "Promise.all resolves when every promise in the array fulfills",
+    "keywords": ["promise.all", "parallel", "all", "fulfill", "array", "resolve"],
+    "minExplanationLength": 20,
+    "hint": "Describe what happens when all promises succeed vs when one fails."
+  },
+  {
+    "id": 21,
+    "stageId": "challenger",
+    "topicId": "js-objects",
+    "topicName": "JavaScript Objects",
+    "topicEmoji": "📦",
+    "subtopicId": "prototypes",
+    "subtopicName": "Prototypes & Inheritance",
+    "question": "What is the result of `Object.keys({ a: 1, b: 2, c: 3 }).length`?",
+    "options": [
+      { "id": "A", "text": "0" },
+      { "id": "B", "text": "3" },
+      { "id": "C", "text": "6" },
+      { "id": "D", "text": "undefined" }
+    ],
+    "correctOption": "B",
+    "explanation": "`Object.keys()` returns an array of the object's own enumerable string property names. The object has three own properties (a, b, c), so the array has length 3.",
+    "concept": "Object.keys returns own enumerable property names",
+    "keywords": ["object.keys", "enumerable", "own", "property", "keys", "length"],
+    "minExplanationLength": 20,
+    "hint": "Object.keys returns only the object's own property names, not inherited ones."
+  },
+  {
+    "id": 22,
+    "stageId": "expert",
+    "topicId": "js-async",
+    "topicName": "Async JavaScript",
+    "topicEmoji": "⏳",
+    "subtopicId": "async-await",
+    "subtopicName": "Async / Await",
+    "question": "What happens if you use `await` outside of an `async` function?",
+    "options": [
+      { "id": "A", "text": "It works fine — await can be used anywhere" },
+      { "id": "B", "text": "SyntaxError: await is only valid inside async functions" },
+      { "id": "C", "text": "It returns undefined silently" },
+      { "id": "D", "text": "It converts the function to async automatically" }
+    ],
+    "correctOption": "B",
+    "explanation": "`await` is only valid inside an `async` function (or at the top level of a module in modern JS). Using it in a regular function body throws a SyntaxError at parse time.",
+    "concept": "await is only valid inside async functions",
+    "keywords": ["await", "async", "syntaxerror", "valid", "function", "module"],
+    "minExplanationLength": 20,
+    "hint": "Think about what the JavaScript parser requires before allowing the `await` keyword."
+  },
+  {
+    "id": 23,
+    "stageId": "expert",
+    "topicId": "algorithms",
+    "topicName": "Algorithms & Complexity",
+    "topicEmoji": "🧮",
+    "subtopicId": "sorting",
+    "subtopicName": "Sorting Algorithms",
+    "question": "What is the average-case time complexity of quicksort?",
+    "options": [
+      { "id": "A", "text": "O(n)" },
+      { "id": "B", "text": "O(n log n)" },
+      { "id": "C", "text": "O(n²)" },
+      { "id": "D", "text": "O(log n)" }
+    ],
+    "correctOption": "B",
+    "explanation": "Quicksort's average-case complexity is O(n log n) because it partitions the array around a pivot in O(n) and recursively sorts two halves, leading to log n levels of recursion on average. Worst case (already sorted, bad pivot) is O(n²).",
+    "concept": "Quicksort has O(n log n) average-case time complexity",
+    "keywords": ["quicksort", "pivot", "partition", "n log n", "average", "recursion"],
+    "minExplanationLength": 25,
+    "hint": "Explain what the pivot does and why average-case depth is logarithmic."
+  },
+  {
+    "id": 24,
+    "stageId": "boss",
+    "topicId": "js-advanced",
+    "topicName": "Advanced JavaScript",
+    "topicEmoji": "🚀",
+    "subtopicId": "event-loop",
+    "subtopicName": "Event Loop",
+    "question": "What is the output order of this code?\n\nconsole.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
+    "options": [
+      { "id": "A", "text": "A, B, C, D" },
+      { "id": "B", "text": "A, D, B, C" },
+      { "id": "C", "text": "A, D, C, B" },
+      { "id": "D", "text": "A, C, D, B" }
+    ],
+    "correctOption": "C",
+    "explanation": "Synchronous code runs first (A, D). Microtasks (Promise .then) run before macrotasks (setTimeout). So after the call stack clears, C runs (microtask queue), then B (macrotask/timer queue). Output: A → D → C → B.",
+    "concept": "Microtasks (Promises) run before macrotasks (setTimeout) in the event loop",
+    "keywords": ["event loop", "microtask", "macrotask", "settimeout", "promise", "queue", "order"],
+    "minExplanationLength": 30,
+    "hint": "Describe the difference between the microtask queue and the macrotask queue in the JavaScript event loop."
+  },
+  {
+    "id": 25,
+    "stageId": "boss",
+    "topicId": "js-functions",
+    "topicName": "JavaScript Functions",
+    "topicEmoji": "⚡",
+    "subtopicId": "arrow-functions",
+    "subtopicName": "Arrow Functions",
+    "question": "How does `this` behave differently inside an arrow function compared to a regular function?",
+    "options": [
+      { "id": "A", "text": "Arrow functions have their own `this` that is set at call time" },
+      { "id": "B", "text": "Arrow functions inherit `this` from the enclosing lexical scope" },
+      { "id": "C", "text": "`this` is always `undefined` in arrow functions" },
+      { "id": "D", "text": "Arrow functions and regular functions have identical `this` behaviour" }
+    ],
+    "correctOption": "B",
+    "explanation": "Arrow functions do not have their own `this` binding. Instead they capture `this` from the enclosing lexical context at definition time. Regular functions get a new `this` determined by how they are called (caller context, `bind`, `call`, `apply`).",
+    "concept": "Arrow functions inherit `this` lexically; regular functions bind `this` at call time",
+    "keywords": ["arrow", "this", "lexical", "binding", "regular function", "call", "enclosing"],
+    "minExplanationLength": 30,
+    "hint": "Explain the difference between lexical `this` binding (arrow) and dynamic `this` binding (regular function)."
   }
 ]

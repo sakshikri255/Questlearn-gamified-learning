@@ -3,12 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.css";
 
 const NAV_LINKS = [
-  { label: "Home",        path: "/",            emoji: "🏠" },
-  { label: "Stage Map",   path: "/stages",       emoji: "🗺️" },
-  { label: "Dashboard",   path: "/dashboard",    emoji: "📊" },
-  { label: "Leaderboard", path: "/leaderboard",  emoji: "🏆" },
-  { label: "Streaks",     path: "/streak",       emoji: "🔥" },
-  { label: "Museum",      path: "/museum",       emoji: "🏛️" },
+  { label: "Home",            path: "/",                emoji: "🏠" },
+  { label: "Daily Challenge", path: "/daily-challenge", emoji: "🌟" },
+  { label: "Topics",          path: "/topics",           emoji: "📚" },
+  { label: "Stage Map",       path: "/stages",           emoji: "🗺️" },
+  { label: "Leaderboard",     path: "/leaderboard",      emoji: "🏆" },
+  { label: "Streaks",         path: "/streak",           emoji: "🔥" },
+  { label: "Museum",          path: "/museum",           emoji: "🏛️" },
+  { label: "Dashboard",       path: "/dashboard",        emoji: "📊" },
 ];
 
 function NavBar() {
