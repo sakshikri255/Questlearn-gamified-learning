@@ -35,6 +35,37 @@ function simplicityScore(text) {
 // ── Detective: track which options have been "eliminated" ────────────────────
 // (right-click or long-press marks an option as eliminated)
 
+function PartyPopper({ active }) {
+  if (!active) return null;
+
+  const pieces = Array.from({ length: 26 }, (_, index) => ({
+    id: index,
+    left: 8 + (index * 3.5) % 84,
+    x: (index % 2 === 0 ? -1 : 1) * (30 + (index % 7) * 12),
+    y: 110 + (index % 5) * 18,
+    rotate: (index % 10) * 26 + (index * 13),
+    color: ["#f59e0b", "#22d3ee", "#34d399", "#a78bfa", "#f472b6", "#facc15"][index % 6],
+  }));
+
+  return (
+    <div className="party-popper" aria-hidden="true">
+      {pieces.map((piece) => (
+        <span
+          key={piece.id}
+          className="party-piece"
+          style={{
+            left: `${piece.left}%`,
+            background: piece.color,
+            "--x": `${piece.x}px`,
+            "--y": `${piece.y}px`,
+            "--r": `${piece.rotate}deg`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function MissionPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -61,7 +92,6 @@ function MissionPage() {
   const [timerRemaining, setTimerRemaining] = useState(MISSION_TIMER_SECONDS);
   const [timerActive, setTimerActive] = useState(false);
   const questionStartRef = useRef(null);
-  const timerRef = useRef(null);
 
   // Start/stop the countdown timer
   const startTimer = useCallback(() => {
@@ -316,9 +346,11 @@ function MissionPage() {
   // ── RESULT PAGE ───────────────────────────────────────────────────────────
   if (status === "result" && result) {
     return (
-      <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
-        <div className={`card result-card persona-card-theme--${persona.id}`}>
-          <StoryHeader />
+      <>
+        <PartyPopper active={Boolean(result.correct)} />
+        <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
+          <div className={`card result-card persona-card-theme--${persona.id}`}>
+            <StoryHeader />
           <div className="persona-badge" style={{ borderColor: persona.accent, color: persona.accent, background: persona.accentDim }}>
             {persona.emoji} {persona.name} Mode
           </div>
@@ -371,18 +403,19 @@ function MissionPage() {
             </div>
           )}
           <div className="result-explanation"><h3>Explanation</h3><p>{result.explanation}</p></div>
-          <div className="result-actions">
-            {!result.correct && (
-              <button className="primary" onClick={resetQuestion}>🔄 Try Again</button>
-            )}
-            {!result.correct && (<button className="secondary" onClick={() => navigate("/museum")}>🏛️ Visit Museum</button>)}
-            <button className="secondary" onClick={() => navigate("/dashboard")}>📊 Dashboard</button>
-            {stageId !== "beginner"
-              ? <button className="secondary" onClick={() => navigate("/stages")}>🗺️ Stage Map</button>
-              : <button className="secondary" onClick={() => navigate("/")}>🏠 Home</button>}
+            <div className="result-actions">
+              {!result.correct && (
+                <button className="primary" onClick={resetQuestion}>🔄 Try Again</button>
+              )}
+              {!result.correct && (<button className="secondary" onClick={() => navigate("/museum")}>🏛️ Visit Museum</button>)}
+              <button className="secondary" onClick={() => navigate("/dashboard")}>📊 Dashboard</button>
+              {stageId !== "beginner"
+                ? <button className="secondary" onClick={() => navigate("/stages")}>🗺️ Stage Map</button>
+                : <button className="secondary" onClick={() => navigate("/")}>🏠 Home</button>}
+            </div>
           </div>
-        </div>
-      </PageTransition>
+        </PageTransition>
+      </>
     );
   }
 
