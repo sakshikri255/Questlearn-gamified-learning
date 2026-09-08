@@ -1,12 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import STAGES from "../data/stages.js";
+import PERSONAS from "../data/personas.js";
 import { loadProfile } from "../data/progress.js";
+import { motion } from "framer-motion";
+import PageTransition from "../components/PageTransition.jsx";
 import "./StageMapPage.css";
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 function StageMapPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [profile, setProfile] = useState(null);
+  const [selectedPersona, setSelectedPersona] = useState(
+    searchParams.get("persona") ?? PERSONAS[0].id
+  );
 
   useEffect(() => {
     setProfile(loadProfile());
@@ -14,9 +34,9 @@ function StageMapPage() {
 
   if (!profile) {
     return (
-      <div className="stagemap-wrapper">
+      <PageTransition className="stagemap-wrapper">
         <p className="loading-text">Loading…</p>
-      </div>
+      </PageTransition>
     );
   }
 
@@ -33,24 +53,49 @@ function StageMapPage() {
   }
 
   function handleLaunch(stage) {
-    navigate(`/mission?stageId=${stage.id}`);
+    navigate(`/mission?stageId=${stage.id}&persona=${selectedPersona}`);
   }
 
   return (
-    <div className="stagemap-wrapper">
+    <PageTransition className="stagemap-wrapper">
       <div className="card stagemap-card">
         <button className="back-btn" onClick={() => navigate("/")}>← Back to Home</button>
         <h1 className="stagemap-title">🗺️ Stage Map</h1>
         <p className="stagemap-subtitle">Complete stages to unlock new challenges.</p>
 
-        <div className="stagemap-path">
+        {/* Persona selector on stage map */}
+        <div className="stagemap-persona-row">
+          <span className="stagemap-persona-label">Playing as:</span>
+          <div className="stagemap-persona-chips">
+            {PERSONAS.map((p) => {
+              const active = selectedPersona === p.id;
+              return (
+                <button
+                  key={p.id}
+                  className={`stagemap-persona-chip ${active ? "stagemap-persona-chip--active" : ""}`}
+                  style={active ? { borderColor: p.accent, color: p.accent } : {}}
+                  onClick={() => setSelectedPersona(p.id)}
+                >
+                  {p.emoji} {p.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <motion.div 
+          className="stagemap-path"
+          variants={listVariants}
+          initial="hidden"
+          animate="show"
+        >
           {STAGES.map((stage, idx) => {
             const unlocked = isUnlocked(stage);
             const completed = isCompleted(stage);
             const isCurrent = stage.id === currentStageId && !completed;
 
             return (
-              <div key={stage.id} className="stagemap-row">
+              <motion.div key={stage.id} className="stagemap-row" variants={itemVariants}>
                 {/* Connector line above (except first) */}
                 {idx > 0 && <div className="stagemap-connector" />}
 
@@ -94,17 +139,17 @@ function StageMapPage() {
                       : "🔒 Locked"}
                   </span>
                 </button>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
 
         <div className="stagemap-footer">
           <p className="stagemap-footer-xp">Your XP: <strong>{profile.totalXp ?? 0}</strong></p>
           <p className="stagemap-footer-coins">Your Coins: <strong>{profile.totalCoins ?? 0} 🪙</strong></p>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
 

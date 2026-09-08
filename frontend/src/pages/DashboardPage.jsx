@@ -12,8 +12,22 @@ import {
 } from "../data/progress.js";
 import { getTheme } from "../data/themes.js";
 import STAGES, { getStage } from "../data/stages.js";
-import NavBar from "../components/NavBar.jsx";
+import { motion } from "framer-motion";
+import PageTransition from "../components/PageTransition.jsx";
 import "./DashboardPage.css";
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 // DashboardPage — shows a learner's full attempt history and aggregate stats.
 //
@@ -77,8 +91,7 @@ function DashboardPage() {
   // ── Empty state ──────────────────────────────────────────────────────────
   if (attempts.length === 0) {
     return (
-      <div className="dash-page">
-        <NavBar />
+      <PageTransition className="dash-page">
         <div className="dash-content">
           <div className="card dash-empty-card">
             <button className="back-btn" onClick={() => navigate("/")}>
@@ -96,14 +109,13 @@ function DashboardPage() {
             </div>
           </div>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
   // ── Main dashboard ───────────────────────────────────────────────────────
   return (
-    <div className="dash-page">
-      <NavBar />
+    <PageTransition className="dash-page">
       <div className="dash-content">
 
         {/* ── Welcome Banner ─────────────────────────────────── */}
@@ -225,32 +237,37 @@ function DashboardPage() {
         </div>
 
         {/* ── Summary stat cards ─────────────────────────────── */}
-        <div className="stat-grid">
-          <div className="stat-card">
+        <motion.div 
+          className="stat-grid"
+          variants={listVariants}
+          initial="hidden"
+          animate="show"
+        >
+          <motion.div className="stat-card" variants={itemVariants}>
             <p className="stat-value">{stats.total}</p>
             <p className="stat-label">Total Attempts</p>
-          </div>
-          <div className="stat-card stat-card--accent">
+          </motion.div>
+          <motion.div className="stat-card stat-card--accent" variants={itemVariants}>
             <p className="stat-value">{stats.accuracy}%</p>
             <p className="stat-label">Accuracy</p>
-          </div>
-          <div className="stat-card">
+          </motion.div>
+          <motion.div className="stat-card" variants={itemVariants}>
             <p className="stat-value">{formatMs(stats.avgMs)}</p>
             <p className="stat-label">Avg. Time</p>
-          </div>
-          <div className={`stat-card ${answerStreak >= 2 ? "stat-card--streak" : ""}`}>
+          </motion.div>
+          <motion.div className={`stat-card ${answerStreak >= 2 ? "stat-card--streak" : ""}`} variants={itemVariants}>
             <p className="stat-value">{answerStreak === 0 ? "—" : `${answerStreak}🔥`}</p>
             <p className="stat-label">Answer Streak</p>
-          </div>
-          <div className="stat-card stat-card--coins">
+          </motion.div>
+          <motion.div className="stat-card stat-card--coins" variants={itemVariants}>
             <p className="stat-value">{(profile?.totalCoins ?? 0).toLocaleString()} 🪙</p>
             <p className="stat-label">Total Coins</p>
-          </div>
-          <div className="stat-card stat-card--xp">
+          </motion.div>
+          <motion.div className="stat-card stat-card--xp" variants={itemVariants}>
             <p className="stat-value">{(profile?.totalXp ?? 0).toLocaleString()} XP</p>
             <p className="stat-label">Total XP</p>
-          </div>
-          <div
+          </motion.div>
+          <motion.div
             className={`stat-card stat-card--streak-daily ${streak && computeStreakState(streak).state === "at-risk" ? "stat-card--streak-risk" : ""}`}
             style={{ cursor: "pointer" }}
             onClick={() => navigate("/streak")}
@@ -262,8 +279,8 @@ function DashboardPage() {
                 : "—"}
             </p>
             <p className="stat-label">Daily Streak</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* ── Streak calendar link ─────────────────────────────── */}
         <div className="streak-dash-link-row">
@@ -359,7 +376,7 @@ function DashboardPage() {
         </div>
 
       </div>
-    </div>
+    </PageTransition>
   );
 }
 

@@ -1,5 +1,7 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import NavBar from "./components/NavBar.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import MissionPage from "./pages/MissionPage.jsx";
 import MuseumPage from "./pages/MuseumPage.jsx";
@@ -12,10 +14,12 @@ import TopicsPage from "./pages/TopicsPage.jsx";
 import TopicQuizPage from "./pages/TopicQuizPage.jsx";
 import PostQuizResultsPage from "./pages/PostQuizResultsPage.jsx";
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+  
   return (
-    <BrowserRouter>
-      <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         <Route path="/" element={<HomePage />} />
         <Route path="/mission" element={<MissionPage />} />
         <Route path="/museum" element={<MuseumPage />} />
@@ -28,6 +32,15 @@ function App() {
         <Route path="/quiz/:subtopicId" element={<TopicQuizPage />} />
         <Route path="/quiz-results" element={<PostQuizResultsPage />} />
       </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <NavBar />
+      <AnimatedRoutes />
     </BrowserRouter>
   );
 }

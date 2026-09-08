@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTheme } from "../data/themes.js";
+import PageTransition from "../components/PageTransition.jsx";
 import "./MuseumPage.css";
 
 // MuseumPage — displays all incorrectly-answered questions saved in localStorage.
@@ -58,7 +59,7 @@ function MuseumPage() {
   // ── Render: empty state ──────────────────────────────────
   if (mistakes.length === 0) {
     return (
-      <div className="museum-wrapper">
+      <PageTransition className="museum-wrapper">
         <div className="card museum-empty-card">
           <button className="back-btn" onClick={() => navigate("/")}>
             ← Back to Home
@@ -75,13 +76,13 @@ function MuseumPage() {
             </button>
           </div>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
   // ── Render: mistake cards ────────────────────────────────
   return (
-    <div className="museum-wrapper">
+    <PageTransition className="museum-wrapper">
       <div className="museum-inner">
         {/* Header */}
         <div className="museum-header">
@@ -178,7 +179,7 @@ function MuseumPage() {
           </div>
         )}
       </div>
-    </div>
+    </PageTransition>
   );
 }
 

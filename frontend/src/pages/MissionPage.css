@@ -1,3 +1,523 @@
+
+/* ═══════════════════════════════════════════════════════════════
+   PERSONA BACKGROUNDS — full-page tinted backgrounds
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Scientist: cold clinical blue-white tint */
+.persona-bg--scientist {
+  background: radial-gradient(ellipse at top, rgba(34,211,238,0.07) 0%, transparent 70%),
+              var(--bg, #0b1220);
+}
+
+/* Detective: dark noir sepia tint */
+.persona-bg--detective {
+  background: radial-gradient(ellipse at top left, rgba(245,158,11,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at bottom right, rgba(120,80,20,0.06) 0%, transparent 60%),
+              var(--bg, #0b1220);
+}
+
+/* Wizard: deep purple mystical tint */
+.persona-bg--wizard {
+  background: radial-gradient(ellipse at top, rgba(167,139,250,0.12) 0%, transparent 65%),
+              radial-gradient(ellipse at bottom, rgba(109,40,217,0.08) 0%, transparent 60%),
+              var(--bg, #0b1220);
+}
+
+/* Warrior: aggressive red tint */
+.persona-bg--warrior {
+  background: radial-gradient(ellipse at top, rgba(239,68,68,0.1) 0%, transparent 65%),
+              var(--bg, #0b1220);
+}
+
+/* Sage: calm earthy green tint */
+.persona-bg--sage {
+  background: radial-gradient(ellipse at top, rgba(52,211,153,0.08) 0%, transparent 65%),
+              radial-gradient(ellipse at bottom left, rgba(16,185,129,0.05) 0%, transparent 60%),
+              var(--bg, #0b1220);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PERSONA CARD THEMES — card border & accent override
+   ═══════════════════════════════════════════════════════════════ */
+.persona-card-theme--scientist { border-color: rgba(34,211,238,0.25) !important; }
+.persona-card-theme--detective { border-color: rgba(245,158,11,0.25) !important; }
+.persona-card-theme--wizard    { border-color: rgba(167,139,250,0.35) !important; box-shadow: 0 0 32px rgba(167,139,250,0.1), inset 0 1px 0 rgba(167,139,250,0.08) !important; }
+.persona-card-theme--warrior   { border-color: rgba(239,68,68,0.3)   !important; }
+.persona-card-theme--sage      { border-color: rgba(52,211,153,0.25) !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   QUESTION TEXT — per-persona style
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Scientist: clinical table-like block */
+.question-text--scientist {
+  border-left-color: #22d3ee !important;
+  background: rgba(8,26,38,0.9) !important;
+  color: #e0f7fa !important;
+  font-family: "Courier New", monospace;
+}
+
+/* Detective: typewriter / old paper look */
+.question-text--detective {
+  border-left-color: #f59e0b !important;
+  background: rgba(30,20,5,0.9) !important;
+  color: #fde68a !important;
+  font-family: "Courier New", monospace;
+  letter-spacing: 0.01em;
+}
+
+/* Wizard: glowing scroll */
+.question-text--wizard {
+  border-left-color: #a78bfa !important;
+  background: rgba(30,10,50,0.9) !important;
+  color: #e9d5ff !important;
+  font-family: Georgia, serif;
+  font-style: italic;
+  box-shadow: 0 0 16px rgba(167,139,250,0.15) !important;
+}
+
+/* Warrior: bold stark block */
+.question-text--warrior {
+  border-left-color: #ef4444 !important;
+  border-left-width: 5px !important;
+  background: rgba(40,5,5,0.9) !important;
+  color: #fecaca !important;
+  font-weight: 600;
+}
+
+/* Sage: warm readable style */
+.question-text--sage {
+  border-left-color: #34d399 !important;
+  background: rgba(5,25,15,0.9) !important;
+  color: #d1fae5 !important;
+  font-family: Georgia, serif;
+  line-height: 1.85;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   OPTION BUTTONS — per-persona style
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Scientist: clean clinical rows */
+.option-btn--scientist {
+  border-radius: 6px !important;
+  font-family: "Courier New", monospace !important;
+  font-size: 0.9rem !important;
+}
+.option-btn--scientist.selected {
+  border-color: #22d3ee !important;
+  background: rgba(34,211,238,0.08) !important;
+}
+.option-btn--scientist:hover:not(:disabled) {
+  border-color: #22d3ee !important;
+  background: rgba(34,211,238,0.06) !important;
+}
+.option-id--scientist { color: #22d3ee; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* Detective: dark noir cards */
+.option-btn--detective {
+  background: rgba(20,14,4,0.85) !important;
+  border-color: rgba(245,158,11,0.2) !important;
+  border-radius: 4px !important;
+  font-family: "Courier New", monospace !important;
+}
+.option-btn--detective.selected {
+  border-color: #f59e0b !important;
+  background: rgba(245,158,11,0.1) !important;
+  color: #fde68a !important;
+  box-shadow: 0 0 12px rgba(245,158,11,0.15) !important;
+}
+.option-btn--detective:hover:not(:disabled) {
+  border-color: rgba(245,158,11,0.5) !important;
+  background: rgba(245,158,11,0.06) !important;
+}
+.option-id--detective { color: #f59e0b; }
+
+/* Wizard: scroll-like cards with glow */
+.option-btn--wizard {
+  background: rgba(25,5,50,0.85) !important;
+  border-color: rgba(167,139,250,0.2) !important;
+  border-radius: 10px !important;
+  font-family: Georgia, serif !important;
+  font-style: italic !important;
+}
+.option-btn--wizard.selected {
+  border-color: #a78bfa !important;
+  background: rgba(167,139,250,0.12) !important;
+  color: #e9d5ff !important;
+  box-shadow: 0 0 18px rgba(167,139,250,0.25) !important;
+}
+.option-btn--wizard:hover:not(:disabled) {
+  border-color: rgba(167,139,250,0.5) !important;
+  background: rgba(167,139,250,0.08) !important;
+  box-shadow: 0 0 10px rgba(167,139,250,0.12) !important;
+}
+.option-id--wizard { color: #a78bfa; font-style: normal; }
+
+/* Warrior: bold combat cards */
+.option-btn--warrior {
+  background: rgba(40,5,5,0.8) !important;
+  border-color: rgba(239,68,68,0.2) !important;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+}
+.option-btn--warrior.selected {
+  border-color: #ef4444 !important;
+  background: rgba(239,68,68,0.12) !important;
+  color: #fecaca !important;
+  box-shadow: 0 0 14px rgba(239,68,68,0.2) !important;
+}
+.option-btn--warrior:hover:not(:disabled) {
+  border-color: rgba(239,68,68,0.55) !important;
+  background: rgba(239,68,68,0.07) !important;
+}
+.option-id--warrior { color: #ef4444; font-weight: 800; }
+
+/* Sage: gentle calm cards */
+.option-btn--sage {
+  background: rgba(5,25,15,0.8) !important;
+  border-color: rgba(52,211,153,0.18) !important;
+  border-radius: 10px !important;
+  font-family: Georgia, serif !important;
+  line-height: 1.6 !important;
+}
+.option-btn--sage.selected {
+  border-color: #34d399 !important;
+  background: rgba(52,211,153,0.1) !important;
+  color: #d1fae5 !important;
+  box-shadow: 0 0 12px rgba(52,211,153,0.15) !important;
+}
+.option-btn--sage:hover:not(:disabled) {
+  border-color: rgba(52,211,153,0.45) !important;
+  background: rgba(52,211,153,0.06) !important;
+}
+.option-id--sage { color: #34d399; }
+
+/* ─── eliminated option (detective) ─────────────────────────── */
+.option-eliminated {
+  opacity: 0.38 !important;
+  cursor: default !important;
+}
+.option-text--eliminated {
+  text-decoration: line-through;
+  color: #64748b !important;
+}
+.detective-eliminated-x {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+/* ─── scientist evidence tag ────────────────────────────────── */
+.scientist-evidence-tag {
+  margin-left: auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #22d3ee;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── wizard scroll icon ─────────────────────────────────────── */
+.wizard-scroll-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPLANATION INPUT — per-persona
+   ═══════════════════════════════════════════════════════════════ */
+.explanation-input--scientist {
+  font-family: "Courier New", monospace !important;
+  border-color: rgba(34,211,238,0.3) !important;
+  background: rgba(5,20,30,0.9) !important;
+  color: #e0f7fa !important;
+}
+.explanation-input--scientist:focus { border-color: #22d3ee !important; box-shadow: 0 0 0 3px rgba(34,211,238,0.1) !important; }
+
+.explanation-input--detective {
+  font-family: "Courier New", monospace !important;
+  border-color: rgba(245,158,11,0.3) !important;
+  background: rgba(20,12,3,0.9) !important;
+  color: #fde68a !important;
+}
+.explanation-input--detective:focus { border-color: #f59e0b !important; box-shadow: 0 0 0 3px rgba(245,158,11,0.1) !important; }
+
+.explanation-input--wizard {
+  font-family: Georgia, serif !important;
+  font-style: italic !important;
+  border-color: rgba(167,139,250,0.3) !important;
+  background: rgba(20,5,40,0.9) !important;
+  color: #e9d5ff !important;
+}
+.explanation-input--wizard:focus { border-color: #a78bfa !important; box-shadow: 0 0 0 3px rgba(167,139,250,0.12) !important; }
+
+.explanation-input--warrior {
+  font-weight: 600 !important;
+  border-color: rgba(239,68,68,0.3) !important;
+  background: rgba(30,4,4,0.9) !important;
+  color: #fecaca !important;
+}
+.explanation-input--warrior:focus { border-color: #ef4444 !important; box-shadow: 0 0 0 3px rgba(239,68,68,0.1) !important; }
+
+.explanation-input--sage {
+  font-family: Georgia, serif !important;
+  line-height: 1.8 !important;
+  border-color: rgba(52,211,153,0.3) !important;
+  background: rgba(3,20,12,0.9) !important;
+  color: #d1fae5 !important;
+}
+.explanation-input--sage:focus { border-color: #34d399 !important; box-shadow: 0 0 0 3px rgba(52,211,153,0.1) !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SUBMIT BUTTON — per-persona color
+   ═══════════════════════════════════════════════════════════════ */
+.submit-btn--scientist { background: linear-gradient(135deg, #0891b2, #22d3ee) !important; }
+.submit-btn--detective { background: linear-gradient(135deg, #b45309, #f59e0b) !important; color: #1a0f00 !important; }
+.submit-btn--wizard    { background: linear-gradient(135deg, #7c3aed, #a78bfa) !important; }
+.submit-btn--warrior   { background: linear-gradient(135deg, #b91c1c, #ef4444) !important; font-weight: 800 !important; letter-spacing: 0.05em !important; }
+.submit-btn--sage      { background: linear-gradient(135deg, #059669, #34d399) !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   WARRIOR TIMER RING
+   ═══════════════════════════════════════════════════════════════ */
+.warrior-timer-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.warrior-timer-block--urgent .warrior-timer-ring {
+  animation: urgentPulse 0.5s ease infinite alternate;
+}
+
+@keyframes urgentPulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
+}
+
+.warrior-timer-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.warrior-ring-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.warrior-ring-bg {
+  fill: none;
+  stroke: rgba(239,68,68,0.15);
+  stroke-width: 4;
+}
+
+.warrior-ring-fill {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear, stroke 0.3s ease;
+}
+
+.warrior-timer-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fecaca;
+  letter-spacing: -0.03em;
+}
+
+.warrior-timer-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f87171;
+}
+
+.warrior-timer-block--urgent .warrior-timer-label {
+  color: #ef4444;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SHAKE ANIMATION (warrior wrong answer)
+   ═══════════════════════════════════════════════════════════════ */
+.shake-anim {
+  animation: shakeCard 0.6s ease;
+}
+
+@keyframes shakeCard {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-8px) rotate(-1deg); }
+  30%  { transform: translateX(8px) rotate(1deg); }
+  45%  { transform: translateX(-6px) rotate(-0.5deg); }
+  60%  { transform: translateX(6px) rotate(0.5deg); }
+  75%  { transform: translateX(-3px); }
+  100% { transform: translateX(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SAGE SIMPLICITY METER
+   ═══════════════════════════════════════════════════════════════ */
+.sage-meter {
+  background: rgba(5,25,15,0.85);
+  border: 1px solid rgba(52,211,153,0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.sage-meter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.sage-meter-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #34d399;
+  letter-spacing: 0.04em;
+}
+
+.sage-meter-pct {
+  font-size: 0.88rem;
+  font-weight: 800;
+  transition: color 0.3s ease;
+}
+
+.sage-meter-bar {
+  height: 8px;
+  background: rgba(30,60,40,0.8);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.sage-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease, background 0.3s ease;
+}
+
+.sage-meter-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DETECTIVE HEADER
+   ═══════════════════════════════════════════════════════════════ */
+.detective-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.6rem 1rem;
+  background: rgba(20,12,2,0.85);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 6px;
+}
+
+.detective-stamp {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  color: #f59e0b;
+  border: 2px solid #f59e0b;
+  padding: 0.1rem 0.5rem;
+  border-radius: 3px;
+  opacity: 0.9;
+  transform: rotate(-2deg);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.detective-tip {
+  font-size: 0.78rem;
+  color: #92400e;
+  font-family: "Courier New", monospace;
+}
+
+.detective-eliminated-count {
+  font-size: 0.8rem;
+  color: #f59e0b;
+  margin-bottom: 0.75rem;
+  font-family: "Courier New", monospace;
+  opacity: 0.85;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCIENTIST HEADER
+   ═══════════════════════════════════════════════════════════════ */
+.scientist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 0.55rem 1rem;
+  background: rgba(5,20,30,0.9);
+  border: 1px solid rgba(34,211,238,0.25);
+  border-radius: 6px;
+  font-family: "Courier New", monospace;
+}
+
+.scientist-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #22d3ee;
+  text-transform: uppercase;
+}
+
+.scientist-id {
+  font-size: 0.72rem;
+  color: #64748b;
+  letter-spacing: 0.06em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WIZARD HEADER
+   ═══════════════════════════════════════════════════════════════ */
+.wizard-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.6rem;
+}
+
+.wizard-rune {
+  font-size: 0.8rem;
+  color: rgba(167,139,250,0.5);
+  letter-spacing: 0.2em;
+}
+
+.wizard-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #a78bfa;
+  font-family: Georgia, serif;
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+
 /* ═══════════════════════════════════════════════════════════════
    MissionPage — Cyber Quest theme
    ═══════════════════════════════════════════════════════════════ */
@@ -7,6 +527,7 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
+  background: transparent;
   padding: 3rem 1rem;
 }
 
@@ -14,7 +535,7 @@
 .mission-heading {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--purple);
+  color: #f8fafc;
   margin-bottom: 1.25rem;
   letter-spacing: -0.01em;
 }
@@ -26,7 +547,7 @@
   color: var(--text-primary);
   background: rgba(8, 17, 32, 0.85);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--cyan);
+  border-left: 3px solid #f59e0b;
   border-radius: var(--radius-sm);
   padding: 1rem 1.25rem;
   margin-bottom: 1.5rem;
@@ -62,19 +583,19 @@
 }
 
 .options-list .option-btn:hover:not(:disabled) {
-  border-color: var(--indigo);
+  border-color: #f59e0b;
   background: rgba(99, 102, 241, 0.1);
 }
 
 .options-list .option-btn.selected {
-  border-color: var(--cyan);
+  border-color: #f59e0b;
   background: rgba(34, 211, 238, 0.1);
   color: #cffafe;
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.2);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
 }
 
 .options-list .option-btn.selected .option-id {
-  color: var(--cyan);
+  color: #f59e0b;
 }
 
 .option-id {
@@ -111,8 +632,8 @@
 }
 
 .explanation-input:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
 }
 
 .explanation-input::placeholder {
@@ -140,7 +661,7 @@
 .result-title {
   font-size: 1.7rem;
   font-weight: 800;
-  color: var(--purple);
+  color: #f8fafc;
   margin-bottom: 0.75rem;
   letter-spacing: -0.02em;
 }
@@ -318,7 +839,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: var(--cyan);
+  color: #f59e0b;
   margin-bottom: 0.6rem;
 }
 
@@ -398,7 +919,7 @@
 
 .reward-breakdown-xp {
   font-weight: 700;
-  color: var(--purple);
+  color: #f8fafc;
   white-space: nowrap;
 }
 
@@ -423,7 +944,7 @@
 .reward-total-xp {
   font-size: 1rem;
   font-weight: 800;
-  color: var(--purple);
+  color: #f8fafc;
 }
 
 .reward-zero-msg {
@@ -441,6 +962,73 @@
   .result-actions button {
     width: 100%;
   }
+}
+
+/* ── Persona banner (mission page) ───────────────────────────── */
+.persona-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  border: 1px solid;
+  border-radius: var(--radius-md);
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.persona-banner-name {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+}
+
+.persona-banner-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.persona-timer {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  background: rgba(0,0,0,0.25);
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.persona-timer--urgent {
+  color: #f87171;
+  animation: timerPulse 0.6s ease infinite alternate;
+}
+
+@keyframes timerPulse {
+  from { opacity: 1; }
+  to   { opacity: 0.55; }
+}
+
+.persona-timer-expired {
+  font-size: 0.85rem;
+  color: #f87171;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Persona badge (result page) ─────────────────────────────── */
+.persona-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
 }
 
 /* ── Mission timer bar ──────────────────────────────────────── */

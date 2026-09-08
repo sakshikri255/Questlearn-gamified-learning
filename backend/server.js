@@ -5,6 +5,23 @@ const path = require("path");
 const app = express();
 const PORT = 3001;
 
+// ── Persona definitions (mirrors frontend/src/data/personas.js) ──────────────
+const PERSONAS = {
+  scientist: { keywords: ["evidence", "because", "therefore", "proves", "data", "fact", "result", "causes", "shows"] },
+  detective:  { keywords: ["clue", "suggests", "eliminated", "deduced", "therefore", "ruled out", "process", "conclude", "because"] },
+  wizard:     { keywords: ["like", "similar", "imagine", "think of", "as if", "analogy", "compared", "just as", "metaphor"] },
+  warrior:    { keywords: ["because", "therefore", "directly", "means", "result", "so", "causes", "leads to"] },
+  sage:       { keywords: ["simply", "basically", "means", "think of", "in other words", "example", "like", "so", "because", "this works"] },
+};
+
+const PERSONA_MESSAGES = {
+  scientist: { success: "🔬 Hypothesis confirmed, Scientist!", chapter: "🔬 Peer-reviewed and approved! Chapter unlocked.", fail: "🔬 Your hypothesis needs more evidence, Scientist." },
+  detective:  { success: "🕵️ Case solved, Detective!",          chapter: "🕵️ The mystery is cracked! Chapter unlocked.",    fail: "🕵️ The case remains open. Your deduction needs work." },
+  wizard:     { success: "🧙 The spell is cast! Wisdom accepted.", chapter: "🧙 A legendary spell! Chapter unlocked.",        fail: "🧙 Your magic lacks a metaphor. Try an analogy." },
+  warrior:    { success: "⚔️ Swift and decisive! Victory is yours.", chapter: "⚔️ A legendary strike! Chapter unlocked.",    fail: "⚔️ Hesitation costs the battle. Try again, Warrior." },
+  sage:       { success: "🌿 Beautifully clear! Your student would understand.", chapter: "🌿 Wisdom shared and understood! Chapter unlocked.", fail: "🌿 A true Sage simplifies. Avoid jargon and keep it clear." },
+};
+
 // --- Middleware ---
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
@@ -117,7 +134,7 @@ app.get("/api/daily-challenge", (req, res) => {
 // Body: { questionId, selectedOption, explanation }
 // -------------------------------------------------------
 app.post("/api/submit", (req, res) => {
-  const { questionId, selectedOption, explanation } = req.body;
+  const { questionId, selectedOption, explanation, personaId } = req.body;
 
   if (!questionId || !selectedOption || !explanation || explanation.trim() === "") {
     return res.status(400).json({ error: "Please fill in all fields before submitting." });
@@ -130,6 +147,15 @@ app.post("/api/submit", (req, res) => {
 
   const isCorrect = selectedOption === question.correctOption;
 
+  // --- Explanation quality check ---
+  // Merge question-level keywords with persona-specific keywords
+  const personaData = PERSONAS[personaId] ?? null;
+  const personaMsgs = PERSONA_MESSAGES[personaId] ?? null;
+
+  const questionKeywords = question.keywords ?? [];
+  const personaKeywords  = personaData ? personaData.keywords : [];
+  // Must satisfy BOTH: at least one question keyword AND at least one persona keyword (if persona is set)
+  const allKeywords = [...new Set([...questionKeywords, ...personaKeywords])];
   let chapterUnlocked = false;
   let hint = "";
 
@@ -137,20 +163,26 @@ app.post("/api/submit", (req, res) => {
     const trimmed = explanation.trim();
     const lower = trimmed.toLowerCase();
     const longEnough = trimmed.length >= (question.minExplanationLength ?? 20);
-    const hasKeyword = (question.keywords ?? []).some((kw) => lower.includes(kw.toLowerCase()));
+    const hasQuestionKeyword = questionKeywords.length === 0 || questionKeywords.some((kw) => lower.includes(kw.toLowerCase()));
+    const hasPersonaKeyword  = personaKeywords.length === 0  || personaKeywords.some((kw) => lower.includes(kw.toLowerCase()));
 
-    if (longEnough && hasKeyword) {
+    if (longEnough && hasQuestionKeyword && hasPersonaKeyword) {
       chapterUnlocked = true;
     } else {
-      hint = question.hint || "Great answer! Can you explain a bit more about *why* that is the case?";
+      if (!hasPersonaKeyword && personaData) {
+        hint = `${personaMsgs?.fail ?? "Good answer!"} Try using words that fit the ${personaId} style (e.g. ${personaKeywords.slice(0, 3).join(", ")}).`;
+      } else {
+        hint = question.hint || "Great answer! Can you explain a bit more about *why* that is the case?";
+      }
     }
   }
 
+  // --- Build feedback message (persona-flavoured) ---
   let feedback;
   if (!isCorrect) {
     feedback = `❌ Not quite. The correct answer was option ${question.correctOption}.`;
   } else if (chapterUnlocked) {
-    feedback = "🎉 Correct! Your explanation unlocked the next chapter!";
+    feedback = personaMsgs ? personaMsgs.chapter : "🎉 Correct! Your explanation unlocked the next chapter!";
   } else {
     feedback = "✅ Correct answer! But your explanation needs a little more depth.";
   }
@@ -161,6 +193,9 @@ app.post("/api/submit", (req, res) => {
     feedback,
     hint,
     explanation: question.explanation,
+    personaSuccessMsg: personaMsgs?.success ?? null,
+    personaChapterMsg: personaMsgs?.chapter ?? null,
+    personaFailMsg:    personaMsgs?.fail    ?? null,
     correctOption: question.correctOption,
   });
 });

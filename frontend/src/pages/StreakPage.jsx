@@ -11,6 +11,7 @@ import {
   todayStr,
 } from "../data/progress.js";
 import { loadProfile, saveProfile } from "../data/progress.js";
+import PageTransition from "../components/PageTransition.jsx";
 import "./StreakPage.css";
 
 // StreakPage — monthly calendar + rescue quiz + demo controls
@@ -155,11 +156,22 @@ function StreakPage() {
 
   // ── Demo: simulate missed day ──────────────────────────────────────────────
   const handleSimulateMissed = () => {
-    const updated = simulateMissedDay(streak);
+    let targetStreak = streak;
+    if (streak.completedDates.length === 0) {
+      targetStreak = {
+        ...streak,
+        completedDates: [yesterdayStr()],
+        lastCompletedDate: yesterdayStr(),
+        currentStreak: 1,
+        longestStreak: 1
+      };
+    }
+    const updated = simulateMissedDay(targetStreak);
     saveStreak(updated);
     setStreak(updated);
     setShowRescue(false);
     setRescueOutcome(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // ── Demo: reset streak data ────────────────────────────────────────────────
@@ -169,6 +181,7 @@ function StreakPage() {
     setShowRescue(false);
     setRescueOutcome(null);
     setRescueMsg("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // ── Rescue: success ────────────────────────────────────────────────────────
@@ -255,7 +268,7 @@ function StreakPage() {
   }[state];
 
   return (
-    <div className="streak-wrapper">
+    <PageTransition className="streak-wrapper">
       <div className="streak-inner">
 
         {/* ── Header ─────────────────────────────────────────────── */}
@@ -381,7 +394,7 @@ function StreakPage() {
         </div>
 
       </div>
-    </div>
+    </PageTransition>
   );
 }
 

@@ -10,7 +10,22 @@ import {
   loadAttempts,
   computeStats,
 } from "../data/progress.js";
+import { motion } from "framer-motion";
+import PageTransition from "../components/PageTransition.jsx";
 import "./LeaderboardPage.css";
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.03 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -10 },
+  show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+};
 
 function getZoneLabel(rank) {
   if (rank <= 15) return { label: "Promoted", className: "zone-pill zone-pill--promoted" };
@@ -58,10 +73,11 @@ function LeaderboardPage() {
     setProfile(newProfile);
     setSimMessage(`Round ${profile.leagueRound ?? 1} complete! League levels updated.`);
     setTimeout(() => setSimMessage(""), 4000);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
-    <div className="lb-wrapper">
+    <PageTransition className="lb-wrapper">
       <div className="lb-inner">
 
         {/* ── Page header ─────────────────────────────── */}
@@ -91,7 +107,7 @@ function LeaderboardPage() {
                 <th>Zone</th>
               </tr>
             </thead>
-            <tbody>
+            <motion.tbody variants={listVariants} initial="hidden" animate="show">
               {sorted.map((user, idx) => {
                 const rank = idx + 1;
                 const zone = getZoneLabel(rank);
@@ -102,7 +118,7 @@ function LeaderboardPage() {
                 ].filter(Boolean).join(" ");
 
                 return (
-                  <tr key={user.id} className={rowClass}>
+                  <motion.tr key={user.id} className={rowClass} variants={itemVariants}>
                     <td className="lb-rank">
                       {rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank}
                     </td>
@@ -119,10 +135,10 @@ function LeaderboardPage() {
                     <td className="lb-level">{user.leagueLevel ?? "Beginner"}</td>
                     <td className="lb-coins">{user.coins.toLocaleString()} 🪙</td>
                     <td><span className={zone.className}>{zone.label}</span></td>
-                  </tr>
+                  </motion.tr>
                 );
               })}
-            </tbody>
+            </motion.tbody>
           </table>
         </div>
 
@@ -136,7 +152,7 @@ function LeaderboardPage() {
         </div>
 
       </div>
-    </div>
+    </PageTransition>
   );
 }
 

@@ -5,11 +5,12 @@
 /* ── Page wrapper ─────────────────────────────────────────────── */
 .dash-page {
   min-height: 100vh;
+  background: transparent;
 }
 
 /* ── Content area (accounts for NavBar height ~60px) ─────────── */
 .dash-content {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
 }
@@ -19,8 +20,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(34,211,238,0.08) 100%);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(245,158,11,0.05));
+  border: 1px solid rgba(245, 158, 11, 0.1);
   border-radius: 16px;
   padding: 1.5rem 2rem;
   margin-bottom: 1.75rem;
@@ -37,17 +38,17 @@
 .dash-welcome-title {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #e2e8f0;
+  color: #f8fafc;
   letter-spacing: -0.02em;
 }
 
 .dash-welcome-name {
-  color: #22d3ee;
+  color: #f59e0b;
 }
 
 .dash-welcome-stage {
   font-size: 0.88rem;
-  color: #94a3b8;
+  color: #9ca3af;
 }
 
 .dash-welcome-stats {
@@ -75,9 +76,9 @@
 }
 
 .dash-welcome-stat--cyan {
-  background: rgba(34, 211, 238, 0.1);
-  border-color: rgba(34, 211, 238, 0.3);
-  color: #22d3ee;
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
 }
 
 .dash-welcome-stat--orange {
@@ -106,31 +107,31 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .dash-mission-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #e2e8f0;
+  color: #f8fafc;
   letter-spacing: -0.01em;
 }
 
 .dash-mission-sub {
   font-size: 0.82rem;
-  color: #94a3b8;
+  color: #9ca3af;
   margin-bottom: 0.25rem;
 }
 
 .dash-league-rank {
   font-size: 1.2rem;
   font-weight: 800;
-  color: #e2e8f0;
+  color: #f8fafc;
 }
 
 .dash-league-sub {
   font-size: 0.82rem;
-  color: #94a3b8;
+  color: #9ca3af;
   margin-bottom: 0.25rem;
 }
 
@@ -170,7 +171,7 @@
 .dash-museum-count {
   font-size: 1rem;
   font-weight: 700;
-  color: #a78bfa;
+  color: #f8fafc;
   margin-bottom: 0.25rem;
 }
 
@@ -205,35 +206,35 @@
   align-items: center;
   justify-content: center;
   font-size: 1.3rem;
-  color: #e2e8f0;
+  color: #f8fafc;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .dash-stage-node.done .dash-stage-dot {
-  color: #081120;
+  color: #0a0a0a;
   font-size: 1rem;
   font-weight: 800;
 }
 
 .dash-stage-node.current .dash-stage-dot {
-  box-shadow: 0 0 16px rgba(34, 211, 238, 0.4);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.2);
 }
 
 .dash-stage-name {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #64748b;
+  color: #6b7280;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .dash-stage-node.done .dash-stage-name {
-  color: #94a3b8;
+  color: #9ca3af;
 }
 
 .dash-stage-node.current .dash-stage-name {
-  color: #22d3ee;
+  color: #f59e0b;
 }
 
 /* ── Page header (legacy, kept for existing content below) ──── */
@@ -244,13 +245,13 @@
 .dash-title {
   font-size: 1.9rem;
   font-weight: 800;
-  color: #60a5fa;
+  color: #f59e0b;
   margin-bottom: 0.35rem;
 }
 
 .dash-subtitle {
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: #9ca3af;
 }
 
 /* ── Empty state ─────────────────────────────────────────────── */
@@ -276,12 +277,12 @@
 .dash-empty-title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: #f8fafc;
 }
 
 .dash-empty-sub {
   font-size: 0.92rem;
-  color: #94a3b8;
+  color: #9ca3af;
   line-height: 1.6;
   margin-bottom: 0.5rem;
 }
@@ -295,8 +296,8 @@
 }
 
 .stat-card {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid #334155;
+  background: rgba(22, 22, 22, 0.85);
+  border: 1px solid #2a2a2a;
   border-radius: 12px;
   padding: 1.1rem 0.75rem;
   text-align: center;
@@ -304,8 +305,8 @@
 
 /* Accent variant — accuracy card */
 .stat-card--accent {
-  border-color: #3b82f6;
-  background: rgba(15, 35, 54, 0.8);
+  border-color: #f59e0b;
+  background: rgba(14, 14, 14, 0.9);
 }
 
 /* Streak variant — only activated when streak ≥ 2 */
@@ -317,13 +318,13 @@
 .stat-value {
   font-size: 1.7rem;
   font-weight: 800;
-  color: #e2e8f0;
+  color: #f8fafc;
   margin-bottom: 0.25rem;
   line-height: 1.1;
 }
 
 .stat-card--accent .stat-value {
-  color: #60a5fa;
+  color: #f59e0b;
 }
 
 .stat-card--streak .stat-value {
@@ -334,7 +335,7 @@
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #64748b;
+  color: #6b7280;
 }
 
 /* Coins variant — gold */
@@ -349,12 +350,12 @@
 
 /* XP variant — purple */
 .stat-card--xp {
-  border-color: #7c3aed;
-  background: rgba(19, 13, 43, 0.8);
+  border-color: #d97706;
+  background: rgba(20, 14, 0, 0.8);
 }
 
 .stat-card--xp .stat-value {
-  color: #a78bfa;
+  color: #f8fafc;
 }
 
 /* Daily Streak variant — green */
@@ -386,7 +387,7 @@
 .streak-dash-link {
   width: 100%;
   background: none;
-  border: 1px solid #334155;
+  border: 1px solid #2a2a2a;
   border-radius: 8px;
   color: #fb923c;
   font-size: 0.88rem;
@@ -411,8 +412,8 @@
 
 /* ── Accuracy bar ─────────────────────────────────────────────── */
 .accuracy-section {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid #334155;
+  background: rgba(22, 22, 22, 0.85);
+  border: 1px solid #2a2a2a;
   border-radius: 12px;
   padding: 1.1rem 1.25rem;
   margin-bottom: 1.75rem;
@@ -429,17 +430,17 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #64748b;
+  color: #6b7280;
 }
 
 .accuracy-bar-pct {
   font-size: 1rem;
   font-weight: 700;
-  color: #60a5fa;
+  color: #f59e0b;
 }
 
 .accuracy-track {
-  background-color: #334155;
+  background-color: #2a2a2a;
   border-radius: 999px;
   height: 10px;
   overflow: hidden;
@@ -447,7 +448,7 @@
 }
 
 .accuracy-fill {
-  background: linear-gradient(90deg, #3b82f6, #818cf8);
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
   height: 100%;
   border-radius: 999px;
   transition: width 0.6s ease;
@@ -455,13 +456,13 @@
 
 .accuracy-sub {
   font-size: 0.78rem;
-  color: #64748b;
+  color: #6b7280;
 }
 
 /* ── Latest comparison panel ─────────────────────────────────── */
 .comparisons-panel {
-  background: rgba(15, 35, 54, 0.8);
-  border: 2px solid #3b82f6;
+  background: rgba(14, 14, 14, 0.9);
+  border: 2px solid #f59e0b;
   border-radius: 12px;
   padding: 1rem 1.1rem;
   margin-bottom: 1.75rem;
@@ -472,7 +473,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #60a5fa;
+  color: #f59e0b;
   margin-bottom: 0.6rem;
 }
 
@@ -485,7 +486,7 @@
 
 .comparisons-panel-item {
   font-size: 0.93rem;
-  color: #bfdbfe;
+  color: #e5e7eb;
   line-height: 1.5;
 }
 
@@ -497,7 +498,7 @@
 .history-title {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #a5b4fc;
+  color: #9ca3af;
   margin-bottom: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -507,7 +508,7 @@
 .history-table-wrap {
   overflow-x: auto;
   border-radius: 12px;
-  border: 1px solid #334155;
+  border: 1px solid #2a2a2a;
 }
 
 .history-table {
@@ -517,8 +518,8 @@
 }
 
 .history-table thead tr {
-  background: rgba(30, 41, 59, 0.9);
-  border-bottom: 1px solid #334155;
+  background: rgba(22, 22, 22, 0.85);
+  border-bottom: 1px solid #2a2a2a;
 }
 
 .history-table th {
@@ -527,14 +528,14 @@
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: #64748b;
+  color: #6b7280;
   white-space: nowrap;
 }
 
 .history-table td {
   padding: 0.7rem 0.9rem;
-  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
-  color: #cbd5e1;
+  border-bottom: 1px solid rgba(22, 22, 22, 0.85);
+  color: #d1d5db;
   white-space: nowrap;
 }
 
@@ -543,22 +544,22 @@
 }
 
 .history-table tbody tr {
-  background: rgba(20, 31, 48, 0.8);
+  background: rgba(14, 14, 14, 0.9);
   transition: background-color 0.12s;
 }
 
 .history-table tbody tr:hover {
-  background: rgba(30, 41, 59, 0.9);
+  background: rgba(22, 22, 22, 0.85);
 }
 
 /* Highlight the newest row */
 .history-row--latest td {
-  background: rgba(15, 35, 54, 0.9) !important;
+  background: rgba(14, 14, 14, 0.9) !important;
 }
 
 /* Number column */
 .history-num {
-  color: #475569;
+  color: #6b7280;
   font-size: 0.78rem;
   text-align: right;
   width: 2rem;
@@ -572,9 +573,9 @@
 
 .clear-all-btn {
   background: none;
-  border: 1px solid #334155;
+  border: 1px solid #2a2a2a;
   border-radius: 8px;
-  color: #64748b;
+  color: #6b7280;
   font-size: 0.85rem;
   font-family: inherit;
   padding: 0.55rem 1.2rem;
