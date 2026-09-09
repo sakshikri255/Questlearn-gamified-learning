@@ -51,8 +51,9 @@
 .stagemap-connector {
   width: 2px;
   height: 24px;
-  background: linear-gradient(to bottom, rgba(148, 163, 184, 0.3), rgba(148, 163, 184, 0.1));
+  background: linear-gradient(to bottom, rgba(245, 158, 11, 0.6), rgba(245, 158, 11, 0.2));
   border-radius: 999px;
+  margin: 0 auto;
 }
 
 /* ── Stage node card ─────────────────────────────────────── */
@@ -61,7 +62,7 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: rgba(12, 12, 12, 0.85);
+  background: #1A1D24;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border);
@@ -80,17 +81,33 @@
 }
 
 .stagemap-node--locked {
-  opacity: 0.4;
+  opacity: 0.75;
   cursor: not-allowed;
+  background: #141720;
+  border-color: rgba(255, 255, 255, 0.05);
 }
 
 .stagemap-node--completed {
-  border-color: rgba(74, 222, 128, 0.3);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+.stagemap-node--current {
+  border-color: #f59e0b;
+  animation: activeNodePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes activeNodePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.35), 0 0 20px rgba(245, 158, 11, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.15), 0 0 28px rgba(245, 158, 11, 0.35);
+  }
 }
 
 .stagemap-node--unlocked:not(.stagemap-node--completed):hover {
   border-color: #f59e0b;
-  box-shadow: var(--glow-cyan);
+  box-shadow: var(--glow-amber);
 }
 
 .stagemap-node-left {
@@ -108,8 +125,8 @@
 }
 
 .stagemap-node--locked .stagemap-node-emoji {
-  filter: grayscale(1);
-  opacity: 0.5;
+  filter: grayscale(0.8);
+  opacity: 0.65;
 }
 
 .stagemap-node-info {
@@ -126,13 +143,18 @@
   white-space: nowrap;
 }
 
+/* Accessible high-contrast muted text for WCAG AA compliance */
 .stagemap-node--locked .stagemap-node-name {
-  color: var(--text-muted);
+  color: #9CA3AF;
 }
 
 .stagemap-node-xp {
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 0.78rem;
+  color: #9CA3AF;
+}
+
+.stagemap-node--locked .stagemap-node-xp {
+  color: #9CA3AF;
 }
 
 .stagemap-node-boss-tag {
@@ -146,7 +168,7 @@
 .stagemap-node-arrow {
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--text-muted);
+  color: #9CA3AF;
   white-space: nowrap;
   flex-shrink: 0;
   transition: color var(--transition);

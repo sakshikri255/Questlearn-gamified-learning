@@ -53,6 +53,97 @@ export function clearAttempts() {
   localStorage.removeItem(STORAGE_KEY);
 }
 
+// ── Mistake Museum Helpers ────────────────────────────────────────────────────
+const MISTAKES_KEY = "ql_mistakes";
+
+/**
+ * Normalizes and compares two mistake entries to check if they represent the same question.
+ */
+
+function isSameQuestion(a, b) {
+  if (!a || !b) return false;
+
+  // Match by questionId if both have valid IDs
+  if (a.questionId != null && b.questionId != null && String(a.questionId).trim() !== "" && String(b.questionId).trim() !== "") {
+    if (String(a.questionId).trim() === String(b.questionId).trim()) return true;
+  }
+
+  // Match by questionText if both have text
+  if (a.questionText && b.questionText) {
+    const textA = String(a.questionText).toLowerCase().replace(/\s+/g, " ").trim();
+    const textB = String(b.questionText).toLowerCase().replace(/\s+/g, " ").trim();
+    if (textA && textB && textA === textB) return true;
+  }
+
+  return false;
+}
+
+export function loadMistakes() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(MISTAKES_KEY) ?? "[]");
+    if (!Array.isArray(raw)) return [];
+
+    // Deduplicate existing entries on load (keeping newest timestamp)
+    const deduplicated = [];
+    for (const item of raw) {
+      if (!item) continue;
+      const existingIdx = deduplicated.findIndex((existing) => isSameQuestion(existing, item));
+      if (existingIdx === -1) {
+        deduplicated.push(item);
+      } else {
+        const existingTime = new Date(deduplicated[existingIdx].savedAt || 0).getTime();
+        const itemTime = new Date(item.savedAt || 0).getTime();
+        if (itemTime > existingTime) {
+          deduplicated[existingIdx] = item;
+        }
+      }
+    }
+
+    if (deduplicated.length !== raw.length) {
+      localStorage.setItem(MISTAKES_KEY, JSON.stringify(deduplicated));
+    }
+    return deduplicated;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Saves or updates a mistake in local storage.
+ * Guarantees each question appears ONLY ONCE.
+ * If the mistake was already in the museum, it renews it with fresh attempt data.
+ */
+export function recordMistake(mistake) {
+  const existing = loadMistakes();
+  const filtered = existing.filter((m) => !isSameQuestion(m, mistake));
+
+  const newEntry = {
+    ...mistake,
+    id: mistake.id || `${mistake.questionId ?? "m"}-${Date.now()}`,
+    savedAt: new Date().toISOString(),
+  };
+
+  const updated = [newEntry, ...filtered];
+  localStorage.setItem(MISTAKES_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new Event("storage"));
+  return updated;
+}
+
+/**
+ * Removes a mistake from local storage if the user answers the question correctly.
+ */
+export function removeMistakeIfCorrect(questionId, questionText) {
+  const existing = loadMistakes();
+  const dummyTarget = { questionId, questionText };
+  const updated = existing.filter((m) => !isSameQuestion(m, dummyTarget));
+
+  if (updated.length !== existing.length) {
+    localStorage.setItem(MISTAKES_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new Event("storage"));
+  }
+  return updated;
+}
+
 // ── Aggregate stats ──────────────────────────────────────────────────────────
 
 /**

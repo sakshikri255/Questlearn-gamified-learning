@@ -14,6 +14,8 @@ import {
   loadStreak,
   saveStreak,
   markTodayComplete,
+  recordMistake,
+  removeMistakeIfCorrect,
 } from "../data/progress.js";
 import { getStage } from "../data/stages.js";
 import INITIAL_LEAGUE_DATA from "../data/leagueData.js";
@@ -246,22 +248,23 @@ function MissionPage() {
       setTimerActive(false);
       // status is set to "result" after splash finishes via handleSplashDone
 
-      if (!isCorrect && question) {
+      if (isCorrect && question) {
+        removeMistakeIfCorrect(question.id, question.question);
+      } else if (!isCorrect && question) {
         const selectedOpt = question.options.find((o) => o.id === selected);
         const correctOpt = question.options.find((o) => o.id === question.correctOption);
-        const mistake = {
-          id: `${question.id}-${selected}-${Date.now()}`,
-          questionId: question.id, questionText: question.question,
-          selectedOption: selected, selectedText: selectedOpt?.text ?? selected,
-          correctOption: question.correctOption, correctText: correctOpt?.text ?? question.correctOption,
-          concept: question.concept ?? "Key concept", correction: data.explanation,
-          themeId: theme.id, savedAt: new Date().toISOString(),
-        };
-        const existing = JSON.parse(localStorage.getItem("ql_mistakes") ?? "[]");
-        localStorage.setItem("ql_mistakes", JSON.stringify([
-          mistake,
-          ...existing.filter((m) => !(m.questionId === mistake.questionId && m.selectedOption === mistake.selectedOption)),
-        ]));
+        recordMistake({
+          questionId: question.id,
+          questionText: question.question,
+          options: question.options,
+          selectedOption: selected,
+          selectedText: selectedOpt?.text ?? selected,
+          correctOption: question.correctOption,
+          correctText: correctOpt?.text ?? question.correctOption,
+          concept: question.concept ?? "Key concept",
+          correction: data.explanation,
+          themeId: theme.id,
+        });
       }
     } catch {
       setError("Network error — please check your connection.");

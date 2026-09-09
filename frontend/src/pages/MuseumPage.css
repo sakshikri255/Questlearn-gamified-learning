@@ -322,3 +322,150 @@
   border-color: var(--red);
   color: var(--red);
 }
+
+/* ── Interactive Retry Modal ───────────────────────────────── */
+.retry-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.retry-modal-card {
+  background: #12141c;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  border-radius: var(--radius-lg, 16px);
+  padding: 1.75rem;
+  max-width: 540px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.retry-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.retry-modal-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold, #fbbf24);
+  margin: 0;
+}
+
+.retry-modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+}
+
+.retry-modal-close:hover {
+  color: var(--text-primary);
+}
+
+.retry-modal-question {
+  font-size: 0.98rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+}
+
+.retry-modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.retry-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.retry-option-btn:hover:not(:disabled) {
+  border-color: var(--gold, #fbbf24);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.retry-option-btn.selected {
+  border-color: var(--gold, #fbbf24);
+  background: rgba(245, 158, 11, 0.18);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25);
+}
+
+.retry-option-id {
+  font-weight: 700;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+.retry-option-text {
+  flex: 1;
+}
+
+.retry-result-banner {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.retry-result-banner.success {
+  background: rgba(20, 83, 45, 0.4);
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  color: #4ade80;
+}
+
+.retry-result-banner.failure {
+  background: rgba(127, 29, 29, 0.4);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+
+.retry-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+

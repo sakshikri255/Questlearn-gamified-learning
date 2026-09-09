@@ -9,8 +9,11 @@ import {
   applyRescueSuccess,
   applyRescueFailure,
   todayStr,
+  loadProfile,
+  saveProfile,
+  recordMistake,
+  removeMistakeIfCorrect,
 } from "../data/progress.js";
-import { loadProfile, saveProfile } from "../data/progress.js";
 import PageTransition from "../components/PageTransition.jsx";
 import "./StreakPage.css";
 
@@ -199,6 +202,10 @@ function StreakPage() {
       leagueCoins: (profile.leagueCoins ?? 0) + 25,
     });
 
+    if (question) {
+      removeMistakeIfCorrect(question.id, question.question);
+    }
+
     setRescueOutcome("success");
     setRescueMsg("🛡️ Streak saved! Your dedication paid off. +25 🪙  +10 XP");
     setShowRescue(false);
@@ -210,14 +217,14 @@ function StreakPage() {
     saveStreak(updated);
     setStreak(updated);
 
-    // Save mistake to Museum
+    // Save/renew mistake to Museum
     if (question) {
       const selectedOpt = question.options.find((o) => o.id === selected);
       const correctOpt  = question.options.find((o) => o.id === question.correctOption);
-      const mistake = {
-        id: `${question.id}-${selected}-${Date.now()}`,
+      recordMistake({
         questionId:     question.id,
         questionText:   question.question,
+        options:        question.options,
         selectedOption: selected,
         selectedText:   selectedOpt?.text ?? selected,
         correctOption:  question.correctOption,
@@ -225,13 +232,7 @@ function StreakPage() {
         concept:        question.concept ?? "Rescue question",
         correction:     data.explanation,
         themeId:        "cyber",
-        savedAt:        new Date().toISOString(),
-      };
-      const existing = JSON.parse(localStorage.getItem("ql_mistakes") ?? "[]");
-      const deduped = existing.filter(
-        (m) => !(m.questionId === mistake.questionId && m.selectedOption === mistake.selectedOption)
-      );
-      localStorage.setItem("ql_mistakes", JSON.stringify([mistake, ...deduped]));
+      });
     }
 
     setRescueOutcome("failure");
