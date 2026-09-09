@@ -79,15 +79,15 @@ export default function AuthPage() {
   // Mode: 'login' | 'signup' | 'verify' | 'forgot' | 'reset' | '2fa'
   const initialMode = searchParams.get("mode") || "login";
   const [mode, setMode] = useState(initialMode);
-  // Redirect destination after login (e.g. /profile, /dashboard)
-  const redirectTo = searchParams.get("redirect") || "/dashboard";
+  // Redirect destination after login (default: home page "/")
+  const redirectTo = searchParams.get("redirect") || "/";
 
-  // If user is already logged in, redirect to dashboard
+  // If user is already logged in, redirect to home page
   useEffect(() => {
     if (user && mode !== "verify" && mode !== "2fa") {
-      navigate("/dashboard");
+      navigate(redirectTo);
     }
-  }, [user, navigate, mode]);
+  }, [user, navigate, mode, redirectTo]);
 
   // Sync mode with URL search params
   const switchMode = (newMode) => {
