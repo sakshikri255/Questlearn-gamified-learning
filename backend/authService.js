@@ -4,7 +4,15 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const USERS_FILE = path.join(__dirname, "data", "users.json");
+// On Vercel serverless the project filesystem is read-only.
+// Use /tmp (writable, persists for the lifetime of a warm instance) when running on Vercel.
+// In local dev keep the file next to the source so it survives server restarts.
+const USERS_FILE = process.env.VERCEL
+  ? path.join("/tmp", "users.json")
+  : path.join(__dirname, "data", "users.json");
+
+// Bundled seed file (committed to git, read-only — used to pre-populate /tmp on cold starts)
+const SEED_USERS_FILE = path.join(__dirname, "data", "users.json");
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
@@ -24,7 +32,9 @@ const REFRESH_TOKEN_EXTENDED_EXPIRY = "30d";
 const simulatedEmailOutbox = [];
 
 /**
- * Ensures data/users.json exists with seed demo user
+ * Ensures users.json exists.
+ * On Vercel: writes to /tmp. Seeds from bundled data/users.json if present, else creates demo user.
+ * In dev: writes to backend/data/users.json as before.
  */
 function initializeUsersStore() {
   const dir = path.dirname(USERS_FILE);
@@ -33,6 +43,14 @@ function initializeUsersStore() {
   }
 
   if (!fs.existsSync(USERS_FILE)) {
+    // On a Vercel cold start: try to copy the committed seed file first
+    if (process.env.VERCEL && fs.existsSync(SEED_USERS_FILE)) {
+      try {
+        fs.copyFileSync(SEED_USERS_FILE, USERS_FILE);
+        return;
+      } catch (_) { /* fall through to demo user creation */ }
+    }
+
     const demoPasswordHash = bcrypt.hashSync("Quest123!", 10);
     const initialUsers = [
       {
