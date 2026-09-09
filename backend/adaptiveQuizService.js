@@ -18,7 +18,7 @@ const PERSONA_CONTEXT = {
 };
 
 if (!geminiApiKey) {
-  console.error("Gemini configuration error: GEMINI_API_KEY is missing or undefined. Using questions.json fallback.");
+  console.warn("No GEMINI_API_KEY set — AI question generation disabled. Using questions.json fallback.");
 } else {
   console.log(`Gemini configured with model ${GEMINI_MODEL}.`);
 }
@@ -84,15 +84,46 @@ function retryDelayMs(retryNumber) {
 }
 
 function fallbackQuestions(questions, subtopicId, difficulty) {
-  const matching = subtopicId
-    ? questions.filter((question) => question.subtopicId === subtopicId)
-    : questions;
-  const pool = matching.length ? matching : questions;
-  if (!pool.length) return [];
+  if (!questions || !questions.length) return [];
 
-  return Array.from({ length: BATCH_SIZE }, (_, index) => {
-    const question = pool[index % pool.length];
-    const optionIds = ["A", "B", "C", "D"];
+  const subtopicMatching = subtopicId
+    ? questions.filter((q) => q.subtopicId === subtopicId)
+    : [];
+
+  // Start with shuffled subtopic matching questions
+  const selectedPool = [...subtopicMatching].sort(() => Math.random() - 0.5);
+
+  // If subtopic matching has fewer than BATCH_SIZE, fill remaining from same topic or general pool
+  if (selectedPool.length < BATCH_SIZE) {
+    const selectedIds = new Set(selectedPool.map((q) => q.id));
+    const targetTopicId = subtopicMatching[0]?.topicId;
+
+    const sameTopicPool = targetTopicId
+      ? questions.filter((q) => q.topicId === targetTopicId && !selectedIds.has(q.id))
+      : [];
+    const shuffledSameTopic = [...sameTopicPool].sort(() => Math.random() - 0.5);
+
+    for (const q of shuffledSameTopic) {
+      if (selectedPool.length >= BATCH_SIZE) break;
+      selectedPool.push(q);
+      selectedIds.add(q.id);
+    }
+
+    // If still less than BATCH_SIZE, fill from remaining general questions
+    if (selectedPool.length < BATCH_SIZE) {
+      const generalPool = questions.filter((q) => !selectedIds.has(q.id));
+      const shuffledGeneral = [...generalPool].sort(() => Math.random() - 0.5);
+      for (const q of shuffledGeneral) {
+        if (selectedPool.length >= BATCH_SIZE) break;
+        selectedPool.push(q);
+        selectedIds.add(q.id);
+      }
+    }
+  }
+
+  const optionIds = ["A", "B", "C", "D"];
+
+  return selectedPool.slice(0, BATCH_SIZE).map((question, index) => {
     const options = Array.isArray(question.options)
       ? question.options.map(optionText).filter(Boolean)
       : [];
@@ -106,6 +137,12 @@ function fallbackQuestions(questions, subtopicId, difficulty) {
       correctAnswerIndex: Math.min(correctAnswerIndex, Math.max(options.length - 1, 0)),
       hint: question.hint || "",
       explanation: question.explanation || "",
+      // Preserve fields needed by submit-batch scoring
+      correctOption: question.correctOption || null,
+      concept: question.concept || "",
+      topicId: question.topicId || null,
+      topicName: question.topicName || null,
+      subtopicName: question.subtopicName || null,
     };
   });
 }
@@ -194,6 +231,7 @@ async function getQuestionBatch({ questions, subtopicId, subtopicName, difficult
       .filter(Boolean)
       .slice(0, BATCH_SIZE);
     if (normalized.length === BATCH_SIZE) {
+      normalized.forEach(rememberQuestion);
       return { questions: normalized, source: "gemini", difficulty };
     }
     throw new Error("Gemini returned an invalid question batch");
@@ -201,11 +239,9 @@ async function getQuestionBatch({ questions, subtopicId, subtopicName, difficult
     if (geminiApiKey) {
       console.warn(`Gemini unavailable; using questions.json fallback: ${error.message}`);
     }
-    return {
-      questions: fallbackQuestions(questions, subtopicId, difficulty),
-      source: "fallback",
-      difficulty,
-    };
+    const batch = fallbackQuestions(questions, subtopicId, difficulty);
+    batch.forEach(rememberQuestion);
+    return { questions: batch, source: "fallback", difficulty };
   }
 }
 

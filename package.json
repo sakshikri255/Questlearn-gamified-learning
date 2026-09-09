@@ -1,0 +1,16 @@
+{
+  "name": "questlearn-project",
+  "version": "1.0.0",
+  "description": "QuestLearn gamified learning monorepo root",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"cyan,magenta\" \"npm run start --prefix backend\" \"npm run dev --prefix frontend\"",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "check": "node --check backend/server.js && node --check backend/adaptiveQuizService.js && npm run build --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -14,7 +14,72 @@ QuestLearn combines quiz practice with role-based learning. The same topic can f
 
 Questions are generated dynamically for the selected topic or subtopic. This keeps the experience fresh while the local question bank ensures the app remains usable when AI is unavailable.
 
+## Technology Used
+
+QuestLearn is built with the following technologies:
+
+- **React 18** for the interactive learning experience.
+- **React Router** for missions, topics, dashboards, challenges, and profile navigation.
+- **Vite** for fast frontend development and API proxying.
+- **CSS** for the responsive game interface, persona themes, timers, progress indicators, and feedback states.
+- **Node.js and Express** for the backend API and quiz services.
+- **Google Gemini AI** through the official `@google/genai` SDK for dynamic, topic-aware and persona-aware question generation.
+- **JSON question storage** for seeded content and reliable offline-style fallback behavior.
+- **LocalStorage** for browser-side attempts, XP, coins, streaks, rewards, and mistake history.
+- **JWT and bcrypt** for authentication and password security.
+- **HTTP-only cookies** for refresh-token handling.
+- **Express rate limiting** for protected authentication and password-reset routes.
+- **dotenv** for local environment configuration.
+
+## How IBM Bob Helped
+
+- Reviewing the existing application and its earlier implementation before making changes.
+- Connecting the backend to Google Gemini for dynamic question generation.
+- Designing persona-aware prompts for Scientist, Detective, Wizard, Warrior, and Sage modes.
+- Defining and validating structured AI JSON responses.
+- Building a reliable `questions.json` fallback so learners can continue when Gemini is unavailable, rate-limited, misconfigured, or returns invalid data.
+- Adding retry handling for temporary Gemini `429` and `503` responses.
+- Fixing generated-question ID lookup so AI questions can be submitted without `Question not found` errors.
+- Adding adaptive difficulty progression based on five-question accuracy checkpoints.
+- Connecting XP, coins, streaks, attempts, and mistake tracking to the quiz experience.
+- Fixing repeated-question behavior by clearing state, advancing the question index, and sending fresh request identifiers.
+- Removing duplicate navigation bars and improving quiz, Topics, and Daily Challenge layouts.
+- Adding loading, error, retry, fallback, hint, and explanation states.
+- Creating project documentation covering setup, architecture, security, limitations, and engineering challenges.
+
+IBM Bob’s role was to support implementation, debugging, testing, and technical decision-making while keeping the experience focused on learning through play.
+
 ## Main Features
+
+## Prototype Feature Audit
+
+### Completed
+
+The current prototype includes the following game-layer features:
+
+- **Stage progression:** Beginner, Explorer, Challenger, Expert, and Boss stages are defined with XP requirements, locked/unlocked states, completion states, connector paths, and a Boss reward bonus.
+- **Stage unlocking:** Completing a stage records its ID and unlocks the next stage through the Stage Map.
+- **Persona-based quizzes:** Scientist, Detective, Wizard, Warrior, and Sage each use different instructions, vocabulary, colors, prompts, timers, and answer feedback.
+- **Different correct and incorrect experiences:** Every persona has separate success and failure presentation. Correct answers and incorrect answers trigger different visual outcomes.
+- **Unique persona animations:**
+	- Scientist: rocket launch for success and rocket crash/explosion for failure.
+	- Detective: `FOUND` case-closed stamp for success and `404 NOT FOUND` case failure for incorrect answers.
+	- Wizard: flying witch and magic trail for success and falling witch animation for failure.
+	- Warrior: power pose and energy blast for success and shattering/debris animation for failure.
+	- Sage: calm meditation and aura for success and disturbed/chaotic aura for failure.
+- **Question feedback:** Persona-specific hints, explanation prompts, explanation validation, and result feedback are displayed after answering.
+- **Authentication:** Login, signup, email verification, logout, refresh tokens, protected routes, profile loading, and authentication-required quiz access are implemented.
+- **Account security flows:** Password complexity validation, password reset token handling, rate limiting, two-factor authentication flow, and profile switching are implemented.
+- **Profile experience:** Users can update their name, gamer tag, email, avatar, title, and biography. Multiple profile choices and quick profile switching are available.
+- **Progress systems:** XP, coins, attempts, streaks, daily challenges, league levels, dashboard statistics, and mistake history are implemented.
+
+### Remaining or Prototype Limitations
+
+- **Current stage indicator:** Stage unlocking works from `completedStageIds`, but `currentStageId` is not automatically moved to the next stage after completion. The current-stage display may continue to show Beginner until this is connected.
+- **Real email delivery:** Signup verification and forgot-password messages currently use a simulated email outbox and development tokens. They are logged by the backend rather than delivered to a real mailbox. A production email provider still needs to be connected.
+- **Persistent account progress:** Some quiz rewards, attempts, streaks, and mistakes are stored in browser LocalStorage rather than a user database, so cross-device synchronization is not complete.
+- **Production storage:** User records currently use JSON storage. A production deployment should use a database with migrations and concurrent-write protection.
+- **Automated coverage:** The main flows work through live API and build checks, but a complete automated test suite for authentication, stage progression, AI failure, and rewards is still recommended.
 
 ### Dynamic AI Quizzes
 
@@ -191,5 +256,3 @@ node --check server.js
 cd ..\frontend
 npm run build
 ```
-
-A live batch request should return five questions and identify its source as either `gemini` or `fallback`.

@@ -44,13 +44,13 @@
 .ql-hero-header::after {
   content: "";
   position: absolute;
-  inset: 0 0 0 42%;
+  inset: 0;
   z-index: -1;
   background:
-    linear-gradient(90deg, #111 0%, rgba(17, 17, 17, 0.72) 26%, rgba(17, 17, 17, 0.12) 100%),
+    linear-gradient(90deg, rgba(15, 17, 23, 0.96) 0%, rgba(15, 17, 23, 0.85) 45%, rgba(15, 17, 23, 0.5) 100%),
     url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80") center / cover;
-  opacity: 0.62;
-  filter: saturate(0.8);
+  opacity: 0.82;
+  filter: saturate(0.85);
   animation: ql-hero-image-drift 12s ease-in-out infinite alternate;
 }
 @keyframes ql-hero-image-drift {
@@ -253,13 +253,15 @@
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-secondary);
 }
-.ql-sel-pill--theme  { border-color: rgba(34, 211, 238, 0.3);  color: #22d3ee; }
-.ql-sel-pill--persona { border-color: rgba(167, 139, 250, 0.3); color: #a78bfa; }
+.ql-sel-pill--theme  { background: rgba(56, 189, 248, 0.08); border-color: rgba(56, 189, 248, 0.25); color: #38bdf8; }
+.ql-sel-pill--persona { background: rgba(167, 139, 250, 0.08); border-color: rgba(192, 132, 252, 0.25); color: #c084fc; }
 
 .ql-sel-start {
   margin-left: auto;
-  padding: 0.45rem 1.4rem;
-  font-size: 0.88rem;
+  padding: 0.5rem 1.6rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.3);
 }
 
 /* ── Story Mission Grid ───────────────────────────────────────── */
@@ -267,14 +269,15 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.9rem;
+  align-items: stretch;
 }
 
 .ql-story-card {
   position: relative;
-  background: rgba(17, 17, 17, 0.9);
+  background: #1A1D24;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 1.1rem;
+  padding: 1.25rem;
   text-align: left;
   cursor: pointer;
   color: var(--text-primary);
@@ -282,8 +285,10 @@
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  min-height: 190px;
+  justify-content: space-between;
+  gap: 0.6rem;
+  height: 100%;
+  min-height: 230px;
 }
 .ql-story-card:hover {
   border-color: rgba(245, 158, 11, 0.35);
@@ -710,59 +715,55 @@
    RIGHT COLUMN — Sidebar  (2/7 ≈ 28.6%)
    ══════════════════════════════════════════════════════════════ */
 .ql-sidebar {
-  flex: 2;
-  min-width: 0;
+  flex: 2.2;
+  min-width: 290px;
   position: sticky;
-  top: 68px; /* clears NavBar */
-  max-height: calc(100vh - 80px);
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.08) transparent;
-}
-.ql-sidebar::-webkit-scrollbar { width: 4px; }
-.ql-sidebar::-webkit-scrollbar-track { background: transparent; }
-.ql-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
-
-/* ── Profile card ─────────────────────────────────────────────── */
-.ql-profile-card {
-  background: rgba(17, 17, 17, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 1.1rem;
+  top: 60px;
+  height: fit-content;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+  overflow: visible;
+}
+
+/* ── Profile card ─────────────────────────────────────────────── */
+.ql-profile-card {
+  background: #1A1D24;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
 .ql-profile-top {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 .ql-profile-avatar-wrap {
   position: relative;
   flex-shrink: 0;
 }
 .ql-profile-avatar {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
   background: rgba(245, 158, 11, 0.12);
-  border: 2px solid rgba(245, 158, 11, 0.3);
+  border: 2px solid rgba(245, 158, 11, 0.35);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.65rem;
 }
 .ql-online-dot {
   position: absolute;
   bottom: 2px;
   right: 2px;
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   background: #22c55e;
   border: 2px solid #0a0a0a;
   border-radius: 50%;
@@ -770,55 +771,55 @@
 .ql-profile-info {
   display: flex;
   flex-direction: column;
-  gap: 0.1rem;
+  gap: 0.15rem;
 }
 .ql-profile-name {
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-primary);
 }
 .ql-profile-username {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
 }
 
 .ql-profile-rank-row {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.55rem;
   flex-wrap: wrap;
 }
 .ql-profile-stage-badge {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
   color: #f59e0b;
   border-radius: 999px;
-  padding: 0.2rem 0.65rem;
+  padding: 0.25rem 0.75rem;
 }
 .ql-profile-league-badge {
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  background: rgba(167, 139, 250, 0.1);
-  border: 1px solid rgba(167, 139, 250, 0.3);
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.35);
   color: #a78bfa;
   border-radius: 999px;
-  padding: 0.2rem 0.65rem;
+  padding: 0.25rem 0.75rem;
 }
 
 .ql-profile-xp-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 .ql-profile-xp-label {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   flex-shrink: 0;
 }
 .ql-profile-xp-bar {
   flex: 1;
-  height: 6px;
+  height: 8px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   overflow: hidden;
@@ -830,16 +831,20 @@
   transition: width 0.5s ease;
 }
 .ql-profile-xp-val {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
   flex-shrink: 0;
 }
-.ql-profile-coins {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+.ql-profile-next-perk {
+  font-size: 0.73rem;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
 }
 
+<<<<<<< HEAD
 .ql-profile-card-actions {
   display: flex;
   gap: 0.5rem;
@@ -916,85 +921,196 @@
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 12px;
   padding: 0.5rem;
+=======
+/* ── 7-Day Streak Heatmap Visualizer ─────────────────────────── */
+.ql-heatmap-header {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
 }
 
-.ql-sidenav-item {
+.ql-heatmap-mult {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+}
+
+.ql-heatmap-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.ql-heatmap-day {
+>>>>>>> dd24f67 (Update layout and UI components)
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ql-heatmap-day-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.ql-heatmap-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #64748b;
+  transition: all 0.2s ease;
+}
+
+.ql-heatmap-day--active .ql-heatmap-dot {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.ql-heatmap-sub {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+/* ── Milestone Badges Grid ───────────────────────────────────── */
+.ql-badges-card {
+  padding: 1.2rem 1.25rem;
+  margin-top: 0.4rem;
+}
+
+.ql-stats-overview-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-top: 0;
+  margin-bottom: 0.85rem;
+}
+
+.ql-badges-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.ql-badge-card {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 0.83rem;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s, color 0.15s;
-  width: 100%;
-}
-.ql-sidenav-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
-}
-.ql-sidenav-item--active {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-  font-weight: 700;
-  border: 1px solid rgba(245, 158, 11, 0.2);
-}
-.ql-sidenav-icon {
-  font-size: 1rem;
-  flex-shrink: 0;
-}
-.ql-sidenav-label { flex: 1; }
-
-.ql-sidenav-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 0.15rem 0.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-.ql-sidenav-badge--live {
-  background: rgba(34, 197, 94, 0.12);
-  border-color: rgba(34, 197, 94, 0.3);
-  color: #4ade80;
-}
-.ql-sidenav-badge--done {
-  background: rgba(52, 211, 153, 0.1);
-  border-color: rgba(52, 211, 153, 0.25);
-  color: #34d399;
-}
-.ql-sidenav-badge--warn {
-  background: rgba(244, 63, 94, 0.1);
-  border-color: rgba(244, 63, 94, 0.3);
-  color: #f43f5e;
-}
-.ql-sidenav-badge--risk {
-  background: rgba(251, 146, 60, 0.15);
-  border-color: rgba(251, 146, 60, 0.35);
-  color: #fb923c;
-}
-
-/* ── Daily Target Widget ─────────────────────────────────────── */
-.ql-daily-target {
-  background: rgba(17, 17, 17, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 0.9rem 1rem;
+  padding: 0.7rem 0.8rem;
+  opacity: 0.75;
+  transition: all 0.2s ease;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ql-badge-card.unlocked {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(245, 158, 11, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.ql-badge-icon {
+  font-size: 1.35rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.ql-badge-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  line-height: 1.2;
+  min-width: 0;
+  flex: 1;
+}
+
+.ql-badge-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ql-badge-status {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #f59e0b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ql-stats-overview-card {
+  background: #1A1D24;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.95rem 1.1rem;
+}
+
+.ql-daily-target {
+  background: #1A1D24;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 0.95rem 1.1rem;
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+}
+.ql-daily-target-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ql-daily-target-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.ql-daily-target-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f59e0b;
+}
+.ql-daily-target-bar {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.ql-daily-target-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+.ql-daily-target-fill--done {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+.ql-daily-motivation {
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 .ql-daily-target-header {
   display: flex;

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -10,17 +11,86 @@ const NAV_LINKS = [
   { label: "Streaks",         path: "/streak",           emoji: "🔥" },
   { label: "Dashboard",       path: "/dashboard",        emoji: "📊" },
   { label: "Profile",         path: "/profile",          emoji: "👤" },
+=======
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { loadProfile, loadStreak } from "../data/progress.js";
+import "./NavBar.css";
+
+const SEARCH_ITEMS = [
+  { label: "Daily Challenge", path: "/daily-challenge", category: "Activity", emoji: "🌟" },
+  { label: "Topic-wise Quizzes", path: "/topics", category: "Learn", emoji: "📚" },
+  { label: "JavaScript Types & Variables", path: "/topics", category: "Topic", emoji: "🔤" },
+  { label: "Functions & Closures", path: "/topics", category: "Topic", emoji: "⚡" },
+  { label: "Async & Promises", path: "/topics", category: "Topic", emoji: "⏳" },
+  { label: "Algorithms & Complexity", path: "/topics", category: "Topic", emoji: "🧮" },
+  { label: "Stage Map", path: "/stages", category: "Progress", emoji: "🗺️" },
+  { label: "Quest League Leaderboard", path: "/leaderboard", category: "Social", emoji: "🏆" },
+  { label: "Streaks & Recovery", path: "/streak", category: "Activity", emoji: "🔥" },
+  { label: "Mistake Museum", path: "/museum", category: "Review", emoji: "🏛️" },
+  { label: "Learner Dashboard", path: "/dashboard", category: "Stats", emoji: "📊" },
+  { label: "Team Roles & Missions", path: "/team", category: "Social", emoji: "👥" },
+>>>>>>> dd24f67 (Update layout and UI components)
 ];
 
 function NavBar() {
   const navigate = useNavigate();
+<<<<<<< HEAD
   const location = useLocation();
   const { user, logout, toggle2FA } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+=======
+  const [profile, setProfile] = useState(null);
+  const [streak, setStreak] = useState(null);
+>>>>>>> dd24f67 (Update layout and UI components)
 
-  const isActive = (path) =>
-    path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUserData = () => {
+      setProfile(loadProfile());
+      setStreak(loadStreak());
+    };
+
+    fetchUserData();
+
+    // Listen for storage updates so counters sync dynamically
+    window.addEventListener("storage", fetchUserData);
+    return () => window.removeEventListener("storage", fetchUserData);
+  }, []);
+
+  // Close search dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const totalCoins = profile?.totalCoins ?? 0;
+  const totalXp = profile?.totalXp ?? 0;
+  const currentStreak = streak?.currentStreak ?? 0;
+  const playerLevel = Math.max(1, Math.floor(totalXp / 100) + 1);
+
+  const filteredSearch = searchQuery.trim()
+    ? SEARCH_ITEMS.filter((item) =>
+        item.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  const handleSelectSearchItem = (path) => {
+    navigate(path);
+    setSearchQuery("");
+    setSearchOpen(false);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -29,33 +99,40 @@ function NavBar() {
   };
 
   return (
-    <nav className="navbar" role="navigation" aria-label="Main navigation">
-      {/* Logo */}
+    <header className="global-navbar" role="banner">
+      {/* Brand Logo */}
       <button
-        className="navbar-logo"
-        onClick={() => { navigate("/"); setMenuOpen(false); }}
+        className="navbar-brand"
+        onClick={() => navigate("/")}
         aria-label="QuestLearn home"
       >
-        <span className="navbar-logo-icon">⚔️</span>
-        <span className="navbar-logo-text">QuestLearn</span>
+        <span className="navbar-brand-icon">⚔️</span>
+        <span className="navbar-brand-name">QuestLearn</span>
       </button>
 
-      {/* Desktop links */}
-      <ul className="navbar-links" role="list">
-        {NAV_LINKS.map(({ label, path, emoji }) => (
-          <li key={path}>
-            <button
-              className={`navbar-link ${isActive(path) ? "navbar-link--active" : ""}`}
-              onClick={() => navigate(path)}
-              aria-current={isActive(path) ? "page" : undefined}
-            >
-              <span className="navbar-link-emoji" aria-hidden="true">{emoji}</span>
-              <span className="navbar-link-label">{label}</span>
+      {/* Global Search Bar */}
+      <div className="navbar-search-container" ref={searchRef}>
+        <div className="navbar-search-input-wrap">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            className="navbar-search-input"
+            placeholder="Search topics, stages, or features..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setSearchOpen(true);
+            }}
+            onFocus={() => setSearchOpen(true)}
+          />
+          {searchQuery && (
+            <button className="search-clear-btn" onClick={() => setSearchQuery("")}>
+              ✕
             </button>
-          </li>
-        ))}
-      </ul>
+          )}
+        </div>
 
+<<<<<<< HEAD
       {/* Auth Actions (Right Side) */}
       <div className="navbar-auth-section">
         {user ? (
@@ -189,6 +266,86 @@ function NavBar() {
         </ul>
       )}
     </nav>
+=======
+        {/* Search Results Dropdown */}
+        {searchOpen && filteredSearch.length > 0 && (
+          <div className="search-dropdown">
+            <ul className="search-dropdown-list">
+              {filteredSearch.map((item, index) => (
+                <li key={index}>
+                  <button
+                    className="search-dropdown-item"
+                    onClick={() => handleSelectSearchItem(item.path)}
+                  >
+                    <span className="search-item-emoji">{item.emoji}</span>
+                    <div className="search-item-info">
+                      <span className="search-item-label">{item.label}</span>
+                      <span className="search-item-cat">{item.category}</span>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Live Status Metrics & User Profile */}
+      <div className="navbar-status-wrap">
+        {/* Streak Counter Box */}
+        <button
+          className="navbar-stat-box navbar-stat-box--streak"
+          onClick={() => navigate("/streak")}
+          title="Daily streak. Click to view recovery & calendar."
+        >
+          <div className="stat-avatar stat-avatar--streak">🔥</div>
+          <div className="stat-meta">
+            <span className="stat-name">Streak</span>
+            <span className="stat-val">{currentStreak} Day{currentStreak !== 1 ? "s" : ""}</span>
+          </div>
+        </button>
+
+        {/* Coins Counter Box */}
+        <button
+          className="navbar-stat-box navbar-stat-box--coins"
+          onClick={() => navigate("/dashboard")}
+          title="Total Coins earned"
+        >
+          <div className="stat-avatar stat-avatar--coins">🪙</div>
+          <div className="stat-meta">
+            <span className="stat-name">Coins</span>
+            <span className="stat-val">{totalCoins.toLocaleString()}</span>
+          </div>
+        </button>
+
+        {/* XP Counter Box */}
+        <button
+          className="navbar-stat-box navbar-stat-box--xp"
+          onClick={() => navigate("/dashboard")}
+          title="Total XP earned"
+        >
+          <div className="stat-avatar stat-avatar--xp">⚡</div>
+          <div className="stat-meta">
+            <span className="stat-name">Total XP</span>
+            <span className="stat-val">{totalXp.toLocaleString()}</span>
+          </div>
+        </button>
+
+        {/* User Profile Badge */}
+        <button
+          className="navbar-profile-btn"
+          onClick={() => navigate("/dashboard")}
+          title="View Learner Profile & Dashboard"
+        >
+          <div className="profile-avatar">🧑‍💻</div>
+          <div className="profile-meta">
+            <span className="profile-name">Learner</span>
+            <span className="profile-lvl">Lvl {playerLevel}</span>
+          </div>
+        </button>
+      </div>
+    </header>
+>>>>>>> dd24f67 (Update layout and UI components)
   );
 }
 
