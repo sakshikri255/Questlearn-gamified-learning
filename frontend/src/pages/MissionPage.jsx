@@ -90,6 +90,7 @@ function MissionPage() {
   const [splashCorrect, setSplashCorrect] = useState(false);
   const [timerRemaining, setTimerRemaining] = useState(MISSION_TIMER_SECONDS);
   const [timerActive, setTimerActive] = useState(false);
+  const timerRef = useRef(null);
   const questionStartRef = useRef(null);
   const questionNumberRef = useRef(1);
 
@@ -447,8 +448,8 @@ function MissionPage() {
               ? <button className="secondary" onClick={() => navigate("/stages")}>🗺️ Stage Map</button>
               : <button className="secondary" onClick={() => navigate("/")}>🏠 Home</button>}
           </div>
-        </PageTransition>
-      </>
+        </div>
+      </PageTransition>
     );
   }
 
