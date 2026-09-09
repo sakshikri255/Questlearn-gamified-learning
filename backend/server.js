@@ -29,10 +29,28 @@ const PERSONA_MESSAGES = {
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 
-const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173", process.env.CLIENT_ORIGIN].filter(Boolean);
+// Build the allowed origins list.
+// VERCEL_URL is set automatically by Vercel for every deployment (no https://).
+// CLIENT_ORIGIN can be set manually in the dashboard for custom domains.
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  process.env.CLIENT_ORIGIN,
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+].filter(Boolean);
+
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+    // Allow same-origin requests (no Origin header) and localhost dev servers
+    if (!origin || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+      return callback(null, true);
+    }
+    // Allow any *.vercel.app URL (covers preview deployments too)
+    if (/\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    // Allow explicitly listed origins (CLIENT_ORIGIN, custom domains)
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
     return callback(new Error("CORS origin not allowed: " + origin));
@@ -293,6 +311,17 @@ app.post("/api/quiz/submit-batch", (req, res) => {
   const score = Math.round((correct / total) * 100);
 
   res.json({ results, correct, total, score });
+});
+
+// --- Global error handler ---
+// Catches any Express errors (including CORS rejections) and returns JSON.
+// Without this, Express returns an HTML error page which causes
+// "Unexpected token '<'" errors in the frontend.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error("[Express error]", err.message);
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({ error: err.message || "Internal server error" });
 });
 
 // --- Start the server ---
