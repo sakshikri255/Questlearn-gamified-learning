@@ -80,14 +80,20 @@ function DailyChallengePage() {
   useEffect(() => {
     if (alreadyDone) { setLoading(false); setScreen("already-done"); return; }
     fetch("/api/daily-challenge")
-      .then((r) => r.json())
+      .then(async (r) => {
+        const data = await r.json();
+        if (!r.ok || !Array.isArray(data.questions)) {
+          throw new Error(data.error || "Failed to load daily challenge questions.");
+        }
+        return data;
+      })
       .then(({ date, questions: qs }) => {
         setQuestions(qs);
         setChallengeDate(date);
         setLoading(false);
       })
-      .catch(() => {
-        setFetchError("Could not load the daily challenge. Is the backend running?");
+      .catch((err) => {
+        setFetchError(err.message || "Could not load the daily challenge. Is the backend running?");
         setLoading(false);
       });
   }, [alreadyDone]);

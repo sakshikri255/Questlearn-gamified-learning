@@ -2,62 +2,157 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getTheme } from "../data/themes.js";
 import PageTransition from "../components/PageTransition.jsx";
+import {
+  loadMistakes,
+  recordMistake,
+  removeMistakeIfCorrect,
+  loadProfile,
+  saveProfile,
+} from "../data/progress.js";
 import "./MuseumPage.css";
 
 // MuseumPage — displays all incorrectly-answered questions saved in localStorage.
-//
-// localStorage key: "ql_mistakes"
-// Each entry shape:
-//   { id, questionId, questionText, selectedOption, selectedText,
-//     correctOption, correctText, concept, correction, themeId, savedAt }
-//
-// Actions per card:
-//   Retry  — navigates back to /mission with the same theme that was active
-//   Delete — removes just this mistake from localStorage
+// Features:
+// - Automatic deduplication on load & save (never creates double cards for the same question)
+// - Interactive Inline Retry: Retrying tests the exact mistake question
+// - Correct retry -> Clears mistake from Museum & awards +30 Coins & +15 XP!
+// - Incorrect retry -> Renews mistake timestamp & selection without duplicating card
 
 function MuseumPage() {
   const navigate = useNavigate();
   const [mistakes, setMistakes] = useState([]);
+  const [activeRetry, setActiveRetry] = useState(null); // mistake object being retried
+  const [selectedOption, setSelectedOption] = useState("");
+  const [retryResult, setRetryResult] = useState(null); // { correct: boolean, msg: string }
 
-  // Load mistakes from localStorage on mount
+  // Load mistakes on mount and sync on storage events
+  const syncMistakes = () => {
+    setMistakes(loadMistakes());
+  };
+
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("ql_mistakes") ?? "[]");
-    setMistakes(saved);
+    syncMistakes();
+    window.addEventListener("storage", syncMistakes);
+    return () => window.removeEventListener("storage", syncMistakes);
   }, []);
 
   // Remove a single mistake by id
-  const handleDelete = (id) => {
-    const updated = mistakes.filter((m) => m.id !== id);
-    setMistakes(updated);
-    localStorage.setItem("ql_mistakes", JSON.stringify(updated));
+  const handleDelete = (id, questionId, questionText) => {
+    removeMistakeIfCorrect(questionId, questionText);
+    syncMistakes();
   };
 
   // Clear all mistakes
   const handleClearAll = () => {
     setMistakes([]);
     localStorage.removeItem("ql_mistakes");
+    window.dispatchEvent(new Event("storage"));
   };
 
-  // Retry navigates to the mission with the theme that was active when the mistake was made
-  const handleRetry = (mistake) => {
-    navigate(`/mission?theme=${mistake.themeId ?? "cyber"}`);
+  // Open Retry modal for a specific mistake
+  const handleStartRetry = (mistake) => {
+    setActiveRetry(mistake);
+    setSelectedOption("");
+    setRetryResult(null);
   };
 
-  // Format the savedAt ISO string into a readable date
+  // Close Retry modal
+  const handleCloseRetry = () => {
+    setActiveRetry(null);
+    setSelectedOption("");
+    setRetryResult(null);
+  };
+
+  // Submit retry answer
+  const handleSubmitRetry = () => {
+    if (!activeRetry || !selectedOption) return;
+
+    // Check correctness: either matches correctOption letter or correctText
+    const isCorrect =
+      selectedOption === activeRetry.correctOption ||
+      selectedOption === activeRetry.correctText;
+
+    if (isCorrect) {
+      // 1. Remove mistake from Museum
+      removeMistakeIfCorrect(activeRetry.questionId, activeRetry.questionText);
+
+      // 2. Award coins & XP
+      const profile = loadProfile();
+      saveProfile({
+        ...profile,
+        totalCoins: (profile.totalCoins ?? 0) + 30,
+        totalXp: (profile.totalXp ?? 0) + 15,
+        leagueCoins: (profile.leagueCoins ?? 0) + 30,
+      });
+
+      setRetryResult({
+        correct: true,
+        msg: "🎉 Correct! Mistake cleared from Museum! (+30 🪙  +15 XP)",
+      });
+
+      syncMistakes();
+    } else {
+      // Renew mistake entry with new timestamp & latest wrong answer (no duplicate cards)
+      const selectedOptObj = activeRetry.options?.find((o) => o.id === selectedOption);
+      const renewed = recordMistake({
+        ...activeRetry,
+        selectedOption,
+        selectedText: selectedOptObj?.text ?? selectedOption,
+      });
+
+      setRetryResult({
+        correct: false,
+        msg: "❌ Still incorrect. Mistake entry renewed for further practice.",
+      });
+
+      syncMistakes();
+    }
+  };
+
+  // Helper to format ISO date string
   const formatDate = (iso) => {
     try {
       return new Date(iso).toLocaleDateString(undefined, {
         year: "numeric",
         month: "short",
         day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch {
       return iso;
     }
   };
 
-  // ── Render: empty state ──────────────────────────────────
-  if (mistakes.length === 0) {
+  // ── Helper to derive options array for retrying ─────────────────────────────
+  const getRetryOptions = (mistake) => {
+    if (Array.isArray(mistake.options) && mistake.options.length > 0) {
+      return mistake.options;
+    }
+    // Fallback options if missing from legacy records
+    const opts = [];
+    if (mistake.selectedOption && mistake.selectedText) {
+      opts.push({ id: mistake.selectedOption, text: mistake.selectedText });
+    }
+    if (mistake.correctOption && mistake.correctText && mistake.correctOption !== mistake.selectedOption) {
+      opts.push({ id: mistake.correctOption, text: mistake.correctText });
+    }
+    if (opts.length < 4) {
+      const dummies = [
+        { id: "A", text: "Alternative option A" },
+        { id: "B", text: "Alternative option B" },
+        { id: "C", text: "Alternative option C" },
+        { id: "D", text: "Alternative option D" },
+      ];
+      dummies.forEach((d) => {
+        if (!opts.some((o) => o.id === d.id)) opts.push(d);
+      });
+    }
+    return opts.sort((a, b) => a.id.localeCompare(b.id));
+  };
+
+  // ── Render: Empty State ─────────────────────────────────────────────────────
+  if (mistakes.length === 0 && !activeRetry) {
     return (
       <PageTransition className="museum-wrapper">
         <div className="card museum-empty-card">
@@ -68,8 +163,8 @@ function MuseumPage() {
             <p className="museum-empty-icon">🏛️</p>
             <h2 className="museum-empty-title">The Museum is Empty</h2>
             <p className="museum-empty-sub">
-              No mistakes saved yet. Answer a question incorrectly on the mission
-              page and it will appear here for review.
+              No active mistakes saved! When you answer a question incorrectly in missions or quizzes,
+              it will appear here for review and retry.
             </p>
             <button className="primary" onClick={() => navigate("/")}>
               Start a Mission
@@ -80,7 +175,7 @@ function MuseumPage() {
     );
   }
 
-  // ── Render: mistake cards ────────────────────────────────
+  // ── Render: Main Museum ─────────────────────────────────────────────────────
   return (
     <PageTransition className="museum-wrapper">
       <div className="museum-inner">
@@ -91,10 +186,12 @@ function MuseumPage() {
           </button>
           <div className="museum-title-row">
             <h1 className="museum-title">🏛️ Mistake Museum</h1>
-            <span className="museum-count">{mistakes.length} mistake{mistakes.length !== 1 ? "s" : ""}</span>
+            <span className="museum-count">
+              {mistakes.length} unique mistake{mistakes.length !== 1 ? "s" : ""}
+            </span>
           </div>
           <p className="museum-subtitle">
-            Every mistake is a lesson. Review what went wrong and retry when you're ready.
+            Every mistake is a lesson. Review past errors, attempt instant retries, and clear items as you master them.
           </p>
         </div>
 
@@ -104,7 +201,7 @@ function MuseumPage() {
             const theme = getTheme(mistake.themeId);
             return (
               <div key={mistake.id} className="mistake-card">
-                {/* Card header: concept title + theme badge */}
+                {/* Card header */}
                 <div className="mistake-card-header">
                   <div className="mistake-concept">
                     <span className="mistake-concept-icon">🧠</span>
@@ -112,7 +209,11 @@ function MuseumPage() {
                   </div>
                   <span
                     className="mistake-theme-badge"
-                    style={{ color: theme.accent, borderColor: theme.accentDim, backgroundColor: theme.accentDim }}
+                    style={{
+                      color: theme.accent,
+                      borderColor: theme.accentDim,
+                      backgroundColor: theme.accentDim,
+                    }}
                   >
                     {theme.emoji} {theme.name}
                   </span>
@@ -125,16 +226,20 @@ function MuseumPage() {
                 {/* Answer comparison */}
                 <div className="mistake-answers">
                   <div className="mistake-answer mistake-answer--wrong">
-                    <span className="answer-pill answer-pill--wrong">{mistake.selectedOption}</span>
+                    <span className="answer-pill answer-pill--wrong">
+                      {mistake.selectedOption}
+                    </span>
                     <span className="answer-detail">
-                      <span className="answer-detail-label">You answered</span>
+                      <span className="answer-detail-label">Last Answer</span>
                       <span className="answer-detail-value">{mistake.selectedText}</span>
                     </span>
                   </div>
                   <div className="mistake-answer mistake-answer--correct">
-                    <span className="answer-pill answer-pill--correct">{mistake.correctOption}</span>
+                    <span className="answer-pill answer-pill--correct">
+                      {mistake.correctOption}
+                    </span>
                     <span className="answer-detail">
-                      <span className="answer-detail-label">Correct answer</span>
+                      <span className="answer-detail-label">Correct Answer</span>
                       <span className="answer-detail-value">{mistake.correctText}</span>
                     </span>
                   </div>
@@ -142,23 +247,25 @@ function MuseumPage() {
 
                 {/* Correction explanation */}
                 <div className="mistake-correction">
-                  <p className="mistake-correction-label">Correction</p>
+                  <p className="mistake-correction-label">Correction & Explanation</p>
                   <p className="mistake-correction-text">{mistake.correction}</p>
                 </div>
 
                 {/* Footer: date + actions */}
                 <div className="mistake-footer">
-                  <span className="mistake-date">Saved {formatDate(mistake.savedAt)}</span>
+                  <span className="mistake-date">
+                    Last missed: {formatDate(mistake.savedAt)}
+                  </span>
                   <div className="mistake-actions">
                     <button
                       className="primary retry-btn"
-                      onClick={() => handleRetry(mistake)}
+                      onClick={() => handleStartRetry(mistake)}
                     >
-                      🔁 Retry
+                      🔁 Retry Now
                     </button>
                     <button
                       className="delete-btn"
-                      onClick={() => handleDelete(mistake.id)}
+                      onClick={() => handleDelete(mistake.id, mistake.questionId, mistake.questionText)}
                       title="Remove from museum"
                     >
                       🗑
@@ -176,6 +283,64 @@ function MuseumPage() {
             <button className="clear-all-btn" onClick={handleClearAll}>
               🗑 Clear All Mistakes
             </button>
+          </div>
+        )}
+
+        {/* ── Interactive Retry Modal ───────────────────────────────────────── */}
+        {activeRetry && (
+          <div className="retry-modal-backdrop" onClick={handleCloseRetry}>
+            <div className="retry-modal-card" onClick={(e) => e.stopPropagation()}>
+              <div className="retry-modal-header">
+                <h3>🔁 Retry Question — {activeRetry.concept}</h3>
+                <button className="retry-modal-close" onClick={handleCloseRetry}>
+                  ✕
+                </button>
+              </div>
+
+              <p className="retry-modal-question">{activeRetry.questionText}</p>
+
+              {/* Options list */}
+              <div className="retry-modal-options">
+                {getRetryOptions(activeRetry).map((opt) => (
+                  <button
+                    key={opt.id}
+                    className={`retry-option-btn ${selectedOption === opt.id ? "selected" : ""}`}
+                    onClick={() => !retryResult?.correct && setSelectedOption(opt.id)}
+                    disabled={retryResult?.correct}
+                  >
+                    <span className="retry-option-id">{opt.id}</span>
+                    <span className="retry-option-text">{opt.text}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Result Feedback */}
+              {retryResult && (
+                <div className={`retry-result-banner ${retryResult.correct ? "success" : "failure"}`}>
+                  <p>{retryResult.msg}</p>
+                </div>
+              )}
+
+              {/* Modal Actions */}
+              <div className="retry-modal-actions">
+                {!retryResult?.correct ? (
+                  <button
+                    className="primary"
+                    onClick={handleSubmitRetry}
+                    disabled={!selectedOption}
+                  >
+                    Submit Answer
+                  </button>
+                ) : (
+                  <button className="primary" onClick={handleCloseRetry}>
+                    Done & Close
+                  </button>
+                )}
+                <button className="secondary" onClick={handleCloseRetry}>
+                  Cancel
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
