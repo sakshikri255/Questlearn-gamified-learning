@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from "../components/NavBar.jsx";
 import { loadQuizResults, computeAreas, buildRecommendations } from "../data/quizResults.js";
 import { formatMs } from "../data/progress.js";
 import "./PostQuizResultsPage.css";
@@ -31,7 +30,6 @@ function PostQuizResultsPage() {
   if (!data) {
     return (
       <div className="pqr-wrapper">
-        <NavBar />
         <p className="pqr-loading">Loading results…</p>
       </div>
     );
@@ -49,7 +47,6 @@ function PostQuizResultsPage() {
 
   return (
     <div className="pqr-wrapper">
-      <NavBar />
       <div className="pqr-content">
 
         {/* ── Score Summary ─────────────────────────────── */}

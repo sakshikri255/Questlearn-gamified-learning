@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import NavBar from "./components/NavBar.jsx";
+import AppSidebar from "./components/AppSidebar.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
 import MissionPage from "./pages/MissionPage.jsx";
@@ -16,6 +17,7 @@ import TopicsPage from "./pages/TopicsPage.jsx";
 import TopicQuizPage from "./pages/TopicQuizPage.jsx";
 import PostQuizResultsPage from "./pages/PostQuizResultsPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import TeamPage from "./pages/TeamPage.jsx";
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -39,6 +41,7 @@ function AnimatedRoutes() {
         <Route path="/topics" element={<TopicsPage />} />
         <Route path="/quiz/:subtopicId" element={<TopicQuizPage />} />
         <Route path="/quiz-results" element={<PostQuizResultsPage />} />
+        <Route path="/team" element={<TeamPage />} />
       </Routes>
     </AnimatePresence>
   );
@@ -48,8 +51,15 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <NavBar />
-        <AnimatedRoutes />
+        <div className="app-container">
+          <NavBar />
+          <div className="app-body">
+            <AppSidebar />
+            <main className="app-main-content">
+              <AnimatedRoutes />
+            </main>
+          </div>
+        </div>
       </BrowserRouter>
     </AuthProvider>
   );

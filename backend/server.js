@@ -29,8 +29,14 @@ const PERSONA_MESSAGES = {
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 
+const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173", process.env.CLIENT_ORIGIN].filter(Boolean);
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("CORS origin not allowed: " + origin));
+  },
   credentials: true,
 }));
 app.use(express.json());
@@ -249,15 +255,30 @@ app.post("/api/quiz/submit-batch", (req, res) => {
   }
 
   const results = answers.map(({ questionId, selectedOption }) => {
-    const q = questions.find((qq) => qq.id === Number(questionId));
+    // Use findQuestion so Gemini-generated questions (in memory cache) are found too
+    const q = findQuestion(questionId, questions);
     if (!q) return { questionId, error: "not found" };
-    const correct = selectedOption === q.correctOption;
+
+    // Gemini questions store correctAnswerIndex; questions.json uses correctOption letter
+    const correctOption = q.correctOption
+      ?? (q.correctAnswerIndex != null ? String.fromCharCode(65 + q.correctAnswerIndex) : null);
+
+    // Normalise options to {id, text} shape for the results page
+    const normalisedOptions = Array.isArray(q.options)
+      ? q.options.map((opt, idx) =>
+          typeof opt === "string"
+            ? { id: String.fromCharCode(65 + idx), text: opt }
+            : opt
+        )
+      : [];
+
+    const correct = selectedOption === correctOption;
     return {
       questionId: q.id,
       question: q.question,
-      options: q.options,
+      options: normalisedOptions,
       selectedOption,
-      correctOption: q.correctOption,
+      correctOption,
       correct,
       explanation: q.explanation,
       concept: q.concept,
