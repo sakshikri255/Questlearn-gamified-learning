@@ -18,6 +18,7 @@ import {
 import { loadLeague } from "../data/progress.js";
 import INITIAL_LEAGUE_DATA from "../data/leagueData.js";
 import PageTransition from "../components/PageTransition.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 import "./HomePage.css";
 
 // ─── Compute player rank from league data ────────────────────────────────────
@@ -158,6 +159,7 @@ function StageModal({ stage, meta, stageIndex, isUnlocked, isCompleted, selected
 // ═════════════════════════════════════════════════════════════════════════════
 function HomePage() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   // ── Data state ─────────────────────────────────────────────────────────────
   const [profile, setProfile] = useState(null);
@@ -249,8 +251,13 @@ function HomePage() {
     setActiveStageModal(null);
   };
 
-  const handleLogoutConfirm = () => {
+  const handleLogoutConfirm = async () => {
     setShowLogout(false);
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout error", err);
+    }
     navigate("/");
   };
 
@@ -590,35 +597,89 @@ function HomePage() {
 
         {/* ── User Profile Card ─────────────────────────────────────────────── */}
         <div className="ql-profile-card">
-          <div className="ql-profile-top">
-            <div className="ql-profile-avatar-wrap">
-              {/* No auth system — polished fallback avatar. Placeholder. */}
-              <div className="ql-profile-avatar" aria-label="User avatar">🧑‍💻</div>
-              <span className="ql-online-dot" title="Online" aria-label="Online" />
+          {user ? (
+            <>
+              <div className="ql-profile-top">
+                <div className="ql-profile-avatar-wrap">
+                  <div className="ql-profile-avatar" aria-label="User avatar">
+                    {user.avatar || "🧑‍💻"}
+                  </div>
+                  <span className="ql-online-dot" title="Online" aria-label="Online" />
+                </div>
+                <div className="ql-profile-info">
+                  <p className="ql-profile-name">{user.name}</p>
+                  <p className="ql-profile-username">{user.gamerTag || `@${user.username || "player"}`}</p>
+                </div>
+              </div>
+              <div className="ql-profile-rank-row">
+                <span className="ql-profile-stage-badge">
+                  {STAGES.find((s) => s.id === currentStageId)?.emoji ?? "🌱"}{" "}
+                  Lv.{user.level || 1} · {user.title || "Adventurer"}
+                </span>
+                <span className="ql-profile-league-badge">Quest League A</span>
+              </div>
+              {/* XP bar */}
+              <div className="ql-profile-xp-row">
+                <span className="ql-profile-xp-label">XP</span>
+                <div
+                  className="ql-profile-xp-bar"
+                  role="progressbar"
+                  aria-valuenow={Math.min(100, Math.round(((user.xp || 0) / Math.max(1, maxXp)) * 100))}
+                  aria-valuemax={100}
+                  aria-label={`${user.xp || 0} of ${maxXp} XP`}
+                >
+                  <div
+                    className="ql-profile-xp-fill"
+                    style={{
+                      width: `${Math.min(100, Math.round(((user.xp || 0) / Math.max(1, maxXp)) * 100))}%`,
+                    }}
+                  />
+                </div>
+                <span className="ql-profile-xp-val">{user.xp || 0}/{maxXp}</span>
+              </div>
+              <div className="ql-profile-coins">
+                🪙 {(user.coins ?? profile?.totalCoins ?? 0).toLocaleString()} coins
+              </div>
+              {/* Profile Card Actions */}
+              <div className="ql-profile-card-actions">
+                <button
+                  className="ql-profile-action-btn"
+                  onClick={() => navigate("/profile")}
+                  title="Edit Profile"
+                >
+                  ✏️ Edit Profile
+                </button>
+                <button
+                  className="ql-profile-action-btn ql-profile-action-btn--logout"
+                  onClick={() => setShowLogout(true)}
+                  title="Sign Out"
+                >
+                  🚪 Log Out
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="ql-profile-guest-card">
+              <div className="ql-profile-top">
+                <div className="ql-profile-avatar-wrap">
+                  <div className="ql-profile-avatar" aria-label="Guest avatar">🧑‍💻</div>
+                </div>
+                <div className="ql-profile-info">
+                  <p className="ql-profile-name">Guest Explorer</p>
+                  <p className="ql-profile-username">@guest</p>
+                </div>
+              </div>
+              <p className="ql-profile-guest-hint">Sign in to track your XP, streak, and rank!</p>
+              <div className="ql-profile-guest-actions">
+                <button className="primary ql-profile-signin-btn" onClick={() => navigate("/login")}>
+                  🔑 Sign In
+                </button>
+                <button className="secondary ql-profile-users-btn" onClick={() => navigate("/profile")}>
+                  👥 View 5 Accounts
+                </button>
+              </div>
             </div>
-            <div className="ql-profile-info">
-              <p className="ql-profile-name">Explorer {/* Placeholder: no auth user name */}</p>
-              <p className="ql-profile-username">@player {/* Placeholder: no auth username */}</p>
-            </div>
-          </div>
-          <div className="ql-profile-rank-row">
-            <span className="ql-profile-stage-badge">
-              {STAGES.find((s) => s.id === currentStageId)?.emoji ?? "🌱"}{" "}
-              {STAGES.find((s) => s.id === currentStageId)?.name ?? "Beginner"}
-            </span>
-            <span className="ql-profile-league-badge">Quest League A</span>
-          </div>
-          {/* XP bar */}
-          <div className="ql-profile-xp-row">
-            <span className="ql-profile-xp-label">XP</span>
-            <div className="ql-profile-xp-bar" role="progressbar" aria-valuenow={xpPct} aria-valuemax={100} aria-label={`${totalXp} of ${maxXp} XP`}>
-              <div className="ql-profile-xp-fill" style={{ width: `${xpPct}%` }} />
-            </div>
-            <span className="ql-profile-xp-val">{totalXp}/{maxXp}</span>
-          </div>
-          <div className="ql-profile-coins">
-            🪙 {(profile?.totalCoins ?? 0).toLocaleString()} coins
-          </div>
+          )}
         </div>
 
         {/* ── Vertical Navigation ───────────────────────────────────────────── */}

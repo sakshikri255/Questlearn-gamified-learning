@@ -18,6 +18,7 @@ import {
 import { getStage } from "../data/stages.js";
 import INITIAL_LEAGUE_DATA from "../data/leagueData.js";
 import PageTransition from "../components/PageTransition.jsx";
+import RequireAuthModal from "../components/RequireAuthModal.jsx";
 import "./MissionPage.css";
 
 const MISSION_TIMER_SECONDS = 90;
@@ -321,6 +322,7 @@ function MissionPage() {
   if (status === "loading") {
     return (
       <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
+        <RequireAuthModal message="You must be signed in to embark on missions, answer questions with personas, and earn XP!" />
         <p className="loading-text">Loading your mission…</p>
       </PageTransition>
     );
@@ -459,6 +461,7 @@ function MissionPage() {
   // ── QUESTION PAGE ─────────────────────────────────────────────────────────
   return (
     <PageTransition className={`mission-wrapper persona-bg--${persona.id}`}>
+      <RequireAuthModal message="You must be signed in to embark on missions, answer questions with personas, and earn XP!" />
       <div className={`card mission-card persona-card-theme--${persona.id} ${shakeCard ? "shake-anim" : ""}`}>
         <button className="back-btn" onClick={() => navigate(stageId !== "beginner" ? "/stages" : "/")}>
           {stageId !== "beginner" ? "← Back to Stage Map" : "← Back to Home"}
