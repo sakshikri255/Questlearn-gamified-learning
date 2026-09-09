@@ -122,7 +122,7 @@
     "twoFactorEnabled": false,
     "twoFactorTempSecret": null,
     "twoFactorExpires": null,
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfcm9oYW5fMDA1IiwidG9rZW5WZXJzaW9uIjoiMjAyNi0wOS0wOVQwODowMDowMC4wMDBaIiwiaWF0IjoxNzg4OTQwMDE1LCJleHAiOjE3OTE1MzIwMTV9.lx7GbzS0QS9JUgl-uPpcxT4hFXyHZhgG66dH07VgwNw",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfcm9oYW5fMDA1IiwidG9rZW5WZXJzaW9uIjoiMjAyNi0wOS0wOVQwODowMDowMC4wMDBaIiwiaWF0IjoxNzg4OTQxODY3LCJleHAiOjE3OTE1MzM4Njd9.Y-WnWLpxH1AJv3axbhCkHxDFb0PMdqBFNYkdEBnmin0",
     "role": "user",
     "avatar": "🐉",
     "title": "Dragon Conqueror",
