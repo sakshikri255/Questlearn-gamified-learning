@@ -173,34 +173,85 @@ Create `backend/.env` locally. Never commit this file or expose its contents.
 
 ```env
 GEMINI_API_KEY=your-real-gemini-api-key
-GEMINI_MODEL=gemini-3.6-flash
+GEMINI_MODEL=gemini-2.0-flash
+JWT_SECRET=your-jwt-secret
+JWT_REFRESH_SECRET=your-refresh-secret
+CLIENT_ORIGIN=http://localhost:5173
 ```
 
 The repository includes `backend/.env.example` as a safe template only.
 
+## Deploying to Vercel
+
+QuestLearn is configured for one-click Vercel deployment. The frontend is served from Vercel's CDN and the backend runs as a serverless function — both in the same project.
+
+### Steps
+
+1. Push your repository to GitHub (make sure `backend/.env` is **not** committed).
+2. Go to [vercel.com](https://vercel.com) → **Add New Project** → import your GitHub repo.
+3. Vercel will auto-detect `vercel.json` — no build settings need changing.
+4. In **Settings → Environment Variables**, add:
+
+| Variable | Value |
+|----------|-------|
+| `GEMINI_API_KEY` | Your Gemini API key |
+| `GEMINI_MODEL` | `gemini-2.0-flash` |
+| `JWT_SECRET` | A long random secret string |
+| `JWT_REFRESH_SECRET` | A different long random secret string |
+| `CLIENT_ORIGIN` | `https://your-app.vercel.app` |
+
+5. Click **Deploy**. Both the frontend and `/api/*` routes will be live at `https://your-app.vercel.app`.
+
+> **Note**: The Vite proxy (`/api → localhost:3001`) is only active during local development. On Vercel, routing is handled by `vercel.json` — no changes needed in your React fetch calls.
+
 ## Running the Application
 
-Open two terminals from the repository root.
+### First-time setup (install all dependencies in one command)
 
-### Backend
+```powershell
+npm run install:all
+```
 
+This installs packages for the root, backend, and frontend in one go. Only needed once.
+
+### Start both servers with a single command
+
+```powershell
+npm run dev
+```
+
+This starts the Express backend on `http://localhost:3001` and the Vite frontend on `http://localhost:5173` simultaneously using `concurrently`. The browser opens automatically. Logs from both servers are colour-coded in the same terminal window.
+
+| Colour  | Server   |
+|---------|----------|
+| Cyan    | Backend  |
+| Magenta | Frontend |
+
+Press `Ctrl + C` once to stop both servers together.
+
+### Manual two-terminal alternative
+
+If you prefer separate terminals:
+
+**Terminal 1 — Backend**
 ```powershell
 cd backend
-npm install
 npm run dev
 ```
 
-The backend runs at `http://localhost:3001`.
-
-### Frontend
-
+**Terminal 2 — Frontend**
 ```powershell
 cd frontend
-npm install
 npm run dev
 ```
 
-The frontend runs at `http://localhost:5173` and proxies `/api` requests to the backend.
+### Production start
+
+```powershell
+npm start
+```
+
+Runs the backend with `node` (no auto-reload) and the frontend with Vite's dev server.
 
 ## Useful API Routes
 
@@ -249,10 +300,13 @@ AI generation is not required for the core learning loop. Rewards, streaks, atte
 The project has been validated with:
 
 ```powershell
+# Syntax check the backend
 cd backend
 node --check adaptiveQuizService.js
 node --check server.js
 
-cd ..\frontend
+# Production build check (also validates chunk splitting)
+cd ..
 npm run build
 ```
+

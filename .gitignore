@@ -6,3 +6,6 @@ test-sim.js
 dist/
 build/
 .env
+backend/.env
+frontend/dist/
+.vercel/

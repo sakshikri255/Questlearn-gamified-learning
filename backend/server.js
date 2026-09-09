@@ -296,6 +296,14 @@ app.post("/api/quiz/submit-batch", (req, res) => {
 });
 
 // --- Start the server ---
-app.listen(PORT, () => {
-  console.log(`QuestLearn backend running at http://localhost:${PORT}`);
-});
+// In local dev, start a real HTTP server.
+// On Vercel, api/index.js imports this file and Vercel handles the HTTP lifecycle,
+// so we skip app.listen() — otherwise the serverless function would hang.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`QuestLearn backend running at http://localhost:${PORT}`);
+  });
+}
+
+// Export the app so api/index.js can expose it as a Vercel serverless handler.
+module.exports = app;

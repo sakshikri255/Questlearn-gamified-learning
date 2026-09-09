@@ -9,7 +9,17 @@ This file provides guidance to agents when working with code in this repository.
 
 ## Commands
 
-### Backend
+### First-time setup (all packages in one go)
+```bash
+npm run install:all
+```
+
+### Start (single command from repo root — recommended)
+```bash
+npm run dev   # starts both backend (port 3001) and frontend (port 5173) together
+```
+
+### Backend only
 ```bash
 cd backend
 npm install        # first time only
@@ -17,14 +27,13 @@ npm run dev        # starts Express on http://localhost:3001  (uses nodemon for 
 npm start          # production start (no auto-reload)
 ```
 
-### Frontend
+### Frontend only
 ```bash
 cd frontend
 npm install        # first time only
 npm run dev        # starts Vite dev server on http://localhost:5173
 ```
 
-Run **both** at the same time (two terminal tabs). The frontend proxies `/api/*` to the backend automatically via `vite.config.js` — no hard-coded backend URL is needed in React code.
 
 ## API Endpoints
 | Method | Path | Purpose |
