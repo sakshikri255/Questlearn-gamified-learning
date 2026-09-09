@@ -37,6 +37,12 @@ function AppSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
 
+  // Hide navigation sidebar on auth pages
+  const isAuthPage = ["/login", "/signup", "/forgot-password", "/reset-password"].includes(location.pathname);
+  if (isAuthPage) {
+    return null;
+  }
+
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/";
     if (path === "/stages" && (location.pathname.startsWith("/stages") || location.search.includes("stageId="))) {

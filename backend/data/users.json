@@ -14,7 +14,7 @@
     "twoFactorEnabled": false,
     "twoFactorTempSecret": null,
     "twoFactorExpires": null,
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfYW1hbmtfMDAxIiwidG9rZW5WZXJzaW9uIjoiMjAyNi0wOS0wOVQwNzoyODoyNS4xMTNaIiwiaWF0IjoxNzg4OTM5OTYzLCJleHAiOjE3ODk1NDQ3NjN9.mfNo2f1X6tbEt6xgCqumOUKKqmvMQoLpGh53MMOdoBw",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfYW1hbmtfMDAxIiwidG9rZW5WZXJzaW9uIjoiMjAyNi0wOS0wOVQwNzoyODoyNS4xMTNaIiwiaWF0IjoxNzg4OTY5NzMwLCJleHAiOjE3OTE1NjE3MzB9.ewglEZ_-KBfiND-C7x55xEIUD-ApwRK4dnn99MGkuPE",
     "role": "user",
     "avatar": "🧙‍♂️",
     "title": "Spellbound Coder",

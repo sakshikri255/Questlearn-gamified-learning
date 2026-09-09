@@ -453,7 +453,7 @@ export default function AuthPage() {
       <div className="auth-ambient-glow" aria-hidden="true" />
 
       <motion.div
-        className="auth-card"
+        className={`auth-card ${mode === "login" || mode === "signup" ? "auth-card--wide" : ""}`}
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
@@ -549,401 +549,431 @@ export default function AuthPage() {
 
         {/* ── MODE 1: LOGIN FORM ── */}
         {mode === "login" && (
-          <form className="auth-form" onSubmit={handleLoginSubmit} noValidate>
-            {/* Email / User ID Field */}
-            <div className="auth-field">
-              <label htmlFor="login-email" className="auth-label">
-                User ID, Gamer Tag, or Email
-              </label>
-              <div className={`auth-input-wrap ${fieldErrors.email ? "has-error" : ""}`}>
-                <input
-                  id="login-email"
-                  type="text"
-                  className="auth-input"
-                  placeholder="e.g. rohan, amank, or user@questlearn.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    validateField("email", e.target.value);
-                  }}
-                  required
-                  aria-invalid={!!fieldErrors.email}
-                  aria-describedby={fieldErrors.email ? "login-email-error" : undefined}
-                />
-              </div>
-              {fieldErrors.email && (
-                <p id="login-email-error" className="auth-field-error" role="alert">
-                  {fieldErrors.email}
-                </p>
-              )}
-            </div>
-
-            {/* Password Field */}
-            <div className="auth-field">
-              <div className="auth-label-row">
-                <label htmlFor="login-password" className="auth-label">
-                  Password
+          <div className="auth-split-container">
+            {/* Left Column: Direct Access Form */}
+            <form className="auth-form auth-form--split" onSubmit={handleLoginSubmit} noValidate>
+              {/* Email / User ID Field */}
+              <div className="auth-field">
+                <label htmlFor="login-email" className="auth-label">
+                  User ID, Gamer Tag, or Email
                 </label>
+                <div className={`auth-input-wrap ${fieldErrors.email ? "has-error" : ""}`}>
+                  <input
+                    id="login-email"
+                    type="text"
+                    className="auth-input"
+                    placeholder="e.g. rohan, amank, or user@questlearn.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      validateField("email", e.target.value);
+                    }}
+                    required
+                    aria-invalid={!!fieldErrors.email}
+                    aria-describedby={fieldErrors.email ? "login-email-error" : undefined}
+                  />
+                </div>
+                {fieldErrors.email && (
+                  <p id="login-email-error" className="auth-field-error" role="alert">
+                    {fieldErrors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Password Field */}
+              <div className="auth-field">
+                <div className="auth-label-row">
+                  <label htmlFor="login-password" className="auth-label">
+                    Password
+                  </label>
+                  <button
+                    type="button"
+                    className="auth-forgot-link"
+                    onClick={() => switchMode("forgot")}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+                <div className={`auth-input-wrap ${fieldErrors.password ? "has-error" : ""}`}>
+                  <input
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
+                    className="auth-input auth-input--with-icon"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      validateField("password", e.target.value);
+                    }}
+                    required
+                    aria-invalid={!!fieldErrors.password}
+                    aria-describedby={fieldErrors.password ? "login-pwd-error" : undefined}
+                  />
+                  <button
+                    type="button"
+                    className="auth-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                {fieldErrors.password && (
+                  <p id="login-pwd-error" className="auth-field-error" role="alert">
+                    {fieldErrors.password}
+                  </p>
+                )}
+              </div>
+
+              {/* Remember Me */}
+              <div className="auth-options-row">
+                <label className="auth-checkbox-label">
+                  <input
+                    type="checkbox"
+                    className="auth-checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  <span>Remember me for 30 days</span>
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="auth-submit-btn"
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <>
+                    <Spinner />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  "Sign In to QuestLearn"
+                )}
+              </button>
+
+              {/* Social Logins */}
+              <div className="auth-divider">
+                <span>or sign in with</span>
+              </div>
+              <div className="auth-social-row">
                 <button
                   type="button"
-                  className="auth-forgot-link"
-                  onClick={() => switchMode("forgot")}
+                  className="auth-social-btn"
+                  onClick={() => handleSocial("google")}
+                  aria-label="Sign in with Google (coming soon)"
+                  title="Coming Soon"
                 >
-                  Forgot password?
+                  <GoogleIcon />
+                  <span>Google</span>
                 </button>
-              </div>
-              <div className={`auth-input-wrap ${fieldErrors.password ? "has-error" : ""}`}>
-                <input
-                  id="login-password"
-                  type={showPassword ? "text" : "password"}
-                  className="auth-input auth-input--with-icon"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    validateField("password", e.target.value);
-                  }}
-                  required
-                  aria-invalid={!!fieldErrors.password}
-                  aria-describedby={fieldErrors.password ? "login-pwd-error" : undefined}
-                />
                 <button
                   type="button"
-                  className="auth-password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="auth-social-btn"
+                  onClick={() => handleSocial("github")}
+                  aria-label="Sign in with GitHub (coming soon)"
+                  title="Coming Soon"
                 >
-                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  <GitHubIcon />
+                  <span>GitHub</span>
                 </button>
               </div>
-              {fieldErrors.password && (
-                <p id="login-pwd-error" className="auth-field-error" role="alert">
-                  {fieldErrors.password}
+            </form>
+
+            {/* Right Column: 5 Registered Demo Accounts Panel */}
+            <div className="auth-roster-panel">
+              <div className="auth-roster-header">
+                <div className="auth-roster-badge-row">
+                  <span className="auth-roster-badge">⚡ Quick Access</span>
+                  <span className="auth-roster-count">5 Accounts</span>
+                </div>
+                <h3 className="auth-roster-title">
+                  🔑 5 Registered User Accounts
+                </h3>
+                <p className="auth-roster-subtitle">
+                  Click to auto-fill credentials &amp; sign in:
                 </p>
-              )}
-            </div>
-
-            {/* Remember Me */}
-            <div className="auth-options-row">
-              <label className="auth-checkbox-label">
-                <input
-                  type="checkbox"
-                  className="auth-checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <span>Remember me for 30 days</span>
-              </label>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="auth-submit-btn"
-              disabled={submitting}
-            >
-              {submitting ? (
-                <>
-                  <Spinner />
-                  <span>Signing in...</span>
-                </>
-              ) : (
-                "Sign In to QuestLearn"
-              )}
-            </button>
-
-            {/* Demo Credentials — dev only */}
-            {import.meta.env.DEV && (
-              <div className="auth-demo-hint" style={{ flexDirection: "column", alignItems: "stretch", gap: "0.5rem" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontWeight: 700, color: "#cbd5e1", fontSize: "0.78rem" }}>
-                    🔑 5 Registered User Accounts (Click to Fill &amp; Sign In):
-                  </span>
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.4rem" }}>
-                  {[
-                    { name: "Amank", id: "amank", pwd: "Amank@123", icon: "🧙\u200d♂️", tag: "@AmankStorm" },
-                    { name: "Soumya", id: "soumya", pwd: "Soumya@123", icon: "⚡", tag: "@SoumyaBlade" },
-                    { name: "Tanya", id: "tanya", pwd: "Tanya@123", icon: "🏹", tag: "@TanyaCyber" },
-                    { name: "Sakshi", id: "sakshi", pwd: "Sakshi@123", icon: "🛡️", tag: "@SakshiValkyrie" },
-                    { name: "Rohan", id: "rohan", pwd: "Rohan@123", icon: "🐉", tag: "@RohanTitan" },
-                  ].map((acc) => (
-                    <button
-                      key={acc.id}
-                      type="button"
-                      className="auth-demo-fill-btn"
-                      style={{ padding: "0.35rem 0.5rem", textAlign: "left", display: "flex", alignItems: "center", gap: "0.35rem" }}
-                      onClick={() => {
-                        setEmail(acc.id);
-                        setPassword(acc.pwd);
-                        setFieldErrors({});
-                      }}
-                      title={`Click to fill credentials: User ID: ${acc.id} / Password: ${acc.pwd}`}
-                    >
-                      <span>{acc.icon}</span>
-                      <div style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
-                        <span style={{ fontWeight: 700, fontSize: "0.74rem", whiteSpace: "nowrap" }}>{acc.name}</span>
-                        <span style={{ fontSize: "0.65rem", color: "#818cf8" }}>{acc.id}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
               </div>
-            )}
 
-            {/* Social Logins — Coming Soon */}
-            <div className="auth-divider">
-              <span>or sign in with</span>
+              <div className="auth-roster-list">
+                {[
+                  { name: "Amank", id: "amank", pwd: "Amank@123", icon: "🧙‍♂️", tag: "@AmankStorm", role: "Sage Master" },
+                  { name: "Soumya", id: "soumya", pwd: "Soumya@123", icon: "⚡", tag: "@SoumyaBlade", role: "Storm Blade" },
+                  { name: "Tanya", id: "tanya", pwd: "Tanya@123", icon: "🏹", tag: "@TanyaCyber", role: "Cyber Archer" },
+                  { name: "Sakshi", id: "sakshi", pwd: "Sakshi@123", icon: "🛡️", tag: "@SakshiValkyrie", role: "Valkyrie Shield" },
+                  { name: "Rohan", id: "rohan", pwd: "Rohan@123", icon: "🐉", tag: "@RohanTitan", role: "Dragon Titan" },
+                ].map((acc) => (
+                  <button
+                    key={acc.id}
+                    type="button"
+                    className={`auth-roster-item ${email === acc.id ? "auth-roster-item--active" : ""}`}
+                    onClick={() => {
+                      setEmail(acc.id);
+                      setPassword(acc.pwd);
+                      setFieldErrors({});
+                    }}
+                    title={`Click to fill credentials: User ID: ${acc.id} / Password: ${acc.pwd}`}
+                  >
+                    <div className="auth-roster-icon-wrap">
+                      <span className="auth-roster-icon">{acc.icon}</span>
+                    </div>
+                    <div className="auth-roster-details">
+                      <div className="auth-roster-top">
+                        <span className="auth-roster-name">{acc.name}</span>
+                        <span className="auth-roster-role">{acc.role}</span>
+                      </div>
+                      <span className="auth-roster-tag">{acc.tag}</span>
+                    </div>
+                    <div className="auth-roster-action">
+                      <span className="auth-roster-fill-pill">Fill ⚡</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="auth-social-row">
-              <button
-                type="button"
-                className="auth-social-btn"
-                onClick={() => handleSocial("google")}
-                aria-label="Sign in with Google (coming soon)"
-                title="Coming Soon"
-              >
-                <GoogleIcon />
-                <span>Google</span>
-              </button>
-              <button
-                type="button"
-                className="auth-social-btn"
-                onClick={() => handleSocial("github")}
-                aria-label="Sign in with GitHub (coming soon)"
-                title="Coming Soon"
-              >
-                <GitHubIcon />
-                <span>GitHub</span>
-              </button>
-            </div>
-          </form>
+          </div>
         )}
 
         {/* ── MODE 2: SIGN UP FORM ── */}
         {mode === "signup" && (
-          <form className="auth-form" onSubmit={handleSignupSubmit} noValidate>
-            {/* Full Name */}
-            <div className="auth-field">
-              <label htmlFor="signup-name" className="auth-label">
-                Full Name / Adventurer Tag
-              </label>
-              <div className={`auth-input-wrap ${fieldErrors.name ? "has-error" : ""}`}>
-                <input
-                  id="signup-name"
-                  type="text"
-                  className="auth-input"
-                  placeholder="Sir Lancelot"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    validateField("name", e.target.value);
-                  }}
-                  required
-                  aria-invalid={!!fieldErrors.name}
-                  aria-describedby={fieldErrors.name ? "signup-name-error" : undefined}
-                />
+          <form className="auth-signup-split" onSubmit={handleSignupSubmit} noValidate>
+            {/* Left Column: Adventurer Credentials */}
+            <div className="auth-signup-col">
+              {/* Full Name */}
+              <div className="auth-field">
+                <label htmlFor="signup-name" className="auth-label">
+                  Full Name / Adventurer Tag
+                </label>
+                <div className={`auth-input-wrap ${fieldErrors.name ? "has-error" : ""}`}>
+                  <input
+                    id="signup-name"
+                    type="text"
+                    className="auth-input"
+                    placeholder="Sir Lancelot"
+                    value={name}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      validateField("name", e.target.value);
+                    }}
+                    required
+                    aria-invalid={!!fieldErrors.name}
+                    aria-describedby={fieldErrors.name ? "signup-name-error" : undefined}
+                  />
+                </div>
+                {fieldErrors.name && (
+                  <p id="signup-name-error" className="auth-field-error" role="alert">
+                    {fieldErrors.name}
+                  </p>
+                )}
               </div>
-              {fieldErrors.name && (
-                <p id="signup-name-error" className="auth-field-error" role="alert">
-                  {fieldErrors.name}
-                </p>
-              )}
+
+              {/* Email Field */}
+              <div className="auth-field">
+                <label htmlFor="signup-email" className="auth-label">
+                  Email Address
+                </label>
+                <div className={`auth-input-wrap ${fieldErrors.email ? "has-error" : ""}`}>
+                  <input
+                    id="signup-email"
+                    type="email"
+                    className="auth-input"
+                    placeholder="lancelot@questlearn.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      validateField("email", e.target.value);
+                    }}
+                    required
+                    aria-invalid={!!fieldErrors.email}
+                    aria-describedby={fieldErrors.email ? "signup-email-error" : undefined}
+                  />
+                </div>
+                {fieldErrors.email && (
+                  <p id="signup-email-error" className="auth-field-error" role="alert">
+                    {fieldErrors.email}
+                  </p>
+                )}
+              </div>
+
+              {/* Password Field */}
+              <div className="auth-field">
+                <label htmlFor="signup-password" className="auth-label">
+                  Password
+                </label>
+                <div className={`auth-input-wrap ${fieldErrors.password ? "has-error" : ""}`}>
+                  <input
+                    id="signup-password"
+                    type={showPassword ? "text" : "password"}
+                    className="auth-input auth-input--with-icon"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      validateField("password", e.target.value);
+                    }}
+                    required
+                    aria-invalid={!!fieldErrors.password}
+                    aria-describedby="password-strength-checklist"
+                  />
+                  <button
+                    type="button"
+                    className="auth-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                {fieldErrors.password && (
+                  <p className="auth-field-error" role="alert">
+                    {fieldErrors.password}
+                  </p>
+                )}
+              </div>
+
+              {/* Confirm Password Field */}
+              <div className="auth-field">
+                <label htmlFor="signup-confirm-password" className="auth-label">
+                  Confirm Password
+                </label>
+                <div className={`auth-input-wrap ${fieldErrors.confirmPassword ? "has-error" : ""}`}>
+                  <input
+                    id="signup-confirm-password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="auth-input auth-input--with-icon"
+                    placeholder="••••••••"
+                    value={confirmPassword}
+                    onChange={(e) => {
+                      setConfirmPassword(e.target.value);
+                      validateField("confirmPassword", e.target.value);
+                    }}
+                    required
+                    aria-invalid={!!fieldErrors.confirmPassword}
+                    aria-describedby={fieldErrors.confirmPassword ? "signup-cpwd-error" : undefined}
+                  />
+                  <button
+                    type="button"
+                    className="auth-password-toggle"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                  >
+                    {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+                {fieldErrors.confirmPassword && (
+                  <p id="signup-cpwd-error" className="auth-field-error" role="alert">
+                    {fieldErrors.confirmPassword}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Email Field */}
-            <div className="auth-field">
-              <label htmlFor="signup-email" className="auth-label">
-                Email Address
-              </label>
-              <div className={`auth-input-wrap ${fieldErrors.email ? "has-error" : ""}`}>
-                <input
-                  id="signup-email"
-                  type="email"
-                  className="auth-input"
-                  placeholder="lancelot@questlearn.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    validateField("email", e.target.value);
-                  }}
-                  required
-                  aria-invalid={!!fieldErrors.email}
-                  aria-describedby={fieldErrors.email ? "signup-email-error" : undefined}
-                />
-              </div>
-              {fieldErrors.email && (
-                <p id="signup-email-error" className="auth-field-error" role="alert">
-                  {fieldErrors.email}
-                </p>
-              )}
-            </div>
+            {/* Right Column: Sentinel Shield, Live Checklist & Submit */}
+            <div className="auth-signup-col auth-signup-col--sentinel">
+              {/* Password Strength Meter & Interactive Checklist */}
+              <div className="auth-sentinel-box" id="password-strength-checklist">
+                <div className="auth-sentinel-header">
+                  <span className="auth-sentinel-badge">🛡️ Passcode Sentinel</span>
+                  <span className="strength-status" style={{ color: pwdStrength.color }}>
+                    {pwdStrength.label}
+                  </span>
+                </div>
 
-            {/* Password Field */}
-            <div className="auth-field">
-              <label htmlFor="signup-password" className="auth-label">
-                Password
-              </label>
-              <div className={`auth-input-wrap ${fieldErrors.password ? "has-error" : ""}`}>
-                <input
-                  id="signup-password"
-                  type={showPassword ? "text" : "password"}
-                  className="auth-input auth-input--with-icon"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                    validateField("password", e.target.value);
-                  }}
-                  required
-                  aria-invalid={!!fieldErrors.password}
-                  aria-describedby="password-strength-checklist"
-                />
-                <button
-                  type="button"
-                  className="auth-password-toggle"
-                  onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                </button>
-              </div>
+                <div className="strength-track">
+                  <motion.div
+                    className="strength-fill"
+                    style={{
+                      width: `${pwdStrength.score}%`,
+                      backgroundColor: pwdStrength.color,
+                    }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${pwdStrength.score}%` }}
+                    transition={{ duration: 0.2 }}
+                  />
+                </div>
 
-              {/* Password Strength Meter */}
-              {password.length > 0 && (
-                <div className="auth-strength-meter" id="password-strength-checklist">
-                  <div className="strength-header">
-                    <span className="strength-label-text">Strength:</span>
-                    <span className="strength-status" style={{ color: pwdStrength.color }}>
-                      {pwdStrength.label}
-                    </span>
+                {/* Visual Criteria Checklist */}
+                <div className="strength-criteria">
+                  <span className={`criteria-item ${pwdStrength.checks.length ? "met" : ""}`}>
+                    <CheckIcon /> 8+ chars
+                  </span>
+                  <span className={`criteria-item ${pwdStrength.checks.upper ? "met" : ""}`}>
+                    <CheckIcon /> Uppercase
+                  </span>
+                  <span className={`criteria-item ${pwdStrength.checks.lower ? "met" : ""}`}>
+                    <CheckIcon /> Lowercase
+                  </span>
+                  <span className={`criteria-item ${pwdStrength.checks.number ? "met" : ""}`}>
+                    <CheckIcon /> Number
+                  </span>
+                  <span className={`criteria-item ${pwdStrength.checks.special ? "met" : ""}`}>
+                    <CheckIcon /> Symbol
+                  </span>
+                </div>
+
+                {/* Password Match Status */}
+                {confirmPassword.length > 0 && (
+                  <div className={`auth-match-indicator ${password === confirmPassword ? "matched" : "mismatched"}`}>
+                    <CheckIcon />
+                    <span>{password === confirmPassword ? "Passwords match perfectly" : "Passwords do not match yet"}</span>
                   </div>
-                  <div className="strength-track">
-                    <motion.div
-                      className="strength-fill"
-                      style={{
-                        width: `${pwdStrength.score}%`,
-                        backgroundColor: pwdStrength.color,
-                      }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${pwdStrength.score}%` }}
-                      transition={{ duration: 0.2 }}
-                    />
-                  </div>
+                )}
 
-                  {/* Visual Checklist */}
-                  <div className="strength-criteria">
-                    <span className={`criteria-item ${pwdStrength.checks.length ? "met" : ""}`}>
-                      <CheckIcon /> 8+ chars
-                    </span>
-                    <span className={`criteria-item ${pwdStrength.checks.upper ? "met" : ""}`}>
-                      <CheckIcon /> Uppercase
-                    </span>
-                    <span className={`criteria-item ${pwdStrength.checks.lower ? "met" : ""}`}>
-                      <CheckIcon /> Lowercase
-                    </span>
-                    <span className={`criteria-item ${pwdStrength.checks.number ? "met" : ""}`}>
-                      <CheckIcon /> Number
-                    </span>
-                    <span className={`criteria-item ${pwdStrength.checks.special ? "met" : ""}`}>
-                      <CheckIcon /> Symbol
-                    </span>
+                {/* Guild Perks Badge */}
+                <div className="auth-guild-perks">
+                  <span className="auth-guild-perks-title">✨ Adventurer Perks</span>
+                  <div className="auth-perks-tags">
+                    <span className="perk-tag">⚡ +100 Starter XP</span>
+                    <span className="perk-tag">🏆 Bronze League</span>
+                    <span className="perk-tag">🏛️ Mistake Museum</span>
                   </div>
                 </div>
-              )}
-
-              {fieldErrors.password && (
-                <p className="auth-field-error" role="alert">
-                  {fieldErrors.password}
-                </p>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div className="auth-field">
-              <label htmlFor="signup-confirm-password" className="auth-label">
-                Confirm Password
-              </label>
-              <div className={`auth-input-wrap ${fieldErrors.confirmPassword ? "has-error" : ""}`}>
-                <input
-                  id="signup-confirm-password"
-                  type={showConfirmPassword ? "text" : "password"}
-                  className="auth-input auth-input--with-icon"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => {
-                    setConfirmPassword(e.target.value);
-                    validateField("confirmPassword", e.target.value);
-                  }}
-                  required
-                  aria-invalid={!!fieldErrors.confirmPassword}
-                  aria-describedby={fieldErrors.confirmPassword ? "signup-cpwd-error" : undefined}
-                />
-                <button
-                  type="button"
-                  className="auth-password-toggle"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
-                >
-                  {showConfirmPassword ? <EyeOffIcon /> : <EyeIcon />}
-                </button>
               </div>
 
-              {confirmPassword.length > 0 && (
-                <div className={`auth-match-indicator ${password === confirmPassword ? "matched" : "mismatched"}`}>
-                  <CheckIcon />
-                  <span>{password === confirmPassword ? "Passwords match perfectly" : "Passwords do not match yet"}</span>
-                </div>
-              )}
-
-              {fieldErrors.confirmPassword && (
-                <p id="signup-cpwd-error" className="auth-field-error" role="alert">
-                  {fieldErrors.confirmPassword}
-                </p>
-              )}
-            </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              className="auth-submit-btn"
-              disabled={submitting}
-            >
-              {submitting ? (
-                <>
-                  <Spinner />
-                  <span>Forging Account...</span>
-                </>
-              ) : (
-                "Create Adventurer Account"
-              )}
-            </button>
-
-            {/* Social Logins — Coming Soon */}
-            <div className="auth-divider">
-              <span>or sign up with</span>
-            </div>
-            <div className="auth-social-row">
+              {/* Submit Button */}
               <button
-                type="button"
-                className="auth-social-btn"
-                onClick={() => handleSocial("google")}
-                aria-label="Sign up with Google (coming soon)"
-                title="Coming Soon"
+                type="submit"
+                className="auth-submit-btn"
+                disabled={submitting}
               >
-                <GoogleIcon />
-                <span>Google</span>
+                {submitting ? (
+                  <>
+                    <Spinner />
+                    <span>Forging Account...</span>
+                  </>
+                ) : (
+                  "Create Adventurer Account"
+                )}
               </button>
-              <button
-                type="button"
-                className="auth-social-btn"
-                onClick={() => handleSocial("github")}
-                aria-label="Sign up with GitHub (coming soon)"
-                title="Coming Soon"
-              >
-                <GitHubIcon />
-                <span>GitHub</span>
-              </button>
+
+              {/* Social Logins */}
+              <div className="auth-divider">
+                <span>or sign up with</span>
+              </div>
+              <div className="auth-social-row">
+                <button
+                  type="button"
+                  className="auth-social-btn"
+                  onClick={() => handleSocial("google")}
+                  aria-label="Sign up with Google (coming soon)"
+                  title="Coming Soon"
+                >
+                  <GoogleIcon />
+                  <span>Google</span>
+                </button>
+                <button
+                  type="button"
+                  className="auth-social-btn"
+                  onClick={() => handleSocial("github")}
+                  aria-label="Sign up with GitHub (coming soon)"
+                  title="Coming Soon"
+                >
+                  <GitHubIcon />
+                  <span>GitHub</span>
+                </button>
+              </div>
             </div>
           </form>
         )}
