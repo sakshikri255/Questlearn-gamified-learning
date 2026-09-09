@@ -68,7 +68,7 @@
     "twoFactorEnabled": false,
     "twoFactorTempSecret": null,
     "twoFactorExpires": null,
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfdGFueWFfMDAzIiwidG9rZW5WZXJzaW9uIjoiMjAyNi0wOS0wOVQwODowMDowMC4wMDBaIiwiaWF0IjoxNzg4OTQwNzcyLCJleHAiOjE3OTE1MzI3NzJ9.6Ru3WYoiCr-YuIdgyktCpnP8T7InU9OSeqnjnF_HXNI",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfdGFueWFfMDAzIiwidG9rZW5WZXJzaW9uIjoiMjAyNi0wOS0wOVQwODowMDowMC4wMDBaIiwiaWF0IjoxNzg4OTU3NzExLCJleHAiOjE3OTE1NDk3MTF9.L-vdKiSu1-Uw5UXLU3DNV5BPbHTV_cantLTTPQrJJC8",
     "role": "user",
     "avatar": "🏹",
     "title": "Pixel Ranger",
