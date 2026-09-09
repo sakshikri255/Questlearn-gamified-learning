@@ -26,14 +26,10 @@ const PERSONA_MESSAGES = {
 };
 
 // --- Middleware ---
-<<<<<<< HEAD
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 
-app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
-=======
-const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173"];
+const allowedOrigins = ["http://localhost:5173", "http://127.0.0.1:5173", process.env.CLIENT_ORIGIN].filter(Boolean);
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
@@ -41,7 +37,6 @@ app.use(cors({
     }
     return callback(new Error("CORS origin not allowed: " + origin));
   },
->>>>>>> dd24f67 (Update layout and UI components)
   credentials: true,
 }));
 app.use(express.json());

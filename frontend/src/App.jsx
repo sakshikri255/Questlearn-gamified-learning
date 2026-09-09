@@ -16,11 +16,8 @@ import DailyChallengePage from "./pages/DailyChallengePage.jsx";
 import TopicsPage from "./pages/TopicsPage.jsx";
 import TopicQuizPage from "./pages/TopicQuizPage.jsx";
 import PostQuizResultsPage from "./pages/PostQuizResultsPage.jsx";
-<<<<<<< HEAD
 import ProfilePage from "./pages/ProfilePage.jsx";
-=======
 import TeamPage from "./pages/TeamPage.jsx";
->>>>>>> dd24f67 (Update layout and UI components)
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -52,26 +49,19 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-<<<<<<< HEAD
     <AuthProvider>
       <BrowserRouter>
-        <NavBar />
-        <AnimatedRoutes />
+        <div className="app-container">
+          <NavBar />
+          <div className="app-body">
+            <AppSidebar />
+            <main className="app-main-content">
+              <AnimatedRoutes />
+            </main>
+          </div>
+        </div>
       </BrowserRouter>
     </AuthProvider>
-=======
-    <BrowserRouter>
-      <div className="app-container">
-        <NavBar />
-        <div className="app-body">
-          <AppSidebar />
-          <main className="app-main-content">
-            <AnimatedRoutes />
-          </main>
-        </div>
-      </div>
-    </BrowserRouter>
->>>>>>> dd24f67 (Update layout and UI components)
   );
 }
 

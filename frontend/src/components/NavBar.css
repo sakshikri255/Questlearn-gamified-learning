@@ -181,7 +181,6 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-<<<<<<< HEAD
 /* ── Auth Section Styles ── */
 .navbar-auth-section {
   display: flex;
@@ -396,14 +395,13 @@
 }
 @media (min-width: 961px) {
   .navbar-mobile-menu { display: none; }
-=======
+}
 .navbar-stat-box--streak:hover {
   border-color: rgba(245, 158, 11, 0.4);
 }
 
 .navbar-stat-box--coins:hover {
   border-color: rgba(234, 179, 8, 0.4);
->>>>>>> dd24f67 (Update layout and UI components)
 }
 
 .navbar-stat-box--xp:hover {

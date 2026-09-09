@@ -29,9 +29,9 @@
   {
     "id": "user_soumya_002",
     "username": "soumya",
-    "name": "Soumya Princep",
-    "gamerTag": "@SoumyaBlade",
-    "email": "soumya@questlearn.com",
+    "name": "Saumya Princep",
+    "gamerTag": "@SaumyaBlade",
+    "email": "saumya@questlearn.com",
     "passwordHash": "$2b$10$v.xcvIGAHP.4QZ4Z4XaAg.dX6v4mE1zOqXKQmKiFxOW3LJjctwhD2",
     "isVerified": true,
     "verificationToken": null,
@@ -41,7 +41,7 @@
     "twoFactorEnabled": false,
     "twoFactorTempSecret": null,
     "twoFactorExpires": null,
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfc291bXlhXzAwMiIsInRva2VuVmVyc2lvbiI6IjIwMjYtMDktMDlUMDg6MDA6MDAuMDAwWiIsImlhdCI6MTc4ODkzOTk2MywiZXhwIjoxNzg5NTQ0NzYzfQ.tD2MGk1phSNEKGvBq_VVDSavODUgY_4SiZ5BtqJevDc",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfc291bXlhXzAwMiIsInRva2VuVmVyc2lvbiI6IjIwMjYtMDktMDlUMDg6MDA6MDAuMDAwWiIsImlhdCI6MTc4ODk0MjYzOCwiZXhwIjoxNzkxNTM0NjM4fQ.WY3GpJpKv29JcWZe_Z0rYvkmI1sSbABBPgR78IzmiJM",
     "role": "user",
     "avatar": "⚡",
     "title": "Async Striker",
@@ -51,7 +51,7 @@
     "coins": 1250,
     "streak": 12,
     "createdAt": "2026-08-25T14:30:00.000Z",
-    "updatedAt": "2026-09-09T08:00:00.000Z"
+    "updatedAt": "2026-09-09T08:31:08.869Z"
   },
   {
     "id": "user_tanya_003",
