@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import THEMES from "../data/themes.js";
 import STAGES from "../data/stages.js";
 import PERSONAS from "../data/personas.js";
@@ -177,6 +178,9 @@ function HomePage() {
   });
   const [showLogout, setShowLogout] = useState(false);
   const [activeStageModal, setActiveStageModal] = useState(null); // stage index or null
+  const [expandedStory, setExpandedStory] = useState(null);
+  const [expandedPersona, setExpandedPersona] = useState(null);
+  const [expandedStage, setExpandedStage] = useState(null);
 
   // ── Load data on mount ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -368,14 +372,23 @@ function HomePage() {
 
         {/* ══ Story Mission Mode ══════════════════════════════════════════════ */}
         {mode === "story" && (
-          <div className="ql-story-grid" role="tabpanel" aria-label="Story mission selection">
+          <motion.div
+            className="ql-story-grid"
+            role="tabpanel"
+            aria-label="Story mission selection"
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+          >
             {THEMES.map((theme) => {
               const meta = THEME_META[theme.id];
               const isActive = selectedTheme === theme.id;
               return (
-                <button
+                <motion.button
                   key={theme.id}
                   className={`ql-story-card ${isActive ? "ql-story-card--active" : ""}`}
+                  variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
+                  transition={{ type: "spring", stiffness: 260, damping: 22 }}
                   style={isActive ? { borderColor: theme.accent, boxShadow: `0 0 20px ${theme.accentDim}` } : {}}
                   onClick={() => handleThemeSelect(theme.id)}
                   aria-pressed={isActive}
@@ -387,28 +400,57 @@ function HomePage() {
                     <span className="ql-story-card-tag">{meta.tag}</span>
                   </div>
                   <h3 className="ql-story-card-title" style={{ color: isActive ? theme.accent : undefined }}>{theme.name}</h3>
-                  <p className="ql-story-card-quote">{meta.quote}</p>
-                  <p className="ql-story-card-desc">{theme.story.slice(0, 90)}…</p>
+                  <p className="ql-story-card-desc">{meta.quote.replaceAll('"', "")}</p>
+                  {expandedStory === theme.id && (
+                    <p className="ql-story-card-details">{theme.story}</p>
+                  )}
+                  <span
+                    className="ql-card-toggle"
+                    role="button"
+                    tabIndex={0}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setExpandedStory(expandedStory === theme.id ? null : theme.id);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setExpandedStory(expandedStory === theme.id ? null : theme.id);
+                      }
+                    }}
+                  >
+                    {expandedStory === theme.id ? "Hide details" : "More details"}
+                  </span>
                   <div className="ql-story-card-footer">
                     <span className="ql-story-card-diff">{meta.difficulty}</span>
                     <span className="ql-story-card-bonus" style={{ color: theme.accent }}>{meta.bonus} XP Bonus</span>
                   </div>
-                </button>
+                </motion.button>
               );
             })}
-          </div>
+          </motion.div>
         )}
 
         {/* ══ Persona Mode ════════════════════════════════════════════════════ */}
         {mode === "persona" && (
-          <div className="ql-persona-grid" role="tabpanel" aria-label="Persona selection">
+          <motion.div
+            className="ql-persona-grid"
+            role="tabpanel"
+            aria-label="Persona selection"
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
+          >
             {PERSONAS.map((persona) => {
               const meta = PERSONA_META[persona.id];
               const isActive = selectedPersona === persona.id;
               return (
-                <button
+                <motion.button
                   key={persona.id}
                   className={`ql-persona-card ${isActive ? "ql-persona-card--active" : ""}`}
+                  variants={{ hidden: { opacity: 0, scale: 0.94 }, show: { opacity: 1, scale: 1 } }}
+                  transition={{ type: "spring", stiffness: 280, damping: 20 }}
                   style={isActive ? { borderColor: persona.accent, boxShadow: `0 0 18px ${persona.accentDim}` } : {}}
                   onClick={() => handlePersonaSelect(persona.id)}
                   aria-pressed={isActive}
@@ -418,18 +460,36 @@ function HomePage() {
                   <div className="ql-persona-card-avatar" style={{ background: `${persona.accentDim}`, borderColor: isActive ? persona.accent : "transparent" }} aria-hidden="true">
                     {persona.emoji}
                   </div>
-                  <span className="ql-persona-card-trait" style={{ color: persona.accent }}>{persona.tagline.split(".")[0]}</span>
                   <h3 className="ql-persona-card-name" style={{ color: isActive ? persona.accent : undefined }}>{persona.name}</h3>
-                  <span className="ql-persona-card-archetype">{meta.archetype}</span>
-                  <p className="ql-persona-card-quote"><em>{meta.quote}</em></p>
-                  <div className="ql-persona-card-perk">
-                    <span className="ql-persona-card-perk-label">Style Perk</span>
-                    <p className="ql-persona-card-perk-text">{meta.perk}</p>
-                  </div>
-                </button>
+                  <p className="ql-persona-card-quote">{persona.description}</p>
+                  {expandedPersona === persona.id && (
+                    <div className="ql-persona-card-details">
+                      <span>{meta.archetype}</span>
+                      <span>{meta.perk}</span>
+                    </div>
+                  )}
+                  <span
+                    className="ql-card-toggle"
+                    role="button"
+                    tabIndex={0}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setExpandedPersona(expandedPersona === persona.id ? null : persona.id);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        setExpandedPersona(expandedPersona === persona.id ? null : persona.id);
+                      }
+                    }}
+                  >
+                    {expandedPersona === persona.id ? "Hide details" : "More details"}
+                  </span>
+                </motion.button>
               );
             })}
-          </div>
+          </motion.div>
         )}
 
         {/* ── Quest Map ─────────────────────────────────────────────────────── */}
@@ -477,7 +537,9 @@ function HomePage() {
                   >
                     <div className="ql-stage-node-left">
                       <div className="ql-stage-node-dot" style={completed || isCurrent ? { background: stage.color } : {}}>
-                        {completed ? "✓" : isCurrent ? <span className="ql-stage-play-badge">▶</span> : unlocked ? stage.emoji : "🔒"}
+                        <span className={`ql-stage-bot ${completed ? "ql-stage-bot--happy" : "ql-stage-bot--sad"}`} aria-hidden="true">
+                          {completed ? "🤖🎉" : unlocked ? "🤖😢" : "🤖💤"}
+                        </span>
                       </div>
                       <div className="ql-stage-node-info">
                         <span className="ql-stage-node-num">Stage {idx + 1}</span>
@@ -485,7 +547,7 @@ function HomePage() {
                           {stage.name}
                           {stage.bossBonus && <span className="ql-stage-boss-badge" aria-label="Boss level">💀 BOSS</span>}
                         </span>
-                        <span className="ql-stage-node-desc">{meta.desc.slice(0, 55)}…</span>
+                        <span className="ql-stage-node-desc">{meta.desc.split(" — ")[0]}</span>
                       </div>
                     </div>
                     <div className="ql-stage-node-right">
@@ -497,6 +559,19 @@ function HomePage() {
                       </span>
                     </div>
                   </button>
+                  <button
+                    className="ql-stage-details-toggle"
+                    onClick={() => setExpandedStage(expandedStage === stage.id ? null : stage.id)}
+                    aria-expanded={expandedStage === stage.id}
+                  >
+                    {expandedStage === stage.id ? "Hide details ↑" : "Details ↓"}
+                  </button>
+                  {expandedStage === stage.id && (
+                    <div className="ql-stage-details">
+                      <span>{meta.desc}</span>
+                      <span>{meta.questions} questions · ~{meta.minutes} min</span>
+                    </div>
+                  )}
                 </div>
               );
             })}

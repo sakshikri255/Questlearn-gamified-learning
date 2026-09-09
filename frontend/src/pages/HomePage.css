@@ -28,13 +28,34 @@
 
 /* ── Hero Header ──────────────────────────────────────────────── */
 .ql-hero-header {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  padding: 1.1rem 1.25rem;
+  min-height: 190px;
+  justify-content: center;
+  padding: 1.75rem 1.5rem;
   background: rgba(17, 17, 17, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 12px;
+  overflow: hidden;
+}
+.ql-hero-header::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 42%;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, #111 0%, rgba(17, 17, 17, 0.72) 26%, rgba(17, 17, 17, 0.12) 100%),
+    url("https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80") center / cover;
+  opacity: 0.62;
+  filter: saturate(0.8);
+  animation: ql-hero-image-drift 12s ease-in-out infinite alternate;
+}
+@keyframes ql-hero-image-drift {
+  from { transform: scale(1); filter: saturate(0.75) brightness(0.82); }
+  to { transform: scale(1.06) translateX(-8px); filter: saturate(1) brightness(1); }
 }
 
 /* Brand + stats row */
@@ -261,11 +282,18 @@
   transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.45rem;
+  min-height: 190px;
 }
 .ql-story-card:hover {
   border-color: rgba(245, 158, 11, 0.35);
   transform: translateY(-2px);
+}
+.ql-story-card:focus-visible,
+.ql-persona-card:focus-visible,
+.ql-stage-details-toggle:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 3px;
 }
 .ql-story-card--active { /* border/shadow applied inline via theme.accent */ }
 
@@ -304,17 +332,17 @@
   color: var(--text-primary);
   margin: 0;
 }
-.ql-story-card-quote {
-  font-size: 0.78rem;
-  color: var(--text-secondary);
-  font-style: italic;
-  line-height: 1.4;
-}
 .ql-story-card-desc {
   font-size: 0.75rem;
-  color: var(--text-muted);
-  line-height: 1.5;
+  color: var(--text-secondary);
+  line-height: 1.45;
   flex: 1;
+}
+.ql-story-card-details {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  animation: ql-detail-reveal 0.25s ease both;
 }
 .ql-story-card-footer {
   display: flex;
@@ -332,6 +360,15 @@
 .ql-story-card-bonus {
   font-size: 0.75rem;
   font-weight: 700;
+}
+.ql-card-toggle {
+  align-self: flex-start;
+  color: #fbbf24;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 /* ── Persona Grid ─────────────────────────────────────────────── */
@@ -355,7 +392,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.4rem;
+  min-height: 185px;
 }
 .ql-persona-card:hover {
   border-color: rgba(245, 158, 11, 0.35);
@@ -385,12 +423,6 @@
   font-size: 1.6rem;
   transition: border-color 0.2s;
 }
-.ql-persona-card-trait {
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 .ql-persona-card-name {
   font-size: 0.88rem;
   font-weight: 800;
@@ -401,32 +433,28 @@
   color: var(--text-muted);
 }
 .ql-persona-card-quote {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   color: var(--text-secondary);
   line-height: 1.4;
   text-align: center;
 }
-.ql-persona-card-perk {
-  margin-top: 0.4rem;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 8px;
-  padding: 0.4rem 0.5rem;
-  text-align: left;
+.ql-persona-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
   width: 100%;
-}
-.ql-persona-card-perk-label {
-  display: block;
-  font-size: 0.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  margin-bottom: 0.2rem;
-}
-.ql-persona-card-perk-text {
+  padding: 0.45rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  text-align: left;
   font-size: 0.65rem;
   color: var(--text-secondary);
   line-height: 1.4;
+  animation: ql-detail-reveal 0.25s ease both;
+}
+@keyframes ql-detail-reveal {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ── Quest Map ────────────────────────────────────────────────── */
@@ -480,6 +508,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  animation: ql-stage-enter 0.5s ease both;
+}
+.ql-stage-row:nth-child(2) { animation-delay: 0.06s; }
+.ql-stage-row:nth-child(3) { animation-delay: 0.12s; }
+.ql-stage-row:nth-child(4) { animation-delay: 0.18s; }
+.ql-stage-row:nth-child(5) { animation-delay: 0.24s; }
+@keyframes ql-stage-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Connector line between stages */
@@ -501,7 +539,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.9rem 1rem;
+  padding: 0.8rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
   background: rgba(17, 17, 17, 0.94);
@@ -538,19 +576,35 @@
   min-width: 0;
 }
 .ql-stage-node-dot {
-  width: 52px;
-  height: 52px;
-  border-radius: 15px;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #0a0a0a;
   flex-shrink: 0;
   transition: background 0.2s, border-color 0.2s;
+}
+.ql-stage-bot {
+  display: inline-block;
+  white-space: nowrap;
+  animation: ql-bot-sway 2.2s ease-in-out infinite;
+}
+.ql-stage-bot--happy {
+  animation: ql-bot-jump 0.9s ease-in-out infinite alternate;
+}
+@keyframes ql-bot-sway {
+  0%, 100% { transform: rotate(-4deg) translateY(1px); }
+  50% { transform: rotate(4deg) translateY(-2px); }
+}
+@keyframes ql-bot-jump {
+  from { transform: translateY(2px) rotate(-5deg); }
+  to { transform: translateY(-6px) rotate(5deg); }
 }
 .ql-stage-play-badge {
   font-size: 0.8rem;
@@ -593,6 +647,27 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.ql-stage-details-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.68rem;
+  cursor: pointer;
+  padding: 0.35rem 0 0.1rem;
+}
+.ql-stage-details-toggle:hover { color: #fbbf24; }
+.ql-stage-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(100%, 620px);
+  padding: 0.55rem 0.8rem 0;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  line-height: 1.4;
+  animation: ql-detail-reveal 0.25s ease both;
 }
 
 .ql-stage-node-right {
