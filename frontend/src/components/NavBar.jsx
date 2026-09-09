@@ -4,8 +4,6 @@ import "./NavBar.css";
 
 const NAV_LINKS = [
   { label: "Home",            path: "/",                emoji: "🏠" },
-  { label: "Daily Challenge", path: "/daily-challenge", emoji: "🌟" },
-  { label: "Topics",          path: "/topics",           emoji: "📚" },
   { label: "Stage Map",       path: "/stages",           emoji: "🗺️" },
   { label: "Leaderboard",     path: "/leaderboard",      emoji: "🏆" },
   { label: "Streaks",         path: "/streak",           emoji: "🔥" },
