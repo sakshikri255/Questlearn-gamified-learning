@@ -640,23 +640,7 @@ function HomePage() {
               <div className="ql-profile-coins">
                 🪙 {(user.coins ?? profile?.totalCoins ?? 0).toLocaleString()} coins
               </div>
-              {/* Profile Card Actions */}
-              <div className="ql-profile-card-actions">
-                <button
-                  className="ql-profile-action-btn"
-                  onClick={() => navigate("/profile")}
-                  title="Edit Profile"
-                >
-                  ✏️ Edit Profile
-                </button>
-                <button
-                  className="ql-profile-action-btn ql-profile-action-btn--logout"
-                  onClick={() => setShowLogout(true)}
-                  title="Sign Out"
-                >
-                  🚪 Log Out
-                </button>
-              </div>
+
             </>
           ) : (
             <div className="ql-profile-guest-card">
@@ -682,89 +666,36 @@ function HomePage() {
           )}
         </div>
 
-        {/* ── Vertical Navigation ───────────────────────────────────────────── */}
-        <nav className="ql-sidenav" aria-label="Quick navigation">
-          <button
-            className="ql-sidenav-item ql-sidenav-item--active"
-            onClick={() => navigate("/")}
-            aria-current="page"
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">🏠</span>
-            <span className="ql-sidenav-label">Dashboard</span>
-          </button>
-
-          <button
-            className="ql-sidenav-item"
-            onClick={() => navigate("/leaderboard")}
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">🏆</span>
-            <span className="ql-sidenav-label">Leaderboard</span>
-            {playerRank && (
-              <span className="ql-sidenav-badge" aria-label={`Your rank: #${playerRank}`}>
-                #{playerRank}
+                {/* ── Player Achievements ────────────────────────────────────────────── */}
+        <div className="ql-achievements-panel">
+          <h3 className="ql-achievements-title">🏆 Player Achievements</h3>
+          <div className="ql-achievements-grid">
+            <div className="ql-achievement-card">
+              <span className="ql-ach-label">League Rank</span>
+              <span className="ql-ach-value" style={{ color: "#f59e0b" }}>
+                {playerRank ? `#${playerRank}` : "Unranked"}
               </span>
-            )}
-          </button>
-
-          <button
-            className="ql-sidenav-item"
-            onClick={() => navigate("/museum")}
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">🏛️</span>
-            <span className="ql-sidenav-label">Mistake Museum</span>
-            {mistakeCount > 0 && (
-              <span className="ql-sidenav-badge ql-sidenav-badge--warn" aria-label={`${mistakeCount} mistakes to review`}>
+            </div>
+            <div className="ql-achievement-card">
+              <span className="ql-ach-label">Saved Mistakes</span>
+              <span className="ql-ach-value" style={{ color: "#fbbf24" }}>
                 {mistakeCount}
               </span>
-            )}
-          </button>
-
-          <button
-            className="ql-sidenav-item"
-            onClick={() => navigate("/daily-challenge")}
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">🌟</span>
-            <span className="ql-sidenav-label">Daily Challenge</span>
-            <span className={`ql-sidenav-badge ${dcDoneToday ? "ql-sidenav-badge--done" : "ql-sidenav-badge--live"}`} aria-label={dcDoneToday ? "Completed today" : "Available now"}>
-              {dcDoneToday ? "✓ Done" : "Live"}
-            </span>
-          </button>
-
-          <button
-            className="ql-sidenav-item"
-            onClick={() => navigate("/topics")}
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">📚</span>
-            <span className="ql-sidenav-label">Topics</span>
-          </button>
-
-          <button
-            className="ql-sidenav-item"
-            onClick={() => navigate("/stages")}
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">🗺️</span>
-            <span className="ql-sidenav-label">Stage Map</span>
-          </button>
-
-          <button
-            className="ql-sidenav-item"
-            onClick={() => navigate("/streak")}
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">🔥</span>
-            <span className="ql-sidenav-label">Streak Calendar</span>
-            {isAtRisk && (
-              <span className="ql-sidenav-badge ql-sidenav-badge--risk" aria-label="Streak at risk">⚠️</span>
-            )}
-          </button>
-
-          <button
-            className="ql-sidenav-item"
-            onClick={() => navigate("/dashboard")}
-          >
-            <span className="ql-sidenav-icon" aria-hidden="true">📊</span>
-            <span className="ql-sidenav-label">Progress</span>
-          </button>
-        </nav>
+            </div>
+            <div className="ql-achievement-card">
+              <span className="ql-ach-label">Daily Challenge</span>
+              <span className="ql-ach-value" style={{ color: dcDoneToday ? "#10b981" : "#f59e0b" }}>
+                {dcDoneToday ? "Done" : "Pending"}
+              </span>
+            </div>
+            <div className="ql-achievement-card">
+              <span className="ql-ach-label">Active Streak</span>
+              <span className="ql-ach-value" style={{ color: "#ef4444" }}>
+                {currentStreakCount}d
+              </span>
+            </div>
+          </div>
+        </div>
 
         {/* ── Daily Target Widget ───────────────────────────────────────────── */}
         <div className="ql-daily-target">
@@ -797,17 +728,7 @@ function HomePage() {
           </div>
         )}
 
-        {/* ── Logout — anchored at bottom (no auth system: navigates to /) ─── */}
-        <div className="ql-sidebar-footer">
-          <button
-            className="ql-logout-btn"
-            onClick={() => setShowLogout(true)}
-            aria-label="Sign out (navigates to home — no backend auth)"
-          >
-            <span aria-hidden="true">🚪</span> Sign Out
-          </button>
-        </div>
-      </aside>
+        </aside>
 
       {/* ══ Stage detail modal ═════════════════════════════════════════════════ */}
       {activeStageModal !== null && (

@@ -149,8 +149,10 @@ function TopicQuizPage() {
 
   if (phase === "checkpoint") {
     return (
-      <div className="tqp-wrapper"><div className="tqp-content"><div className="card tqp-card">
-        <div className="tqp-header"><button className="back-btn" onClick={() => navigate("/topics")}>Back to Topics</button><span className="tqp-breadcrumb">{topicEmoji} {subtopicName}</span></div>
+      <div className="tqp-wrapper"><div className="tqp-content">
+        <button className="back-btn" onClick={() => navigate("/topics")} style={{ marginBottom: "1rem", paddingLeft: 0 }}>← Back to Topics</button>
+        <div className="card tqp-card">
+        <div className="tqp-header"><span className="tqp-breadcrumb">{topicEmoji} {subtopicName}</span></div>
         <div className="tqp-checkpoint"><p className="tqp-kicker">Checkpoint {batchNumber} complete</p><h1>{checkpoint.accuracy}% accuracy</h1><p>{checkpoint.correct} of {BATCH_SIZE} correct - +{checkpoint.earnedXp} XP - Streak {streak}</p><p>Next difficulty: <strong>{checkpoint.nextDifficulty}</strong></p><button className="primary" onClick={() => { setBatchNumber((number) => number + 1); loadBatch(checkpoint.nextDifficulty); }}>Start Next Batch</button></div>
       </div></div></div>
     );
@@ -159,11 +161,13 @@ function TopicQuizPage() {
   return (
     <div className="tqp-wrapper">
       <RequireAuthModal message="You must be signed in to take adaptive topic quizzes, track accuracy checkpoints, and level up!" />
-      <div className="tqp-content"><div className="card tqp-card">
-      <div className="tqp-header"><button className="back-btn" onClick={() => navigate("/topics")}>Back to Topics</button><div className="tqp-breadcrumb"><span className="tqp-topic">{topicEmoji} {topicName}</span><span className="tqp-sep">&gt;</span><span className="tqp-subtopic">{subtopicName}</span></div><div className="tqp-header-meta">Batch {batchNumber} · Question {questionIndex + 1}/{BATCH_SIZE} · {difficulty} · {xp} XP</div></div>
+      <div className="tqp-content">
+        <button className="back-btn" onClick={() => navigate("/topics")} style={{ marginBottom: "1rem", paddingLeft: 0 }}>← Back to Topics</button>
+        <div className="card tqp-card">
+      <div className="tqp-header"><div className="tqp-breadcrumb"><span className="tqp-topic">{topicEmoji} {topicName}</span><span className="tqp-sep">&gt;</span><span className="tqp-subtopic">{subtopicName}</span></div><div className="tqp-header-meta">Batch {batchNumber} · Question {questionIndex + 1}/{BATCH_SIZE} · {difficulty} · {xp} XP</div></div>
       <div className="tqp-progress-track"><div className="tqp-progress-fill" style={{ width: `${((questionIndex + 1) / BATCH_SIZE) * 100}%` }} /></div>
       <div className="tqp-timer-row"><div className={`tqp-timer-wrap ${timerWarn ? "tqp-timer-wrap--warn" : ""}`}><div className="tqp-timer-fill" style={{ width: `${(remaining / SECONDS_PER_QUESTION) * 100}%` }} /></div><span className="tqp-timer-label">{remaining}s</span></div>
-      {currentQuestion && <div className="tqp-question-area"><p className="tqp-question-text">{currentQuestion.question}</p><div className="tqp-options">{currentQuestion.options.map((option, index) => <button key={`${currentQuestion.id}-${index}`} className={`option-btn ${selectedIndex === index ? "selected" : ""}`} onClick={() => setSelectedIndex(index)} disabled={selectedIndex !== null}><span className="option-id">{String.fromCharCode(65 + index)}</span><span className="option-text">{option}</span></button>)}</div>{selectedIndex !== null && <div className="tqp-explanation"><strong>{selectedIndex === currentQuestion.correctAnswerIndex ? "Correct" : "Explanation"}</strong><p>{currentQuestion.explanation}</p>{currentQuestion.hint && <small>Hint: {currentQuestion.hint}</small>}</div>}<button className="primary tqp-confirm-btn" onClick={confirmAnswer} disabled={selectedIndex === null}>{questionIndex === BATCH_SIZE - 1 ? "Complete Checkpoint" : "Next Question"}</button></div>}
+      {currentQuestion && <div className="tqp-question-area"><p className="tqp-question-text">{currentQuestion.question}</p><div className="tqp-options">{currentQuestion.options.map((option, index) => <button key={`${currentQuestion.id}-${index}`} className={`option-btn ${selectedIndex === index ? "selected" : ""}`} onClick={() => setSelectedIndex(index)} disabled={selectedIndex !== null}><span className="option-id">{String.fromCharCode(65 + index)}</span><span className="option-text">{option}</span></button>)}</div>{selectedIndex !== null && <div className="tqp-explanation"><strong>{selectedIndex === currentQuestion.correctAnswerIndex ? "Correct" : "Explanation"}</strong><p>{currentQuestion.explanation}</p>{currentQuestion.hint && <small style={{ display: "block", marginTop: "0.75rem", marginBottom: "1rem", color: "var(--text-muted)" }}>Hint: {currentQuestion.hint}</small>}</div>}<button className="primary tqp-confirm-btn" onClick={confirmAnswer} disabled={selectedIndex === null}>{questionIndex === BATCH_SIZE - 1 ? "Complete Checkpoint" : "Next Question"}</button></div>}
     </div></div></div>
   );
 }

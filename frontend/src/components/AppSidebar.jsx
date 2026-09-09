@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./AppSidebar.css";
 
 const SIDEBAR_LINKS = [
@@ -32,6 +33,7 @@ function LogoutModal({ onConfirm, onCancel }) {
 function AppSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
 
@@ -43,8 +45,9 @@ function AppSidebar() {
     return location.pathname.startsWith(path);
   };
 
-  const handleLogoutConfirm = () => {
+  const handleLogoutConfirm = async () => {
     setShowLogout(false);
+    await logout();
     navigate("/");
   };
 
@@ -84,13 +87,24 @@ function AppSidebar() {
         </nav>
 
         <div className="sidebar-footer">
-          <button
-            className="sidebar-logout-btn"
-            onClick={() => setShowLogout(true)}
-            title={collapsed ? "Sign Out" : undefined}
-          >
-            <span className="sidebar-link-label">{collapsed ? "🚪" : "Sign Out"}</span>
-          </button>
+          {user ? (
+            <button
+              className="sidebar-logout-btn"
+              onClick={() => setShowLogout(true)}
+              title={collapsed ? "Sign Out" : undefined}
+            >
+              <span className="sidebar-link-label">{collapsed ? "🚪" : "Sign Out"}</span>
+            </button>
+          ) : (
+            <button
+              className="sidebar-logout-btn"
+              onClick={() => navigate("/login")}
+              title={collapsed ? "Sign In" : undefined}
+              style={{ color: "var(--text-main)", borderColor: "var(--border-subtle)" }}
+            >
+              <span className="sidebar-link-label">{collapsed ? "🔑" : "Sign In"}</span>
+            </button>
+          )}
           {!collapsed && (
             <div className="sidebar-footer-info">
               <span className="sidebar-footer-tag">QuestLearn v1.0</span>
