@@ -782,6 +782,28 @@
   font-weight: 700;
   color: var(--text-primary);
 }
+
+.ql-profile-guest-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+.ql-profile-guest-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0.5rem 0;
+}
+.ql-profile-guest-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.ql-profile-guest-actions button {
+  width: 100%;
+}
+
 .ql-profile-username {
   font-size: 0.78rem;
   color: var(--text-muted);

@@ -41,7 +41,7 @@
     "twoFactorEnabled": false,
     "twoFactorTempSecret": null,
     "twoFactorExpires": null,
-    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfc291bXlhXzAwMiIsInRva2VuVmVyc2lvbiI6IjIwMjYtMDktMDlUMDg6MDA6MDAuMDAwWiIsImlhdCI6MTc4ODk0MjYzOCwiZXhwIjoxNzkxNTM0NjM4fQ.WY3GpJpKv29JcWZe_Z0rYvkmI1sSbABBPgR78IzmiJM",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXJfc291bXlhXzAwMiIsInRva2VuVmVyc2lvbiI6IjIwMjYtMDktMDlUMDg6MzE6MDguODY5WiIsImlhdCI6MTc4ODk2MjY4NSwiZXhwIjoxNzkxNTU0Njg1fQ.d1H7iFklUzam1dLWIeEZJXNOG9uPNSaBTEG8gXr6GPk",
     "role": "user",
     "avatar": "⚡",
     "title": "Async Striker",
