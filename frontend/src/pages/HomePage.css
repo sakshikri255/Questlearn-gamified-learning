@@ -840,6 +840,76 @@
   color: var(--text-secondary);
 }
 
+.ql-profile-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.ql-profile-action-btn {
+  flex: 1;
+  padding: 0.42rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #c7d2fe;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.ql-profile-action-btn:hover {
+  background: rgba(99, 102, 241, 0.3);
+  color: #ffffff;
+  border-color: #818cf8;
+}
+
+.ql-profile-action-btn--logout {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.ql-profile-action-btn--logout:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.ql-profile-guest-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ql-profile-guest-hint {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.ql-profile-guest-actions {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.2rem;
+}
+
+.ql-profile-signin-btn,
+.ql-profile-users-btn {
+  flex: 1;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.78rem;
+  border-radius: 8px;
+}
+
 /* ── Sidebar Navigation ───────────────────────────────────────── */
 .ql-sidenav {
   background: rgba(17, 17, 17, 0.9);

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { loadProfile, loadStreak, markTodayComplete, saveAttempt, saveProfile, saveStreak } from "../data/progress.js";
+import RequireAuthModal from "../components/RequireAuthModal.jsx";
 import "./TopicQuizPage.css";
 
 const BATCH_SIZE = 5;
@@ -156,7 +157,9 @@ function TopicQuizPage() {
   }
 
   return (
-    <div className="tqp-wrapper"><div className="tqp-content"><div className="card tqp-card">
+    <div className="tqp-wrapper">
+      <RequireAuthModal message="You must be signed in to take adaptive topic quizzes, track accuracy checkpoints, and level up!" />
+      <div className="tqp-content"><div className="card tqp-card">
       <div className="tqp-header"><button className="back-btn" onClick={() => navigate("/topics")}>Back to Topics</button><div className="tqp-breadcrumb"><span className="tqp-topic">{topicEmoji} {topicName}</span><span className="tqp-sep">&gt;</span><span className="tqp-subtopic">{subtopicName}</span></div><div className="tqp-header-meta">Batch {batchNumber} · Question {questionIndex + 1}/{BATCH_SIZE} · {difficulty} · {xp} XP</div></div>
       <div className="tqp-progress-track"><div className="tqp-progress-fill" style={{ width: `${((questionIndex + 1) / BATCH_SIZE) * 100}%` }} /></div>
       <div className="tqp-timer-row"><div className={`tqp-timer-wrap ${timerWarn ? "tqp-timer-wrap--warn" : ""}`}><div className="tqp-timer-fill" style={{ width: `${(remaining / SECONDS_PER_QUESTION) * 100}%` }} /></div><span className="tqp-timer-label">{remaining}s</span></div>

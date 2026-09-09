@@ -11,6 +11,7 @@ import {
   resetDailyChallengeDemo,
 } from "../data/dailyChallenge.js";
 import { loadProfile, saveProfile } from "../data/progress.js";
+import RequireAuthModal from "../components/RequireAuthModal.jsx";
 import "./DailyChallengePage.css";
 
 const TIMER_SECONDS = 30;
@@ -277,6 +278,7 @@ function DailyChallengePage() {
 
   return (
     <div className="dc-page">
+      <RequireAuthModal message="You must be signed in to play the Daily Challenge, extend your streak, and win daily BobCoins!" />
       <div className="dc-content">
         <div className="dc-card card">
 

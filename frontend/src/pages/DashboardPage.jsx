@@ -13,6 +13,7 @@ import {
 import { getTheme } from "../data/themes.js";
 import STAGES, { getStage } from "../data/stages.js";
 import { motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext.jsx";
 import PageTransition from "../components/PageTransition.jsx";
 import "./DashboardPage.css";
 
@@ -40,6 +41,7 @@ const itemVariants = {
 
 function DashboardPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [attempts, setAttempts] = useState([]);
   const [profile, setProfile] = useState(null);
   const [streak, setStreak] = useState(null);
@@ -64,6 +66,13 @@ function DashboardPage() {
   }
 
   const handleClear = () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to clear ALL attempt history? This cannot be undone."
+      )
+    ) {
+      return;
+    }
     clearAttempts();
     setAttempts([]);
   };
@@ -98,14 +107,22 @@ function DashboardPage() {
               ← Back to Home
             </button>
             <div className="dash-empty">
-              <p className="dash-empty-icon">📊</p>
-              <h2 className="dash-empty-title">No Attempts Yet</h2>
+              <p className="dash-empty-icon">{user?.avatar || "📊"}</p>
+              <h2 className="dash-empty-title">
+                {user ? `Welcome, ${user.name}!` : "No Attempts Yet"}
+              </h2>
+              {user && <p className="dash-empty-tag">{user.gamerTag} • {user.title}</p>}
               <p className="dash-empty-sub">
-                Complete a mission and your progress will appear here.
+                Complete a mission to begin your quest history and unlock achievements.
               </p>
-              <button className="primary" onClick={() => navigate("/")}>
-                Start a Mission
-              </button>
+              <div className="dash-empty-actions">
+                <button className="primary" onClick={() => navigate("/mission")}>
+                  ⚔️ Start a Mission
+                </button>
+                <button className="secondary" onClick={() => navigate("/profile")}>
+                  👤 View &amp; Edit Profile
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -121,22 +138,35 @@ function DashboardPage() {
         {/* ── Welcome Banner ─────────────────────────────────── */}
         <div className="dash-welcome">
           <div className="dash-welcome-left">
-            <h1 className="dash-welcome-title">
-              Welcome back, <span className="dash-welcome-name">Explorer</span>
-            </h1>
-            <p className="dash-welcome-stage">
-              {currentStage?.emoji} {currentStage?.name} Stage
-            </p>
+            <div className="dash-welcome-avatar-row">
+              <span className="dash-user-avatar">{user?.avatar || "⚔️"}</span>
+              <div>
+                <h1 className="dash-welcome-title">
+                  Welcome back, <span className="dash-welcome-name">{user?.name || "Explorer"}</span>
+                </h1>
+                <div className="dash-welcome-tags">
+                  <span className="dash-user-gamertag">{user?.gamerTag || "@Adventurer"}</span>
+                  <span className="dash-welcome-stage">
+                    {currentStage?.emoji} {currentStage?.name} Stage
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="dash-welcome-actions">
+            <button className="dash-edit-profile-btn" onClick={() => navigate("/profile")}>
+              ✏️ Edit Profile
+            </button>
           </div>
           <div className="dash-welcome-stats">
             <div className="dash-welcome-stat dash-welcome-stat--gold">
-              🪙 {profile?.totalCoins ?? 0} coins
+              🪙 {user?.coins ?? profile?.totalCoins ?? 0} coins
             </div>
             <div className="dash-welcome-stat dash-welcome-stat--cyan">
-              {profile?.totalXp ?? 0} XP
+              {user?.xp ?? profile?.totalXp ?? 0} XP
             </div>
             <div className="dash-welcome-stat dash-welcome-stat--orange">
-              🔥 {streak?.currentStreak ?? 0} day streak
+              🔥 {user?.streak ?? streak?.currentStreak ?? 0} day streak
             </div>
           </div>
         </div>
