@@ -168,6 +168,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  gap: 0.35rem;
 }
 .ql-track-label {
   font-size: 0.7rem;
@@ -719,15 +720,18 @@
   min-width: 290px;
   position: sticky;
   top: 60px;
-  height: fit-content;
+  height: calc(100vh - 100px);
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 0.7rem;
   overflow: visible;
 }
 
 /* ── Profile card ─────────────────────────────────────────────── */
 .ql-profile-card {
+  flex: 0.8;
+  justify-content: space-between;
   background: #1A1D24;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
@@ -1360,4 +1364,64 @@
   .ql-track-bar-fill,
   .ql-daily-target-fill,
   .ql-profile-xp-fill { transition: none; }
+}
+
+
+/* ── Player Achievements ────────────────────────────────────────────── */
+.ql-achievements-panel {
+  flex: 1.2;
+  background: rgba(17, 17, 17, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ql-achievements-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ql-achievements-grid {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.ql-achievement-card {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background 0.2s;
+}
+
+.ql-achievement-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ql-ach-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ql-ach-value {
+  font-size: 1.25rem;
+  font-weight: 800;
 }
